@@ -1,0 +1,7 @@
+﻿services:
+  pandadawrazor:
+    image: pandadawrazor
+    build:
+      context: .
+      dockerfile: PandaDawRazor/Dockerfile
+
