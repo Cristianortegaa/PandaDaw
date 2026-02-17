@@ -5,3 +5,9 @@
       context: .
       dockerfile: PandaDawRazor/Dockerfile
 
+  pandaback:
+    image: pandaback
+    build:
+      context: .
+      dockerfile: PandaBack/Dockerfile
+
