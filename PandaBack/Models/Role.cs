@@ -1,6 +1,6 @@
 ﻿namespace PandaBack.Models;
 
-public class Usuario
+public enum Role
 {
-    
+    User, Admin
 }
