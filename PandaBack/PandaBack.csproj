@@ -44,9 +44,13 @@
     </ItemGroup>
 
     <ItemGroup>
+<<<<<<< HEAD
+      <Folder Include="Errors\" />
+=======
       <Folder Include="Dto\" />
       <Folder Include="Validators\" />
       <Folder Include="mappers\" />
+>>>>>>> a632071fc1d0da0dbf89bf39ac5d438fbdfa276d
       <Folder Include="repository\" />
     </ItemGroup>
 
