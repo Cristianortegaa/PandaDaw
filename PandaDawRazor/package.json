@@ -1,0 +1,17 @@
+﻿{
+  "name": "pandadawrazor",
+  "version": "1.0.0",
+  "description": "PandaDaw Razor Pages con Tailwind CSS y DaisyUI",
+  "scripts": {
+    "build:css": "tailwindcss -i ./wwwroot/css/input.css -o ./wwwroot/css/output.css --minify",
+    "watch:css": "tailwindcss -i ./wwwroot/css/input.css -o ./wwwroot/css/output.css --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "tailwindcss": "^3.4.1",
+    "daisyui": "^4.7.2"
+  }
+}
+

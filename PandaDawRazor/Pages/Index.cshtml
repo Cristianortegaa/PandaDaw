@@ -1,10 +1,70 @@
-﻿@page
+﻿﻿@page
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="hero min-h-[60vh] bg-base-200">
+    <div class="hero-content text-center">
+        <div class="max-w-md">
+            <h1 class="text-5xl font-bold">¡Bienvenido a PandaDaw!</h1>
+            <p class="py-6">Este proyecto usa Tailwind CSS con DaisyUI y un tema personalizado llamado "azul". Explora los componentes a continuación.</p>
+            <button class="btn btn-primary">Comenzar</button>
+        </div>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 my-8">
+    <!-- Card 1 -->
+    <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <h2 class="card-title text-primary">Botones</h2>
+            <p>Ejemplos de botones con el tema personalizado</p>
+            <div class="card-actions justify-end flex-wrap gap-2">
+                <button class="btn btn-primary">Primary</button>
+                <button class="btn btn-secondary">Secondary</button>
+                <button class="btn btn-accent">Accent</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <h2 class="card-title text-secondary">Alertas</h2>
+            <p>Diferentes tipos de alertas</p>
+            <div class="space-y-2">
+                <div class="alert alert-info">
+                    <span>Info alert</span>
+                </div>
+                <div class="alert alert-success">
+                    <span>Success alert</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <h2 class="card-title text-neutral">Badges</h2>
+            <p>Etiquetas con diferentes estilos</p>
+            <div class="card-actions justify-end flex-wrap gap-2">
+                <div class="badge badge-primary">Primary</div>
+                <div class="badge badge-secondary">Secondary</div>
+                <div class="badge badge-accent">Accent</div>
+                <div class="badge badge-ghost">Ghost</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="prose max-w-none">
+    <h2>Características del Tema "Azul"</h2>
+    <ul>
+        <li>Colores en formato OKLCH para mejor precisión y consistencia</li>
+        <li>Bordes redondeados de 2rem para un look moderno</li>
+        <li>Esquema de colores light con tonos azules/púrpuras</li>
+        <li>Transiciones suaves de 0.25s en botones</li>
+    </ul>
 </div>
