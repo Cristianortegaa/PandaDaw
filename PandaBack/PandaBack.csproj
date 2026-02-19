@@ -11,22 +11,18 @@
         <PackageReference Include="AspNetCoreRateLimit" Version="5.0.0" />
         <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
         <PackageReference Include="coverlet.msbuild" Version="6.0.4">
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-          <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
         </PackageReference>
         <PackageReference Include="CSharpFunctionalExtensions" Version="3.6.0" />
-        <PackageReference Include="GreenDonut" Version="15.1.12" />
-        <PackageReference Include="HotChocolate.AspNetCore" Version="15.1.12" />
-        <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="15.1.12" />
-        <PackageReference Include="HotChocolate.Data.EntityFramework" Version="15.1.12" />
-        <PackageReference Include="HotChocolate.Subscriptions.InMemory" Version="15.1.12" />
+
         <PackageReference Include="MailKit" Version="4.14.1" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.3" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.2" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.3" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.1" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.2" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.1" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.2" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.3" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.3" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.3" />
         <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.2" />
         <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.15.0" />
         <PackageReference Include="MimeKit" Version="4.14.0" />
@@ -39,17 +35,17 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
+        <Content Include="..\.dockerignore">
+            <Link>.dockerignore</Link>
+        </Content>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Errors\" />
-      <Folder Include="Dto\" />
-      <Folder Include="Validators\" />
-      <Folder Include="mappers\" />
-      <Folder Include="repository\" />
+        <Folder Include="Dto\" />
+        <Folder Include="Service\" />
+        <Folder Include="Validators\" />
+        <Folder Include="mappers\" />
+        <Folder Include="repository\" />
     </ItemGroup>
 
 </Project>
