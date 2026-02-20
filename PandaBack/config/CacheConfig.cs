@@ -12,7 +12,7 @@ public static class CacheConfig
                                   ?? "localhost:6379,password=cachepassword";
 
             options.Configuration = redisConnection;
-            options.InstanceName = "FunkoCache:";
+            options.InstanceName = "PandaCache:";
         });
         
         return services;

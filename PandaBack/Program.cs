@@ -1,12 +1,24 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using PandaBack.config;
 using PandaBack.Data;
 using PandaBack.Models;
+using PandaBack.Repositories;
+using PandaBack.Services;
 using PandaBack.Services.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddCache(builder.Configuration);
+
+builder.Services.AddDbContext<PandaDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
+builder.Services.AddScoped<IProductoService, ProductoService>();
 
 // Configuracion de identity
 builder.Services.AddIdentity<User, IdentityRole>(options => 

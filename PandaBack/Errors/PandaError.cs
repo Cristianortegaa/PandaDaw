@@ -1,7 +1,7 @@
 ﻿namespace PandaBack.Errors;
 
-public abstract record ProductoError(string Message);
+public abstract record PandaError(string Message);
 
-public record NotFoundError(string Message) : ProductoError(Message);
+public record NotFoundError(string Message) : PandaError(Message);
 
-public record BadRequestError(string Message) : ProductoError(Message);
+public record BadRequestError(string Message) : PandaError(Message);

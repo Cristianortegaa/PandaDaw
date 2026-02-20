@@ -10,6 +10,8 @@ public class PandaDbContext : IdentityDbContext<User>
     public DbSet<Carrito> Carritos => Set<Carrito>();
     
     public DbSet<Producto> Productos => Set<Producto>();
+    public DbSet<Favorito> Favoritos => Set<Favorito>();
+    
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
