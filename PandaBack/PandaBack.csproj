@@ -15,6 +15,7 @@
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
         <PackageReference Include="CSharpFunctionalExtensions" Version="3.6.0" />
+        <PackageReference Include="FluentValidation" Version="12.1.1" />
         <PackageReference Include="MailKit" Version="4.14.1" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.2" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.3" />
@@ -41,13 +42,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Dto\" />
-        <Folder Include="Service\" />
         <Folder Include="Validators\" />
         <Folder Include="mappers\" />
-        <Folder Include="repository\" />
       <Folder Include="Errors\" />
-      <Folder Include="Dto\" />
       <Folder Include="Validators\" />
       <Folder Include="mappers\" />
     </ItemGroup>

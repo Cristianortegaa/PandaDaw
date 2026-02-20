@@ -9,7 +9,7 @@ using PandaBack.Errors;
 
 namespace Tests.Services
 {
-    public class ProductoServicePruebasSencillas
+    public class ProductoServiceTest
     {
         private ProductoService _service;
         private Mock<IProductoRepository> _repoFalso;
