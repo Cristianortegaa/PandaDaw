@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PandaBack.Models;
 
@@ -11,6 +11,9 @@ public class PandaDbContext : IdentityDbContext<User>
     
     public DbSet<Producto> Productos => Set<Producto>();
     public DbSet<Favorito> Favoritos => Set<Favorito>();
+    public DbSet<Valoracion> Valoraciones => Set<Valoracion>();
+    public DbSet<LineaVenta> LineasVenta => Set<LineaVenta>();
+    public DbSet<LineaCarrito> LineasCarrito => Set<LineaCarrito>();
     
 
     protected override void OnModelCreating(ModelBuilder builder)

@@ -7,7 +7,7 @@ using PandaBack.Repository;
 
 namespace Tests.Services
 {
-    public class FavoritoServicePruebasSencillas
+    public class FavoritoServiceTest
     {
         private FavoritoService _service;
         private Mock<IFavoritoRepository> _repoFavoritosFalso;
