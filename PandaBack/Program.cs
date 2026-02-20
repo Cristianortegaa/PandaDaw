@@ -9,8 +9,11 @@ using PandaBack.Models;
 using PandaBack.Repositories;
 using PandaBack.Services;
 using PandaBack.Services.Auth;
+using PandaBack.Seeders;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllers();
 
 builder.Services.AddCache(builder.Configuration);
 
@@ -20,7 +23,6 @@ builder.Services.AddDbContext<PandaDbContext>(options =>
 builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
 builder.Services.AddScoped<IProductoService, ProductoService>();
 
-// Configuracion de identity
 builder.Services.AddIdentity<User, IdentityRole>(options => 
     {
         options.Password.RequireDigit = true;
@@ -31,7 +33,6 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
     .AddEntityFrameworkStores<PandaDbContext>()
     .AddDefaultTokenProviders();
 
-// Autenticación JWT
 var jwtKey = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key no configurada");
 
 builder.Services.AddAuthentication(options =>
@@ -53,16 +54,28 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
-// Registro de servicios
 builder.Services.AddScoped<TokenService>();
-
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<PandaDbContext>();
+        context.Database.EnsureCreated();
+        DataSeeder.Initialize(context);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Un error ocurrió ejecutando el DataSeeder.");
+    }
+}
 
 app.UseHttpsRedirection();
 
-// Middlewares de autenticación y autorización
 app.UseAuthentication(); 
 app.UseAuthorization();  
 
