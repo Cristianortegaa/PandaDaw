@@ -4,6 +4,9 @@
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=1d853d30_002D1911_002D4d8b_002Da7dd_002D81f05b9c1d15/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="All tests from &amp;lt;Tests&amp;gt;" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;Project Location="C:\Users\ciber\PandaDaw\Tests" Presentation="&amp;lt;Tests&amp;gt;" /&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=26789d47_002De903_002D4a24_002Db196_002D8506fd1e077c/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from &amp;lt;Tests&amp;gt;" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;Project Location="C:\Users\ciber\PandaDaw\Tests" Presentation="&amp;lt;Tests&amp;gt;" /&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=32cd923f_002D9992_002D4080_002D89a8_002Ddff0c19e5e58/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="All tests from ProductoServiceTests.cs" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;ProjectFile&gt;7DD0593F-6BE0-40C2-8CB2-2D1AE94AF7A1/d:Services/f:ProductoServiceTests.cs&lt;/ProjectFile&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
