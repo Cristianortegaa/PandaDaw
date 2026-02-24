@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿﻿using Microsoft.EntityFrameworkCore;
 using PandaBack.Data;
 using PandaBack.Models;
 
@@ -27,7 +27,7 @@ public class VentaRepository : IVentaRepository
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<Venta>> GetByUserIdAsync(long userId)
+    public async Task<IEnumerable<Venta>> GetByUserIdAsync(string userId)
     {
         _logger.LogInformation("Obteniendo ventas del usuario con ID: {UserId}", userId);
 

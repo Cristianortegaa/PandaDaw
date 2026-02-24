@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿﻿using Microsoft.EntityFrameworkCore;
 using PandaBack.Data;
 using PandaBack.Models;
 
@@ -15,7 +15,7 @@ public class CarritoRepository : ICarritoRepository
         _logger = logger;
     }
 
-    public async Task<Models.Carrito?> GetByUserIdAsync(long userId)
+    public async Task<Models.Carrito?> GetByUserIdAsync(string userId)
     {
         _logger.LogInformation("Obteniendo carrito del usuario con ID: {UserId}", userId);
 

@@ -1,4 +1,4 @@
-﻿using CSharpFunctionalExtensions;
+﻿﻿using CSharpFunctionalExtensions;
 using PandaBack.Dtos.Ventas;
 using PandaBack.Errors;
 using PandaBack.Mappers;
@@ -29,7 +29,7 @@ public class VentaService : IVentaService
         return Result.Success<IEnumerable<VentaResponseDto>, PandaError>(response);
     }
 
-    public async Task<Result<IEnumerable<VentaResponseDto>, PandaError>> GetVentasByUserAsync(long userId)
+    public async Task<Result<IEnumerable<VentaResponseDto>, PandaError>> GetVentasByUserAsync(string userId)
     {
         var ventas = await _ventaRepository.GetByUserIdAsync(userId);
 
@@ -48,7 +48,7 @@ public class VentaService : IVentaService
         return Result.Success<VentaResponseDto, PandaError>(venta.ToDto());
     }
 
-    public async Task<Result<VentaResponseDto, PandaError>> CreateVentaFromCarritoAsync(long userId)
+    public async Task<Result<VentaResponseDto, PandaError>> CreateVentaFromCarritoAsync(string userId)
     {
         var carrito = await _carritoRepository.GetByUserIdAsync(userId);
 

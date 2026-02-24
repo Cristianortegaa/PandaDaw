@@ -1,4 +1,4 @@
-﻿using CSharpFunctionalExtensions;
+﻿﻿using CSharpFunctionalExtensions;
 using PandaBack.Dtos.Valoraciones;
 using PandaBack.Errors;
 using PandaBack.Mappers;
@@ -32,7 +32,7 @@ public class ValoracionService : IValoracionService
         return Result.Success<IEnumerable<ValoracionResponseDto>, PandaError>(response);
     }
 
-    public async Task<Result<IEnumerable<ValoracionResponseDto>, PandaError>> GetValoracionesByUserAsync(long userId)
+    public async Task<Result<IEnumerable<ValoracionResponseDto>, PandaError>> GetValoracionesByUserAsync(string userId)
     {
         var valoraciones = await _valoracionRepository.GetByUserIdAsync(userId);
 
@@ -41,7 +41,7 @@ public class ValoracionService : IValoracionService
         return Result.Success<IEnumerable<ValoracionResponseDto>, PandaError>(response);
     }
 
-    public async Task<Result<ValoracionResponseDto, PandaError>> CreateValoracionAsync(long userId, CreateValoracionDto dto)
+    public async Task<Result<ValoracionResponseDto, PandaError>> CreateValoracionAsync(string userId, CreateValoracionDto dto)
     {
         var producto = await _productoRepository.GetByIdAsync(dto.ProductoId);
 
@@ -62,7 +62,7 @@ public class ValoracionService : IValoracionService
         return Result.Success<ValoracionResponseDto, PandaError>(valoracion.ToDto());
     }
 
-    public async Task<Result<ValoracionResponseDto, PandaError>> UpdateValoracionAsync(long id, long userId, CreateValoracionDto dto)
+    public async Task<Result<ValoracionResponseDto, PandaError>> UpdateValoracionAsync(long id, string userId, CreateValoracionDto dto)
     {
         var valoracion = await _valoracionRepository.GetByIdAsync(id);
 
@@ -80,7 +80,7 @@ public class ValoracionService : IValoracionService
         return Result.Success<ValoracionResponseDto, PandaError>(valoracion.ToDto());
     }
 
-    public async Task<UnitResult<PandaError>> DeleteValoracionAsync(long id, long userId)
+    public async Task<UnitResult<PandaError>> DeleteValoracionAsync(long id, string userId)
     {
         var valoracion = await _valoracionRepository.GetByIdAsync(id);
 

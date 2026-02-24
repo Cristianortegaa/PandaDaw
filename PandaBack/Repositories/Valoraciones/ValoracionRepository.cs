@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿﻿using Microsoft.EntityFrameworkCore;
 using PandaBack.Data;
 using PandaBack.Models;
 
@@ -27,7 +27,7 @@ public class ValoracionRepository : IValoracionRepository
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<Valoracion>> GetByUserIdAsync(long userId)
+    public async Task<IEnumerable<Valoracion>> GetByUserIdAsync(string userId)
     {
         _logger.LogInformation("Obteniendo valoraciones del usuario con ID: {UserId}", userId);
 
@@ -54,7 +54,7 @@ public class ValoracionRepository : IValoracionRepository
         return valoracion;
     }
 
-    public async Task<Valoracion?> GetByProductoAndUserAsync(long productoId, long userId)
+    public async Task<Valoracion?> GetByProductoAndUserAsync(long productoId, string userId)
     {
         return await _context.Valoraciones
             .FirstOrDefaultAsync(v => v.ProductoId == productoId && v.UserId == userId);

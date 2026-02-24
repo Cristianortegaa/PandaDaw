@@ -1,4 +1,4 @@
-﻿using PandaBack.Dtos.Valoraciones;
+﻿﻿using PandaBack.Dtos.Valoraciones;
 using PandaBack.Models;
 
 namespace PandaBack.Mappers;
@@ -26,7 +26,7 @@ public static class ValoracionMapper
         };
     }
 
-    public static Valoracion ToModel(this CreateValoracionDto dto, long userId)
+    public static Valoracion ToModel(this CreateValoracionDto dto, string userId)
     {
         return new Valoracion
         {

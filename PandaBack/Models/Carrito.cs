@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PandaBack.Models;
@@ -10,7 +10,7 @@ public class Carrito
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
     
-    public long UserId { get; set; }
+    public string UserId { get; set; } = string.Empty;
 
     [ForeignKey("UserId")]
     public virtual User? User { get; set; }

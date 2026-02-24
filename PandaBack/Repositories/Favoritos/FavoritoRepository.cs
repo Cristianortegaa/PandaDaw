@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿﻿using Microsoft.EntityFrameworkCore;
 using PandaBack.Data; // Ajusta según el nombre de tu DbContext
 using PandaBack.Models;
 
@@ -13,7 +13,7 @@ public class FavoritoRepository : IFavoritoRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<Favorito>> GetByUserIdAsync(long userId)
+    public async Task<IEnumerable<Favorito>> GetByUserIdAsync(string userId)
     {
         return await _context.Favoritos
             .Include(f => f.Producto) 
@@ -26,7 +26,7 @@ public class FavoritoRepository : IFavoritoRepository
         return await _context.Favoritos.FindAsync(id);
     }
 
-    public async Task<Favorito?> GetByProductAndUserAsync(long productoId, long userId)
+    public async Task<Favorito?> GetByProductAndUserAsync(long productoId, string userId)
     {
         return await _context.Favoritos
             .FirstOrDefaultAsync(f => f.ProductoId == productoId && f.UserId == userId);
