@@ -5,129 +5,116 @@
     Layout = "_Layout";
 }
 
-<div class="bg-base-200 min-h-screen">
-    <!-- Navbar -->
-    <div class="navbar bg-base-300 shadow-sm px-6">
-        <div class="flex-1">
-            <a asp-page="/Index" class="text-xl font-bold text-base-content">PandaDaw</a>
-        </div>
-        <div class="flex-none gap-2">
-            <a asp-page="/Login" class="btn btn-ghost btn-sm">
-                <i class="fa-solid fa-right-to-bracket mr-1"></i>
-                Iniciar sesión
-            </a>
-        </div>
-    </div>
-
-    <!-- Contenido -->
-    <div class="max-w-4xl mx-auto p-6 flex flex-col gap-6">
-        <!-- Título -->
+<div class="container mx-auto p-6">
+    <!-- Título -->
+    <div class="flex items-center justify-between mb-6">
         <div class="flex items-center gap-3">
             <i class="fa-solid fa-cart-shopping text-2xl text-primary"></i>
             <h1 class="text-2xl font-bold text-base-content">Mi carrito</h1>
+            @if (Model.Carrito?.TotalItems > 0)
+            {
+                <span class="badge badge-primary">@Model.Carrito.TotalItems items</span>
+            }
         </div>
+        
+        @if (Model.Carrito?.Lineas.Any() == true)
+        {
+            <form method="post" asp-page-handler="Vaciar">
+                <button type="submit" class="btn btn-ghost btn-sm text-error">
+                    <i class="fa-solid fa-trash mr-1"></i>
+                    Vaciar carrito
+                </button>
+            </form>
+        }
+    </div>
 
+    @if (Model.Carrito?.Lineas.Any() == true)
+    {
         <div class="flex flex-col lg:flex-row gap-6">
             <!-- Lista de productos -->
-            <div class="flex flex-col gap-4 flex-1" id="listaProductos">
-                <!-- Producto 1 -->
-                <div class="card bg-base-100 shadow">
-                    <div class="card-body flex-row items-center gap-4 py-4">
-                        <div class="w-16 h-16 rounded-lg bg-base-300 flex items-center justify-center shrink-0">
-                            <i class="fa-solid fa-music text-2xl text-primary"></i>
+            <div class="flex flex-col gap-4 flex-1">
+                @foreach (var linea in Model.Carrito.Lineas)
+                {
+                    <div class="card bg-base-100 shadow">
+                        <div class="card-body flex-row items-center gap-4 py-4">
+                            <!-- Imagen -->
+                            <div class="w-16 h-16 rounded-lg bg-base-300 flex items-center justify-center shrink-0 overflow-hidden">
+                                @if (!string.IsNullOrEmpty(linea.ProductoImagen))
+                                {
+                                    <img src="@linea.ProductoImagen" alt="@linea.ProductoNombre" class="w-full h-full object-cover" />
+                                }
+                                else
+                                {
+                                    <i class="fa-solid fa-music text-2xl text-primary"></i>
+                                }
+                            </div>
+                            
+                            <!-- Info -->
+                            <div class="flex flex-col gap-1 flex-1">
+                                <a asp-page="/Detalle" asp-route-id="@linea.ProductoId" class="font-semibold text-base-content hover:text-primary">
+                                    @linea.ProductoNombre
+                                </a>
+                                <p class="text-sm text-base-content/60">Precio unitario: @linea.PrecioUnitario.ToString("C")</p>
+                                <p class="text-primary font-bold">Subtotal: @linea.Subtotal.ToString("C")</p>
+                            </div>
+                            
+                            <!-- Controles de cantidad -->
+                            <div class="flex items-center gap-2">
+                                <form method="post" asp-page-handler="UpdateCantidad">
+                                    <input type="hidden" name="productoId" value="@linea.ProductoId" />
+                                    <input type="hidden" name="cantidad" value="@(linea.Cantidad - 1)" />
+                                    <button type="submit" class="btn btn-ghost btn-xs btn-circle" @(linea.Cantidad <= 1 ? "disabled" : "")>
+                                        <i class="fa-solid fa-minus text-xs"></i>
+                                    </button>
+                                </form>
+                                
+                                <span class="w-8 text-center font-medium">@linea.Cantidad</span>
+                                
+                                <form method="post" asp-page-handler="UpdateCantidad">
+                                    <input type="hidden" name="productoId" value="@linea.ProductoId" />
+                                    <input type="hidden" name="cantidad" value="@(linea.Cantidad + 1)" />
+                                    <button type="submit" class="btn btn-ghost btn-xs btn-circle">
+                                        <i class="fa-solid fa-plus text-xs"></i>
+                                    </button>
+                                </form>
+                            </div>
+                            
+                            <!-- Eliminar -->
+                            <form method="post" asp-page-handler="RemoveLinea">
+                                <input type="hidden" name="productoId" value="@linea.ProductoId" />
+                                <button type="submit" class="btn btn-ghost btn-sm text-error">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </form>
                         </div>
-                        <div class="flex flex-col gap-1 flex-1">
-                            <p class="font-semibold text-base-content">Ableton Live 12</p>
-                            <p class="text-sm text-base-content/60">Licencia digital</p>
-                            <p class="text-primary font-bold">49,99 €</p>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="cambiarCantidad(this, -1)" class="btn btn-ghost btn-xs btn-circle">
-                                <i class="fa-solid fa-minus text-xs"></i>
-                            </button>
-                            <span class="w-6 text-center font-medium cantidad">1</span>
-                            <button onclick="cambiarCantidad(this, 1)" class="btn btn-ghost btn-xs btn-circle">
-                                <i class="fa-solid fa-plus text-xs"></i>
-                            </button>
-                        </div>
-                        <button onclick="eliminarProducto(this)" class="btn btn-ghost btn-sm text-error">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
                     </div>
-                </div>
-
-                <!-- Producto 2 -->
-                <div class="card bg-base-100 shadow">
-                    <div class="card-body flex-row items-center gap-4 py-4">
-                        <div class="w-16 h-16 rounded-lg bg-base-300 flex items-center justify-center shrink-0">
-                            <i class="fa-solid fa-headphones text-2xl text-primary"></i>
-                        </div>
-                        <div class="flex flex-col gap-1 flex-1">
-                            <p class="font-semibold text-base-content">Pack de samples – Lo-Fi</p>
-                            <p class="text-sm text-base-content/60">Descarga instantánea</p>
-                            <p class="text-primary font-bold">12,99 €</p>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="cambiarCantidad(this, -1)" class="btn btn-ghost btn-xs btn-circle">
-                                <i class="fa-solid fa-minus text-xs"></i>
-                            </button>
-                            <span class="w-6 text-center font-medium cantidad">1</span>
-                            <button onclick="cambiarCantidad(this, 1)" class="btn btn-ghost btn-xs btn-circle">
-                                <i class="fa-solid fa-plus text-xs"></i>
-                            </button>
-                        </div>
-                        <button onclick="eliminarProducto(this)" class="btn btn-ghost btn-sm text-error">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Producto 3 -->
-                <div class="card bg-base-100 shadow">
-                    <div class="card-body flex-row items-center gap-4 py-4">
-                        <div class="w-16 h-16 rounded-lg bg-base-300 flex items-center justify-center shrink-0">
-                            <i class="fa-solid fa-plug text-2xl text-primary"></i>
-                        </div>
-                        <div class="flex flex-col gap-1 flex-1">
-                            <p class="font-semibold text-base-content">Plugin Serum VST</p>
-                            <p class="text-sm text-base-content/60">Licencia digital</p>
-                            <p class="text-primary font-bold">189,00 €</p>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="cambiarCantidad(this, -1)" class="btn btn-ghost btn-xs btn-circle">
-                                <i class="fa-solid fa-minus text-xs"></i>
-                            </button>
-                            <span class="w-6 text-center font-medium cantidad">1</span>
-                            <button onclick="cambiarCantidad(this, 1)" class="btn btn-ghost btn-xs btn-circle">
-                                <i class="fa-solid fa-plus text-xs"></i>
-                            </button>
-                        </div>
-                        <button onclick="eliminarProducto(this)" class="btn btn-ghost btn-sm text-error">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
+                }
             </div>
 
             <!-- Resumen del pedido -->
             <div class="lg:w-80">
-                <div class="card bg-base-100 shadow-xl sticky top-6">
+                <div class="card bg-base-100 shadow-xl sticky top-20">
                     <div class="card-body gap-4">
                         <h2 class="text-lg font-bold text-base-content">Resumen del pedido</h2>
 
                         <div class="flex flex-col gap-2 text-sm">
+                            @{
+                                var subtotal = Model.Carrito.Total;
+                                var iva = subtotal * 0.21m;
+                                var total = subtotal + iva;
+                            }
                             <div class="flex justify-between text-base-content/70">
-                                <span>Subtotal</span>
-                                <span>251,98 €</span>
+                                <span>Subtotal (@Model.Carrito.TotalItems items)</span>
+                                <span>@subtotal.ToString("C")</span>
                             </div>
                             <div class="flex justify-between text-base-content/70">
                                 <span>IVA (21%)</span>
-                                <span>52,92 €</span>
+                                <span>@iva.ToString("C")</span>
                             </div>
                             <div class="divider my-1"></div>
-                            <div class="flex justify-between font-bold text-base-content text-base">
+                            <div class="flex justify-between font-bold text-base-content text-lg">
                                 <span>Total</span>
-                                <span>304,90 €</span>
+                                <span class="text-primary">@total.ToString("C")</span>
                             </div>
                         </div>
 
@@ -136,27 +123,25 @@
                             Proceder al pago
                         </a>
                         <a asp-page="/Index" class="btn btn-ghost btn-sm w-full text-base-content/60">
+                            <i class="fa-solid fa-arrow-left mr-1"></i>
                             Seguir comprando
                         </a>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    }
+    else
+    {
+        <!-- Carrito vacío -->
+        <div class="flex flex-col items-center justify-center py-16">
+            <i class="fa-solid fa-cart-shopping text-6xl text-base-content/30 mb-4"></i>
+            <h2 class="text-xl font-semibold text-base-content/70">Tu carrito está vacío</h2>
+            <p class="text-base-content/50 mt-2">Añade productos para continuar</p>
+            <a asp-page="/Index" class="btn btn-primary mt-4">
+                <i class="fa-solid fa-shopping-bag mr-1"></i>
+                Ver productos
+            </a>
+        </div>
+    }
 </div>
-
-@section Scripts {
-    <script>
-        function cambiarCantidad(btn, delta) {
-            const span = btn.closest(".flex.items-center").querySelector(".cantidad");
-            let val = parseInt(span.textContent) + delta;
-            if (val < 1) val = 1;
-            span.textContent = val;
-        }
-
-        function eliminarProducto(btn) {
-            btn.closest(".card").remove();
-        }
-    </script>
-}
-

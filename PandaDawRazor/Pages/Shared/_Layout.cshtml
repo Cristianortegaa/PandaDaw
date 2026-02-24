@@ -7,8 +7,86 @@
     <link rel="stylesheet" href="~/css/output.css" asp-append-version="true"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
 </head>
-<body>
-    @RenderBody()
+<body class="bg-base-200 min-h-screen">
+    <!-- Navbar -->
+    <div class="navbar bg-base-300 text-primary-content px-4 gap-2 shadow-lg sticky top-0 z-50">
+        <!-- Logo -->
+        <div class="flex-none">
+            <a asp-page="/Index" class="btn btn-ghost text-xl font-bold">
+                <i class="fa-solid fa-paw text-primary"></i>
+                PandaDaw
+            </a>
+        </div>
+
+        <!-- Buscador centrado -->
+        <div class="flex-1 flex justify-center px-2">
+            <form method="get" asp-page="/Index" class="w-full max-w-md">
+                <input type="text" name="buscar" placeholder="Buscar productos..." 
+                       class="input input-primary input-sm w-full" />
+            </form>
+        </div>
+
+        <!-- Iconos derecha -->
+        <div class="flex-none flex items-center gap-1">
+            <!-- Favoritos -->
+            <a asp-page="/Favoritos" class="btn btn-ghost btn-sm" title="Favoritos">
+                <i class="fa-regular fa-heart text-lg"></i>
+            </a>
+
+            <!-- Carrito -->
+            <a asp-page="/Carrito" class="btn btn-ghost btn-sm" title="Carrito">
+                <i class="fa-solid fa-cart-shopping text-lg"></i>
+            </a>
+
+            <!-- Usuario -->
+            @if (Context.Session.GetString("Token") != null)
+            {
+                <div class="dropdown dropdown-end">
+                    <button tabindex="0" class="btn btn-ghost btn-sm">
+                        <div class="avatar">
+                            <div class="w-8 rounded-full">
+                                <img src="https://img.daisyui.com/images/profile/demo/yellingcat@192.webp" alt="Avatar" />
+                            </div>
+                        </div>
+                        <span class="hidden sm:inline ml-1">@Context.Session.GetString("UserName")</span>
+                    </button>
+                    <ul tabindex="0" class="dropdown-content z-50 menu p-2 shadow bg-base-100 rounded-box w-52 mt-2">
+                        <li><a asp-page="/Pedidos"><i class="fa-solid fa-box mr-2"></i>Mis Pedidos</a></li>
+                        <li><a asp-page="/Favoritos"><i class="fa-solid fa-heart mr-2"></i>Favoritos</a></li>
+                        <li class="divider"></li>
+                        <li>
+                            <form method="post" asp-page="/Login" asp-page-handler="Logout">
+                                <button type="submit" class="w-full text-left">
+                                    <i class="fa-solid fa-right-from-bracket mr-2"></i>Cerrar sesión
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            }
+            else
+            {
+                <a asp-page="/Login" class="btn btn-primary btn-sm">
+                    <i class="fa-solid fa-right-to-bracket mr-1"></i>
+                    Iniciar sesión
+                </a>
+            }
+        </div>
+    </div>
+
+    <!-- Contenido principal -->
+    <main>
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer footer-center p-6 bg-base-300 text-base-content mt-auto">
+        <aside>
+            <p class="font-bold">PandaDaw &copy; 2026</p>
+            <p>Tu tienda de música digital</p>
+        </aside>
+    </footer>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

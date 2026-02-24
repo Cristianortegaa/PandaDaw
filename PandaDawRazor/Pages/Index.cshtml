@@ -5,384 +5,114 @@
     Layout = "_Layout";
 }
 
-<!-- Navbar -->
-<div class="navbar bg-base-300 text-primary-content px-4 gap-2">
-    <!-- Logo -->
-    <div class="flex-none">
-        <a class="btn btn-ghost text-md font-bold">PandaDaw</a>
-    </div>
-
-    <!-- Buscador centrado -->
-    <div class="flex-1 flex justify-center px-2">
-        <input type="text" placeholder="Buscar productos..." class="input input-primary input-sm w-full max-w-md" />
-    </div>
-
-    <!-- Iconos derecha -->
-    <div class="flex-none flex items-center gap-1">
-
-        <!-- Dropdown Filtros -->
-        <div class="dropdown dropdown-end">
-            <button tabindex="0" class="btn btn-ghost btn-sm">
-                <i class="fa-solid fa-filter"></i>
-            </button>
-            <div tabindex="0" class="dropdown-content z-50 bg-base-100 rounded-box shadow-xl p-5 mt-2 flex flex-col gap-4"
-                 style="width: 280px; right: 0;">
-
-                <h3 class="font-bold text-base-content text-base flex items-center gap-2">
-                    <i class="fa-solid fa-sliders text-primary"></i>
-                    Filtros
-                </h3>
-
-                <!-- Categoría -->
-                <div class="flex flex-col gap-2">
-                    <p class="text-sm font-semibold text-base-content/70 uppercase tracking-wide">Categoría</p>
-                    <div class="flex flex-col gap-1">
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" class="checkbox checkbox-primary checkbox-sm" checked />
-                            <span class="text-sm text-base-content">Licencias de software</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" class="checkbox checkbox-primary checkbox-sm" checked />
-                            <span class="text-sm text-base-content">Packs de samples</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" class="checkbox checkbox-primary checkbox-sm" />
-                            <span class="text-sm text-base-content">Plugins VST</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" class="checkbox checkbox-primary checkbox-sm" />
-                            <span class="text-sm text-base-content">Hardware</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" class="checkbox checkbox-primary checkbox-sm" />
-                            <span class="text-sm text-base-content">Cursos y tutoriales</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="divider my-0"></div>
-
-                <!-- Precio -->
-                <div class="flex flex-col gap-2">
-                    <p class="text-sm font-semibold text-base-content/70 uppercase tracking-wide">Precio máximo</p>
-                    <div class="flex items-center gap-3">
-                        <input id="rangoSlider" type="range" min="0" max="500" value="250" class="range range-primary range-sm flex-1"
-                               oninput="document.getElementById('precioVal').textContent = this.value + ' €'" />
-                        <span id="precioVal" class="text-sm font-bold text-primary w-16 text-right">250 €</span>
-                    </div>
-                    <div class="flex justify-between text-xs text-base-content/40">
-                        <span>0 €</span>
-                        <span>500 €</span>
-                    </div>
-                </div>
-
-                <div class="divider my-0"></div>
-
-                <!-- Valoración mínima -->
-                <div class="flex flex-col gap-2">
-                    <p class="text-sm font-semibold text-base-content/70 uppercase tracking-wide">Valoración mínima</p>
-                    <div class="flex gap-1" id="estrellasFiltro">
-                        <button onclick="setEstrellas(1)" class="btn btn-ghost btn-xs px-0.5 text-warning estrella" data-val="1"><i class="fa-solid fa-star"></i></button>
-                        <button onclick="setEstrellas(2)" class="btn btn-ghost btn-xs px-0.5 text-warning estrella" data-val="2"><i class="fa-solid fa-star"></i></button>
-                        <button onclick="setEstrellas(3)" class="btn btn-ghost btn-xs px-0.5 text-warning estrella" data-val="3"><i class="fa-solid fa-star"></i></button>
-                        <button onclick="setEstrellas(4)" class="btn btn-ghost btn-xs px-0.5 text-warning estrella" data-val="4"><i class="fa-solid fa-star"></i></button>
-                        <button onclick="setEstrellas(5)" class="btn btn-ghost btn-xs px-0.5 text-warning estrella" data-val="5"><i class="fa-solid fa-star"></i></button>
-                        <span id="estrellaLabel" class="text-xs text-base-content/50 ml-1 self-center">Cualquiera</span>
-                    </div>
-                </div>
-
-                <div class="flex gap-2 mt-1">
-                    <button class="btn btn-primary btn-sm flex-1">Aplicar</button>
-                    <button class="btn btn-ghost btn-sm" onclick="resetFiltros()">Limpiar</button>
-                </div>
-            </div>
+<div class="container mx-auto p-6">
+    <!-- Cabecera con filtros -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+        <div>
+            <h1 class="text-3xl font-bold text-base-content">Productos</h1>
+            <p class="text-base-content/60">@Model.Productos.Count productos encontrados</p>
         </div>
-
-        <!-- Dropdown Carrito -->
-        <div class="dropdown dropdown-end">
-            <button tabindex="0" class="btn btn-ghost btn-sm">
-                <i class="fa-solid fa-cart-shopping"></i>
-            </button>
-            <div tabindex="0" class="dropdown-content z-50 bg-base-100 rounded-box shadow-xl mt-2"
-                 style="width: 300px; right: 0;">
-                <!-- Cabecera -->
-                <div class="flex items-center justify-between px-4 pt-4 pb-2">
-                    <h3 class="font-bold text-base-content flex items-center gap-2">
-                        <i class="fa-solid fa-cart-shopping text-primary"></i>
-                        Mi carrito
-                    </h3>
-                    <span class="badge badge-primary badge-outline badge-sm">3</span>
-                </div>
-                <div class="divider my-0"></div>
-
-                <!-- Lista de items -->
-                <div class="flex flex-col px-2 py-2 gap-1 max-h-64 overflow-y-auto" id="carritoDropdown">
-
-                    <!-- Item carrito 1 -->
-                    <div class="fav-item flex items-center gap-3 p-2 rounded-lg hover:bg-base-200 transition-colors">
-                        <div class="w-10 h-10 rounded-lg bg-base-300 flex items-center justify-center shrink-0">
-                            <i class="fa-solid fa-music text-primary text-sm"></i>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-semibold text-base-content truncate">Ableton Live 12</p>
-                            <p class="text-xs text-base-content/50">x1</p>
-                            <p class="text-xs text-primary font-bold">49,99 €</p>
-                        </div>
-                        <button onclick="quitarDeCarrito(this)" class="btn btn-ghost btn-xs text-error shrink-0" title="Quitar">
-                            <i class="fa-solid fa-xmark"></i>
-                        </button>
-                    </div>
-
-                    <!-- Item carrito 2 -->
-                    <div class="fav-item flex items-center gap-3 p-2 rounded-lg hover:bg-base-200 transition-colors">
-                        <div class="w-10 h-10 rounded-lg bg-base-300 flex items-center justify-center shrink-0">
-                            <i class="fa-solid fa-headphones text-primary text-sm"></i>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-semibold text-base-content truncate">Pack de samples – Lo-Fi</p>
-                            <p class="text-xs text-base-content/50">x1</p>
-                            <p class="text-xs text-primary font-bold">12,99 €</p>
-                        </div>
-                        <button onclick="quitarDeCarrito(this)" class="btn btn-ghost btn-xs text-error shrink-0" title="Quitar">
-                            <i class="fa-solid fa-xmark"></i>
-                        </button>
-                    </div>
-
-                    <!-- Item carrito 3 -->
-                    <div class="fav-item flex items-center gap-3 p-2 rounded-lg hover:bg-base-200 transition-colors">
-                        <div class="w-10 h-10 rounded-lg bg-base-300 flex items-center justify-center shrink-0">
-                            <i class="fa-solid fa-plug text-primary text-sm"></i>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-semibold text-base-content truncate">Plugin Serum VST</p>
-                            <p class="text-xs text-base-content/50">x1</p>
-                            <p class="text-xs text-primary font-bold">189,00 €</p>
-                        </div>
-                        <button onclick="quitarDeCarrito(this)" class="btn btn-ghost btn-xs text-error shrink-0" title="Quitar">
-                            <i class="fa-solid fa-xmark"></i>
-                        </button>
-                    </div>
-
-                </div>
-
-                <!-- Total -->
-                <div class="px-4 py-2 flex justify-between text-sm">
-                    <span class="text-base-content/60">Total</span>
-                    <span class="font-bold text-base-content" id="carritoTotal">251,98 €</span>
-                </div>
-                <div class="divider my-0"></div>
-
-                <!-- Pie -->
-                <div class="px-4 py-3 flex flex-col gap-2">
-                    <a asp-page="/Carrito" class="btn btn-primary btn-sm w-full">
-                        <i class="fa-solid fa-cart-shopping mr-1"></i>
-                        Ir al carrito
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Dropdown Favoritos -->
-        <div class="dropdown dropdown-end">
-            <button tabindex="0" class="btn btn-ghost btn-sm">
-                <i class="fa-regular fa-heart text-lg"></i>
-            </button>
-            <div tabindex="0" class="dropdown-content z-50 bg-base-100 rounded-box shadow-xl mt-2"
-                 style="width: 300px; right: 0;">
-                <!-- Cabecera -->
-                <div class="flex items-center justify-between px-4 pt-4 pb-2">
-                    <h3 class="font-bold text-base-content flex items-center gap-2">
-                        <i class="fa-solid fa-heart text-error"></i>
-                        Favoritos
-                    </h3>
-                    <span class="badge badge-error badge-outline badge-sm" id="favCount">4</span>
-                </div>
-                <div class="divider my-0"></div>
-
-                <!-- Lista de favoritos -->
-                <div class="flex flex-col px-2 py-2 gap-1 max-h-72 overflow-y-auto" id="favDropdown">
-
-                    <!-- Item fav 1 -->
-                    <div class="fav-item flex items-center gap-3 p-2 rounded-lg hover:bg-base-200 transition-colors">
-                        <div class="w-10 h-10 rounded-lg bg-base-300 flex items-center justify-center shrink-0">
-                            <i class="fa-solid fa-music text-primary text-sm"></i>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-semibold text-base-content truncate">Ableton Live 12</p>
-                            <p class="text-xs text-primary font-bold">49,99 €</p>
-                        </div>
-                        <button onclick="quitarFavorito(this)" class="btn btn-ghost btn-xs text-error shrink-0" title="Quitar de favoritos">
-                            <i class="fa-solid fa-heart-crack"></i>
-                        </button>
-                    </div>
-
-                    <!-- Item fav 2 -->
-                    <div class="fav-item flex items-center gap-3 p-2 rounded-lg hover:bg-base-200 transition-colors">
-                        <div class="w-10 h-10 rounded-lg bg-base-300 flex items-center justify-center shrink-0">
-                            <i class="fa-solid fa-headphones text-primary text-sm"></i>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-semibold text-base-content truncate">Pack de samples – Lo-Fi</p>
-                            <p class="text-xs text-primary font-bold">12,99 €</p>
-                        </div>
-                        <button onclick="quitarFavorito(this)" class="btn btn-ghost btn-xs text-error shrink-0" title="Quitar de favoritos">
-                            <i class="fa-solid fa-heart-crack"></i>
-                        </button>
-                    </div>
-
-                    <!-- Item fav 3 -->
-                    <div class="fav-item flex items-center gap-3 p-2 rounded-lg hover:bg-base-200 transition-colors">
-                        <div class="w-10 h-10 rounded-lg bg-base-300 flex items-center justify-center shrink-0">
-                            <i class="fa-solid fa-plug text-primary text-sm"></i>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-semibold text-base-content truncate">Plugin Serum VST</p>
-                            <p class="text-xs text-primary font-bold">189,00 €</p>
-                        </div>
-                        <button onclick="quitarFavorito(this)" class="btn btn-ghost btn-xs text-error shrink-0" title="Quitar de favoritos">
-                            <i class="fa-solid fa-heart-crack"></i>
-                        </button>
-                    </div>
-
-                    <!-- Item fav 4 -->
-                    <div class="fav-item flex items-center gap-3 p-2 rounded-lg hover:bg-base-200 transition-colors">
-                        <div class="w-10 h-10 rounded-lg bg-base-300 flex items-center justify-center shrink-0">
-                            <i class="fa-solid fa-microphone text-primary text-sm"></i>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-semibold text-base-content truncate">Micrófono Blue Yeti USB</p>
-                            <p class="text-xs text-primary font-bold">129,00 €</p>
-                        </div>
-                        <button onclick="quitarFavorito(this)" class="btn btn-ghost btn-xs text-error shrink-0" title="Quitar de favoritos">
-                            <i class="fa-solid fa-heart-crack"></i>
-                        </button>
-                    </div>
-
-                </div>
-
-                <div class="divider my-0"></div>
-                <!-- Pie -->
-                <div class="px-4 py-3">
-                    <a asp-page="/Favoritos" class="btn btn-outline btn-sm w-full">
-                        Ver todos los favoritos
-                    </a>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Avatar -->
-    <div class="flex-none">
-        <div class="avatar">
-            <div class="w-9 rounded-full">
-                <img src="https://img.daisyui.com/images/profile/demo/yellingcat@192.webp" alt="Avatar" />
-            </div>
+        
+        <!-- Filtros por categoría -->
+        <div class="flex flex-wrap gap-2">
+            <a asp-page="/Index" class="btn btn-sm @(Model.Categoria == null ? "btn-primary" : "btn-ghost")">
+                Todos
+            </a>
+            <a asp-page="/Index" asp-route-categoria="Software" class="btn btn-sm @(Model.Categoria == "Software" ? "btn-primary" : "btn-ghost")">
+                <i class="fa-solid fa-laptop-code mr-1"></i> Software
+            </a>
+            <a asp-page="/Index" asp-route-categoria="Samples" class="btn btn-sm @(Model.Categoria == "Samples" ? "btn-primary" : "btn-ghost")">
+                <i class="fa-solid fa-music mr-1"></i> Samples
+            </a>
+            <a asp-page="/Index" asp-route-categoria="Plugins" class="btn btn-sm @(Model.Categoria == "Plugins" ? "btn-primary" : "btn-ghost")">
+                <i class="fa-solid fa-plug mr-1"></i> Plugins
+            </a>
+            <a asp-page="/Index" asp-route-categoria="Hardware" class="btn btn-sm @(Model.Categoria == "Hardware" ? "btn-primary" : "btn-ghost")">
+                <i class="fa-solid fa-microphone mr-1"></i> Hardware
+            </a>
         </div>
     </div>
+
+    <!-- Grid de productos -->
+    @if (Model.Productos.Any())
+    {
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            @foreach (var producto in Model.Productos)
+            {
+                var esFavorito = Model.FavoritosMap.ContainsKey(producto.Id);
+                var favoritoId = esFavorito ? Model.FavoritosMap[producto.Id] : 0;
+                
+                <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 group">
+                    <!-- Imagen del producto -->
+                    <figure class="relative h-48 bg-base-300">
+                        @if (!string.IsNullOrEmpty(producto.Imagen))
+                        {
+                            <img src="@producto.Imagen" alt="@producto.Nombre" class="w-full h-full object-cover" />
+                        }
+                        else
+                        {
+                            <div class="w-full h-full flex items-center justify-center">
+                                <i class="fa-solid fa-music text-4xl text-primary/50"></i>
+                            </div>
+                        }
+                        
+                        <!-- Badge categoría -->
+                        <span class="badge badge-primary absolute top-2 left-2">@producto.Category</span>
+                        
+                        <!-- Botón favorito -->
+                        <form method="post" asp-page-handler="ToggleFavorito" class="absolute top-2 right-2">
+                            <input type="hidden" name="productoId" value="@producto.Id" />
+                            @if (esFavorito)
+                            {
+                                <input type="hidden" name="favoritoId" value="@favoritoId" />
+                            }
+                            <button type="submit" class="btn btn-circle btn-sm @(esFavorito ? "btn-error" : "btn-ghost bg-base-100/80")">
+                                <i class="@(esFavorito ? "fa-solid" : "fa-regular") fa-heart"></i>
+                            </button>
+                        </form>
+                    </figure>
+                    
+                    <div class="card-body p-4">
+                        <!-- Nombre y precio -->
+                        <a asp-page="/Detalle" asp-route-id="@producto.Id" class="card-title text-base hover:text-primary transition-colors">
+                            @producto.Nombre
+                        </a>
+                        
+                        <div class="flex items-center justify-between mt-2">
+                            <span class="text-xl font-bold text-primary">@producto.Precio.ToString("C")</span>
+                            
+                            @if (producto.Stock > 0)
+                            {
+                                <span class="badge badge-success badge-outline badge-sm">En stock</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-error badge-outline badge-sm">Agotado</span>
+                            }
+                        </div>
+                        
+                        <!-- Acciones -->
+                        <div class="card-actions mt-4">
+                            <form method="post" asp-page-handler="AddToCart" class="w-full">
+                                <input type="hidden" name="productoId" value="@producto.Id" />
+                                <button type="submit" class="btn btn-primary btn-sm w-full" @(producto.Stock <= 0 ? "disabled" : "")>
+                                    <i class="fa-solid fa-cart-plus mr-1"></i>
+                                    Añadir al carrito
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="flex flex-col items-center justify-center py-16">
+            <i class="fa-solid fa-box-open text-6xl text-base-content/30 mb-4"></i>
+            <h2 class="text-xl font-semibold text-base-content/70">No se encontraron productos</h2>
+            <p class="text-base-content/50 mt-2">Intenta con otros filtros de búsqueda</p>
+            <a asp-page="/Index" class="btn btn-primary mt-4">Ver todos los productos</a>
+        </div>
+    }
 </div>
-
-<!-- Cards Section -->
-<div class="hero min-h-screen bg-base-200">
-    <div class="container mx-auto p-8">
-        <h2 class="text-3xl font-bold text-center mb-8">Componentes de ejemplo</h2>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- Card 1 -->
-            <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
-                <div class="card-body">
-                    <h2 class="card-title">Info</h2>
-                    <p>Componente de información con tema azul</p>
-                    <div class="card-actions justify-end">
-                        <button class="btn btn-info btn-sm">Ver más</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 2 -->
-            <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
-                <div class="card-body">
-                    <h2 class="card-title">Success</h2>
-                    <p>Operación completada exitosamente</p>
-                    <div class="card-actions justify-end">
-                        <button class="btn btn-success btn-sm">Continuar</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 3 -->
-            <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
-                <div class="card-body">
-                    <h2 class="card-title">Warning</h2>
-                    <p>Advertencia importante para el usuario</p>
-                    <div class="card-actions justify-end">
-                        <button class="btn btn-warning btn-sm">Atención</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 4 -->
-            <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
-                <div class="card-body">
-                    <h2 class="card-title">Error</h2>
-                    <p>Manejo de errores con estilo personalizado</p>
-                    <div class="card-actions justify-end">
-                        <button class="btn btn-error btn-sm">Revisar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Footer -->
-<footer class="footer footer-center p-10 bg-base-300 text-base-content">
-    <aside>
-        <p class="font-bold">PandaDaw &copy; 2026</p>
-        <p>Proyecto con Tailwind CSS + daisyUI</p>
-    </aside>
-</footer>
-
-@section Scripts {
-    <script>
-        let estrellaSeleccionada = 0;
-
-        function setEstrellas(val) {
-            estrellaSeleccionada = val;
-            document.querySelectorAll(".estrella").forEach(btn => {
-                const bVal = parseInt(btn.dataset.val);
-                btn.classList.toggle("text-warning", bVal <= val);
-                btn.classList.toggle("text-base-content/20", bVal > val);
-            });
-            const labels = ["", "1 estrella", "2 estrellas", "3 estrellas", "4 estrellas", "5 estrellas"];
-            document.getElementById("estrellaLabel").textContent = labels[val];
-        }
-
-        function resetFiltros() {
-            estrellaSeleccionada = 0;
-            document.querySelectorAll(".estrella").forEach(btn => {
-                btn.classList.add("text-warning");
-                btn.classList.remove("text-base-content/20");
-            });
-            document.getElementById("estrellaLabel").textContent = "Cualquiera";
-            document.getElementById("rangoSlider").value = 250;
-            document.getElementById("precioVal").textContent = "250 €";
-        }
-
-        function quitarFavorito(btn) {
-            btn.closest(".fav-item").remove();
-            const lista = document.getElementById("favDropdown");
-            const count = document.getElementById("favCount");
-            const total = lista.querySelectorAll(".fav-item").length;
-            count.textContent = total;
-        }
-
-        function quitarDeCarrito(btn) {
-            btn.closest(".fav-item").remove();
-            const lista = document.getElementById("carritoDropdown");
-            const badge = lista.closest(".dropdown-content").querySelector(".badge");
-            const total = lista.querySelectorAll(".fav-item").length;
-            badge.textContent = total;
-        }
-    </script>
-}
