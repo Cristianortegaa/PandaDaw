@@ -1,4 +1,4 @@
-﻿using CSharpFunctionalExtensions;
+﻿﻿using CSharpFunctionalExtensions;
 using PandaBack.Dtos.Favoritos;
 using PandaBack.Errors;
 using PandaBack.Models;
@@ -19,7 +19,7 @@ public class FavoritoService : IFavoritoService
         _productoRepository = productoRepository;
     }
 
-    public async Task<Result<IEnumerable<FavoritoResponseDto>, PandaError>> GetUserFavoritosAsync(long userId)
+    public async Task<Result<IEnumerable<FavoritoResponseDto>, PandaError>> GetUserFavoritosAsync(string userId)
     {
         var favoritos = await _repository.GetByUserIdAsync(userId);
         
@@ -28,7 +28,7 @@ public class FavoritoService : IFavoritoService
         return Result.Success<IEnumerable<FavoritoResponseDto>, PandaError>(response);
     }
 
-    public async Task<Result<FavoritoResponseDto, PandaError>> AddToFavoritosAsync(long userId, CreateFavoritoDto dto)
+    public async Task<Result<FavoritoResponseDto, PandaError>> AddToFavoritosAsync(string userId, CreateFavoritoDto dto)
     {
         var producto = await _productoRepository.GetByIdAsync(dto.ProductoId);
         
@@ -54,7 +54,7 @@ public class FavoritoService : IFavoritoService
         return Result.Success<FavoritoResponseDto, PandaError>(nuevoFavorito.ToDto());
     }
 
-    public async Task<UnitResult<PandaError>> RemoveFromFavoritosAsync(long id, long userId)
+    public async Task<UnitResult<PandaError>> RemoveFromFavoritosAsync(long id, string userId)
     {
         var favorito = await _repository.GetByIdAsync(id);
 

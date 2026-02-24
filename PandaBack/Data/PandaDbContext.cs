@@ -6,6 +6,8 @@ namespace PandaBack.Data;
 
 public class PandaDbContext : IdentityDbContext<User>
 {
+    public PandaDbContext(DbContextOptions<PandaDbContext> options) : base(options) { }
+
     public DbSet<Venta> Ventas => Set<Venta>();
     public DbSet<Carrito> Carritos => Set<Carrito>();
     

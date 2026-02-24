@@ -1,4 +1,4 @@
-﻿using CSharpFunctionalExtensions;
+﻿﻿using CSharpFunctionalExtensions;
 using PandaBack.Dtos.Carrito;
 using PandaBack.Errors;
 using PandaBack.Mappers;
@@ -18,7 +18,7 @@ public class CarritoService : ICarritoService
         _productoRepository = productoRepository;
     }
 
-    public async Task<Result<CarritoDto, PandaError>> GetCarritoByUserIdAsync(long userId)
+    public async Task<Result<CarritoDto, PandaError>> GetCarritoByUserIdAsync(string userId)
     {
         var carrito = await _carritoRepository.GetByUserIdAsync(userId);
 
@@ -36,7 +36,7 @@ public class CarritoService : ICarritoService
         return Result.Success<CarritoDto, PandaError>(carrito.ToDto());
     }
 
-    public async Task<Result<CarritoDto, PandaError>> AddLineaCarritoAsync(long userId, long productoId, int cantidad)
+    public async Task<Result<CarritoDto, PandaError>> AddLineaCarritoAsync(string userId, long productoId, int cantidad)
     {
         if (cantidad <= 0)
             return Result.Failure<CarritoDto, PandaError>(new BadRequestError("La cantidad debe ser mayor a 0"));
@@ -88,7 +88,7 @@ public class CarritoService : ICarritoService
         return Result.Success<CarritoDto, PandaError>(carrito.ToDto());
     }
 
-    public async Task<Result<CarritoDto, PandaError>> UpdateLineaCantidadAsync(long userId, long productoId, int cantidad)
+    public async Task<Result<CarritoDto, PandaError>> UpdateLineaCantidadAsync(string userId, long productoId, int cantidad)
     {
         if (cantidad <= 0)
             return Result.Failure<CarritoDto, PandaError>(new BadRequestError("La cantidad debe ser mayor a 0"));
@@ -119,7 +119,7 @@ public class CarritoService : ICarritoService
         return Result.Success<CarritoDto, PandaError>(carrito.ToDto());
     }
 
-    public async Task<Result<CarritoDto, PandaError>> RemoveLineaCarritoAsync(long userId, long productoId)
+    public async Task<Result<CarritoDto, PandaError>> RemoveLineaCarritoAsync(string userId, long productoId)
     {
         var carrito = await _carritoRepository.GetByUserIdAsync(userId);
 
@@ -138,7 +138,7 @@ public class CarritoService : ICarritoService
         return Result.Success<CarritoDto, PandaError>(carrito.ToDto());
     }
 
-    public async Task<UnitResult<PandaError>> VaciarCarritoAsync(long userId)
+    public async Task<UnitResult<PandaError>> VaciarCarritoAsync(string userId)
     {
         var carrito = await _carritoRepository.GetByUserIdAsync(userId);
 

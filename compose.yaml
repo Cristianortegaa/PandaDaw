@@ -1,13 +1,81 @@
 ﻿services:
-  pandadawrazor:
-    image: pandadawrazor
-    build:
-      context: .
-      dockerfile: PandaDawRazor/Dockerfile
 
+  # ── Base de datos PostgreSQL ──
+  postgres:
+    image: postgres:16-alpine
+    container_name: panda-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: panda
+      POSTGRES_PASSWORD: panda_secret
+      POSTGRES_DB: pandadb
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U panda -d pandadb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ── Cache Redis ──
+  redis:
+    image: redis:7-alpine
+    container_name: panda-redis
+    restart: unless-stopped
+    command: redis-server --requirepass cachepassword
+    # Sin mapeo de puertos externos: Redis solo se usa internamente
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "cachepassword", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ── Backend API (.NET 10) ──
   pandaback:
     image: pandaback
+    container_name: panda-back
     build:
       context: .
       dockerfile: PandaBack/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "5088:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=pandadb;Username=panda;Password=panda_secret"
+      ConnectionStrings__Redis: "redis:6379,password=cachepassword"
+      REDIS_CONNECTION: "redis:6379,password=cachepassword"
+      Jwt__Key: "EstaEsUnaClaveSuperSecretaYDebeSerLargaParaSeguridad2025"
+      Jwt__Issuer: "PandaBack"
+      Jwt__Audience: "PandaFront"
+      Jwt__ExpireInMinutes: "120"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
+  # ── Frontend Razor Pages (.NET 10) ──
+  pandadawrazor:
+    image: pandadawrazor
+    container_name: panda-razor
+    build:
+      context: .
+      dockerfile: PandaDawRazor/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "5062:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+    depends_on:
+      - pandaback
+
+volumes:
+  postgres_data:
+  redis_data:

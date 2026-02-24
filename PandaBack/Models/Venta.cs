@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PandaBack.Models;
@@ -20,7 +20,7 @@ public class Venta
     [Column(TypeName = "varchar(50)")]
     public EstadoPedido Estado { get; set; } = EstadoPedido.Pendiente;
     
-    public long UserId { get; set; } 
+    public string UserId { get; set; } = string.Empty; 
 
     [ForeignKey("UserId")]
     public virtual User? User { get; set; }

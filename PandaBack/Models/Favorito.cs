@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,7 +14,7 @@ public class Favorito
     
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     
-    public long UserId { get; set; }
+    public string UserId { get; set; } = string.Empty;
 
     [ForeignKey("UserId")]
     public virtual User? User { get; set; }
