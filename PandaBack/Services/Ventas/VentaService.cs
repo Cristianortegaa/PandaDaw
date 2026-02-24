@@ -1,4 +1,4 @@
-﻿﻿using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
 using PandaBack.Dtos.Ventas;
 using PandaBack.Errors;
 using PandaBack.Mappers;
