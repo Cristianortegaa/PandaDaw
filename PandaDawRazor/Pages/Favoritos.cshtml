@@ -5,105 +5,90 @@
     Layout = "_Layout";
 }
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- Header -->
-    <div class="flex items-center justify-between mb-10">
+    <div class="flex items-end justify-between mb-8">
         <div>
-            <div class="flex items-center gap-2 mb-2">
-                <span class="w-8 h-0.5 bg-error rounded-full"></span>
-                <p class="text-xs font-bold uppercase tracking-[0.2em] text-error/50">Colección</p>
-            </div>
-            <h1 class="text-3xl font-extrabold text-base-content tracking-tight flex items-center gap-3">
-                <i class="fa-solid fa-heart text-error/80"></i>
-                Mis Favoritos
+            <h1 class="text-2xl sm:text-3xl font-black tracking-tight flex items-center gap-2.5">
+                <i class="fa-solid fa-heart text-error/50 text-xl"></i>
+                Favoritos
             </h1>
-            <p class="text-base-content/40 mt-1.5 text-sm font-medium">
+            <p class="text-sm text-base-content/30 font-medium mt-1">
                 @Model.Favoritos.Count @(Model.Favoritos.Count == 1 ? "producto guardado" : "productos guardados")
             </p>
         </div>
-        <a asp-page="/Index" class="btn btn-ghost btn-sm rounded-2xl font-semibold text-xs text-base-content/45 gap-1.5">
-            <i class="fa-solid fa-arrow-left text-[10px]"></i>
-            Seguir comprando
+        <a asp-page="/Index" class="text-xs font-semibold text-base-content/30 hover:text-primary transition-colors flex items-center gap-1.5">
+            <i class="fa-solid fa-arrow-left text-[9px]"></i> Tienda
         </a>
     </div>
 
     @if (!Model.Favoritos.Any())
     {
-        <div class="card bg-white shadow-lg border-0 rounded-3xl">
-            <div class="card-body items-center text-center py-20">
-                <div class="w-24 h-24 rounded-3xl bg-gradient-to-br from-error/5 to-error/10 flex items-center justify-center mb-5">
-                    <i class="fa-regular fa-heart text-4xl text-error/30"></i>
-                </div>
-                <h2 class="text-xl font-extrabold text-base-content tracking-tight">No tienes favoritos</h2>
-                <p class="text-base-content/40 max-w-md text-sm mt-1 font-medium">
-                    Guarda tus productos favoritos haciendo clic en el corazón para encontrarlos fácilmente.
-                </p>
-                <a asp-page="/Index" class="btn btn-primary mt-6 rounded-2xl font-bold gap-2">
-                    <i class="fa-solid fa-bag-shopping text-sm"></i>
-                    Explorar productos
-                </a>
+        <div class="min-h-[50vh] flex flex-col items-center justify-center text-center">
+            <div class="w-20 h-20 rounded-2xl bg-error/5 flex items-center justify-center mb-5 animate-float">
+                <i class="fa-regular fa-heart text-3xl text-error/20"></i>
             </div>
+            <h2 class="text-xl font-black tracking-tight mb-2">Sin favoritos</h2>
+            <p class="text-base-content/30 text-sm max-w-sm mb-6">Guarda productos que te gusten tocando el corazón.</p>
+            <a asp-page="/Index" class="btn btn-primary btn-sm rounded-xl font-bold gap-2">
+                <i class="fa-solid fa-bag-shopping text-xs"></i> Explorar productos
+            </a>
         </div>
     }
     else
     {
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7">
+        <!-- Diseño: cards horizontales (lista) en desktop, grid en móvil -->
+        <div class="flex flex-col gap-3">
             @foreach (var favorito in Model.Favoritos)
             {
-                <div class="card bg-white shadow-md hover:shadow-xl border-0 overflow-hidden group rounded-3xl">
-                    <figure class="relative aspect-square bg-base-200/40 overflow-hidden card-img-overlay">
-                        <a asp-page="/Detalle" asp-route-id="@favorito.ProductoId" class="w-full h-full">
-                            @if (!string.IsNullOrEmpty(favorito.ProductoImagen))
-                            {
-                                <img src="@favorito.ProductoImagen" alt="@favorito.ProductoNombre" 
-                                     class="w-full h-full object-cover img-zoom" />
-                            }
-                            else
-                            {
-                                <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/4 to-secondary/4">
-                                    <i class="fa-solid fa-box text-5xl text-primary/12"></i>
+                <div class="flex gap-4 p-4 rounded-2xl bg-base-300/3 border border-base-300/8 hover:border-primary/10 transition-all group">
+                    <!-- Imagen -->
+                    <a asp-page="/Detalle" asp-route-id="@favorito.ProductoId" class="w-24 h-24 sm:w-32 sm:h-32 rounded-xl bg-base-200/20 shrink-0 overflow-hidden border border-base-300/8">
+                        @if (!string.IsNullOrEmpty(favorito.ProductoImagen))
+                        {
+                            <img src="@favorito.ProductoImagen" alt="@favorito.ProductoNombre"
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        }
+                        else
+                        {
+                            <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/3 to-secondary/3">
+                                <i class="fa-solid fa-box text-2xl text-primary/8"></i>
+                            </div>
+                        }
+                    </a>
+
+                    <!-- Info -->
+                    <div class="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+                        <div>
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="min-w-0">
+                                    <span class="text-[9px] font-bold uppercase tracking-widest text-primary/40 mb-0.5 block">@favorito.ProductoCategoria</span>
+                                    <a asp-page="/Detalle" asp-route-id="@favorito.ProductoId"
+                                       class="font-bold text-sm sm:text-base text-base-content/75 hover:text-primary transition-colors line-clamp-2 leading-snug">
+                                        @favorito.ProductoNombre
+                                    </a>
                                 </div>
-                            }
-                        </a>
-                        <form method="post" asp-page-handler="RemoveFavorito" asp-route-favoritoId="@favorito.Id" 
-                              class="absolute top-3.5 right-3.5">
-                            <button type="submit" class="btn btn-circle btn-sm shadow-lg bg-white/95 backdrop-blur-md border-0 hover:bg-error hover:text-white transition-all duration-300 hover:scale-110">
-                                <i class="fa-solid fa-heart text-sm text-error"></i>
-                            </button>
-                        </form>
-                        <span class="badge badge-primary badge-sm absolute top-3.5 left-3.5 shadow-lg font-bold text-[10px] uppercase tracking-wider rounded-xl px-3">@favorito.ProductoCategoria</span>
-                    </figure>
-                    <div class="card-body p-5">
-                        <a asp-page="/Detalle" asp-route-id="@favorito.ProductoId" 
-                           class="font-bold text-[15px] text-base-content hover:text-primary transition-colors duration-200 line-clamp-2 min-h-11 leading-snug">
-                            @favorito.ProductoNombre
-                        </a>
-                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-base-300/25">
-                            <span class="text-xl font-extrabold text-primary tracking-tight">
+                                <form method="post" asp-page-handler="RemoveFavorito" asp-route-favoritoId="@favorito.Id" class="shrink-0">
+                                    <button type="submit" class="w-8 h-8 rounded-lg flex items-center justify-center text-error/50 hover:text-error hover:bg-error/8 transition-all" title="Eliminar">
+                                        <i class="fa-solid fa-heart text-sm"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between mt-3">
+                            <span class="text-lg font-black text-primary price-display tracking-tight">
                                 @favorito.ProductoPrecio.ToString("C", new System.Globalization.CultureInfo("es-ES"))
                             </span>
                             <form method="post" asp-page-handler="AddToCart" asp-route-productoId="@favorito.ProductoId">
-                                <button type="submit" class="btn btn-primary btn-sm rounded-2xl font-bold text-xs gap-1.5 shadow-md">
-                                    <i class="fa-solid fa-cart-plus text-xs"></i>
+                                <button type="submit" class="btn btn-primary btn-sm rounded-xl font-bold text-[11px] gap-1.5 h-9 min-h-0 px-4">
+                                    <i class="fa-solid fa-cart-plus text-[10px]"></i> Añadir
                                 </button>
                             </form>
                         </div>
                     </div>
                 </div>
             }
-        </div>
-
-        <div class="card bg-white shadow-sm mt-8 rounded-2xl border-0">
-            <div class="card-body py-4 flex-row items-center justify-between">
-                <p class="text-base-content/35 text-xs font-medium flex items-center gap-1.5">
-                    <i class="fa-solid fa-info-circle text-[10px]"></i>
-                    Haz clic en el corazón para eliminar de favoritos
-                </p>
-                <a asp-page="/Index" class="btn btn-outline btn-sm rounded-2xl text-xs font-semibold gap-1.5">
-                    <i class="fa-solid fa-plus text-[10px]"></i>
-                    Añadir más
-                </a>
-            </div>
         </div>
     }
 </div>

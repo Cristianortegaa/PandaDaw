@@ -1,62 +1,89 @@
-﻿@page
+@page
 @model PandaDawRazor.Pages.LoginModel
 @{
     ViewData["Title"] = "Iniciar sesión";
     Layout = "_Layout";
 }
 
-<div class="min-h-[calc(100vh-200px)] flex items-center justify-center p-6 relative">
-    <!-- Decoración de fondo -->
-    <div class="absolute inset-0 overflow-hidden pointer-events-none">
-        <div class="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-primary/3 blur-3xl"></div>
-        <div class="absolute -bottom-40 -left-40 w-96 h-96 rounded-full bg-secondary/3 blur-3xl"></div>
+<div class="min-h-[calc(100vh-120px)] flex">
+    <!-- Panel izquierdo: branding (solo desktop) -->
+    <div class="hidden lg:flex lg:w-1/2 relative overflow-hidden items-center justify-center p-12">
+        <div class="absolute inset-0 bg-gradient-to-br from-primary/8 via-base-100 to-secondary/5"></div>
+        <div class="absolute top-20 left-10 w-72 h-72 rounded-full bg-primary/5 blur-[100px]"></div>
+        <div class="absolute bottom-20 right-10 w-56 h-56 rounded-full bg-accent/4 blur-[80px]"></div>
+        
+        <div class="relative z-10 max-w-md text-center">
+            <div class="w-20 h-20 rounded-3xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-glow mx-auto mb-8 animate-float">
+                <i class="fa-solid fa-paw text-4xl text-base-100"></i>
+            </div>
+            <h2 class="text-4xl font-black tracking-tighter mb-4">
+                <span class="text-gradient-emerald">PandaDaw</span>
+            </h2>
+            <p class="text-base-content/30 text-sm font-medium leading-relaxed mb-10">
+                Tu tienda de tecnología premium. Los mejores productos al mejor precio con envío garantizado.
+            </p>
+            <div class="grid grid-cols-3 gap-4">
+                <div class="bg-base-300/5 rounded-xl p-4 border border-base-300/8">
+                    <i class="fa-solid fa-truck-fast text-primary/50 text-lg mb-2"></i>
+                    <p class="text-[10px] font-bold text-base-content/30 uppercase tracking-wider">Envío gratis</p>
+                </div>
+                <div class="bg-base-300/5 rounded-xl p-4 border border-base-300/8">
+                    <i class="fa-solid fa-shield-halved text-primary/50 text-lg mb-2"></i>
+                    <p class="text-[10px] font-bold text-base-content/30 uppercase tracking-wider">Pago seguro</p>
+                </div>
+                <div class="bg-base-300/5 rounded-xl p-4 border border-base-300/8">
+                    <i class="fa-solid fa-rotate-left text-primary/50 text-lg mb-2"></i>
+                    <p class="text-[10px] font-bold text-base-content/30 uppercase tracking-wider">Devolución</p>
+                </div>
+            </div>
+        </div>
     </div>
-    
-    <div class="card w-full max-w-md bg-white shadow-xl border-0 rounded-3xl relative z-10">
-        <div class="card-body gap-7 p-9">
-            <div class="flex flex-col items-center gap-4 text-center">
-                <div class="w-16 h-16 rounded-3xl bg-gradient-to-br from-primary via-primary to-secondary flex items-center justify-center shadow-xl">
-                    <i class="fa-solid fa-paw text-2xl text-white"></i>
-                </div>
-                <div>
-                    <h1 class="text-2xl font-extrabold text-base-content tracking-tight">Bienvenido de nuevo</h1>
-                    <p class="text-sm text-base-content/45 mt-1">Inicia sesión para continuar</p>
-                </div>
+
+    <!-- Panel derecho: formulario -->
+    <div class="flex-1 flex items-center justify-center p-6 sm:p-10">
+        <div class="w-full max-w-sm">
+            <!-- Logo móvil -->
+            <div class="lg:hidden flex items-center gap-2.5 mb-10">
+                <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-glow">
+                    <i class="fa-solid fa-paw text-base-100 text-sm"></i>
+                </span>
+                <span class="text-lg font-black tracking-tight text-gradient-emerald">PandaDaw</span>
+            </div>
+
+            <div class="mb-8">
+                <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-base-content mb-2">Bienvenido de nuevo</h1>
+                <p class="text-sm text-base-content/30 font-medium">Introduce tus datos para acceder</p>
             </div>
 
             @if (!string.IsNullOrEmpty(Model.ErrorMessage))
             {
-                <div class="alert alert-error shadow-lg rounded-2xl">
-                    <i class="fa-solid fa-circle-exclamation"></i>
-                    <span>@Model.ErrorMessage</span>
+                <div class="alert alert-error shadow-lg rounded-xl mb-6">
+                    <i class="fa-solid fa-circle-exclamation text-sm"></i>
+                    <span class="text-sm">@Model.ErrorMessage</span>
                 </div>
             }
 
             <form method="post" class="flex flex-col gap-5">
                 @Html.AntiForgeryToken()
 
-                <div class="form-control gap-2">
-                    <label class="label py-0" for="loginEmail">
-                        <span class="label-text font-semibold text-xs uppercase tracking-wider text-base-content/60">Correo electrónico</span>
-                    </label>
-                    <label class="input input-bordered flex items-center gap-3 focus-within:input-primary rounded-2xl h-12 bg-base-200/30">
-                        <i class="fa-solid fa-envelope text-base-content/30 text-sm"></i>
+                <div class="form-control gap-1.5">
+                    <label class="text-[11px] font-bold uppercase tracking-widest text-base-content/35" for="loginEmail">Correo electrónico</label>
+                    <label class="input input-bordered flex items-center gap-3 rounded-xl h-12 border-base-300/15 focus-within:border-primary/30">
+                        <i class="fa-solid fa-envelope text-primary/30 text-xs"></i>
                         <input asp-for="Input.Email" id="loginEmail" type="email" class="grow text-sm"
                                placeholder="tu@correo.com" autocomplete="email" required autofocus />
                     </label>
                     <span asp-validation-for="Input.Email" class="text-error text-xs"></span>
                 </div>
 
-                <div class="form-control gap-2">
-                    <label class="label py-0" for="loginPassword">
-                        <span class="label-text font-semibold text-xs uppercase tracking-wider text-base-content/60">Contraseña</span>
-                    </label>
-                    <label class="input input-bordered flex items-center gap-3 focus-within:input-primary rounded-2xl h-12 bg-base-200/30">
-                        <i class="fa-solid fa-lock text-base-content/30 text-sm"></i>
+                <div class="form-control gap-1.5">
+                    <label class="text-[11px] font-bold uppercase tracking-widest text-base-content/35" for="loginPassword">Contraseña</label>
+                    <label class="input input-bordered flex items-center gap-3 rounded-xl h-12 border-base-300/15 focus-within:border-primary/30">
+                        <i class="fa-solid fa-lock text-primary/30 text-xs"></i>
                         <input asp-for="Input.Password" id="loginPassword" type="password" class="grow text-sm"
                                placeholder="••••••••" autocomplete="current-password" required />
                         <button type="button" onclick="togglePassword('loginPassword', 'eyeIconLogin')"
-                                class="btn btn-ghost btn-xs btn-circle text-base-content/30 hover:text-base-content"
+                                class="btn btn-ghost btn-xs btn-circle text-base-content/20 hover:text-primary"
                                 tabindex="-1" aria-label="Mostrar/ocultar contraseña">
                             <i id="eyeIconLogin" class="fa-solid fa-eye text-xs"></i>
                         </button>
@@ -64,17 +91,15 @@
                     <span asp-validation-for="Input.Password" class="text-error text-xs"></span>
                 </div>
 
-                <button type="submit" class="btn btn-primary w-full mt-1 rounded-2xl font-bold h-12 text-sm">
+                <button type="submit" class="btn btn-primary w-full rounded-xl font-bold h-12 text-sm tracking-wide mt-2">
                     Iniciar sesión
                     <i class="fa-solid fa-arrow-right ml-1 text-xs"></i>
                 </button>
             </form>
 
-            <div class="divider text-base-content/25 text-xs font-medium my-0">o</div>
-
-            <p class="text-center text-sm text-base-content/45">
+            <p class="text-center text-sm text-base-content/30 mt-8">
                 ¿No tienes cuenta?
-                <a asp-page="/Register" class="link link-primary font-bold no-underline hover:underline">Regístrate gratis</a>
+                <a asp-page="/Register" class="text-primary font-bold hover:text-primary/80 transition-colors">Regístrate</a>
             </p>
         </div>
     </div>

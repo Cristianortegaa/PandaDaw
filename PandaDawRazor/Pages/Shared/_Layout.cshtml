@@ -1,133 +1,303 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es" data-theme="pandadaw">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewData["Title"] - PandaDaw</title>
+    <script>!function(){var t=localStorage.getItem('pandadaw-theme')||'pandadaw';document.documentElement.setAttribute('data-theme',t)}()</script>
     <link rel="stylesheet" href="~/css/output.css" asp-append-version="true"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..800&display=swap" rel="stylesheet">
-    <style>body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }</style>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="min-h-screen flex flex-col">
-    <!-- Barra decorativa gradiente superior -->
-    <div class="h-0.5 bg-gradient-to-r from-primary via-secondary to-accent"></div>
+<body class="min-h-screen flex flex-col relative z-10">
+    @{ var favCount = (int)(ViewData["FavCount"] ?? 0); var cartCount = (int)(ViewData["CartCount"] ?? 0); }
+    <!-- Barra superior animada -->
+    <div class="top-bar-gradient"></div>
 
     <!-- Navbar -->
-    <nav class="navbar bg-white/80 backdrop-blur-2xl border-b border-base-300/40 px-4 lg:px-10 sticky top-0 z-50 shadow-sm min-h-[4rem]">
-        <!-- Logo -->
-        <div class="flex-none">
-            <a asp-page="/Index" class="flex items-center gap-3 group">
-                <span class="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary via-primary to-secondary flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                    <i class="fa-solid fa-paw text-white text-base"></i>
+    <nav class="navbar navbar-dark sticky top-0 z-50 min-h-0">
+        <div class="max-w-7xl mx-auto w-full px-4 lg:px-6 flex items-center h-16">
+            <!-- Logo -->
+            <a asp-page="/Index" class="flex items-center gap-2.5 group shrink-0">
+                <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-glow group-hover:scale-110 transition-transform duration-300">
+                    <i class="fa-solid fa-paw text-base-100 text-sm"></i>
                 </span>
-                <span class="text-xl font-extrabold tracking-tight text-gradient-brand hidden sm:inline">PandaDaw</span>
-            </a>
-        </div>
-
-        <!-- Buscador -->
-        <div class="flex-1 flex justify-center px-6">
-            <form method="get" asp-page="/Index" class="w-full max-w-xl">
-                <div class="relative group">
-                    <input type="text" name="buscar" placeholder="Buscar productos..." 
-                           class="input input-bordered w-full pl-11 pr-4 bg-base-200/50 focus:bg-white border-base-300/50 rounded-2xl h-11 text-sm placeholder:text-base-content/30 transition-all duration-300" />
-                    <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-base-content/30 text-sm group-focus-within:text-primary transition-colors duration-200"></i>
-                </div>
-            </form>
-        </div>
-
-        <!-- Acciones derecha -->
-        <div class="flex-none flex items-center gap-1.5">
-            <a asp-page="/Favoritos" class="btn btn-ghost btn-circle btn-sm hover:bg-error/8 transition-all duration-200" title="Favoritos">
-                <i class="fa-regular fa-heart text-base text-base-content/50 hover:text-error"></i>
-            </a>
-            <a asp-page="/Carrito" class="btn btn-ghost btn-circle btn-sm hover:bg-primary/8 transition-all duration-200" title="Carrito">
-                <i class="fa-solid fa-bag-shopping text-base text-base-content/50"></i>
+                <span class="text-lg font-black tracking-tight text-gradient-emerald hidden sm:block">PandaDaw</span>
             </a>
 
-            @if (User.Identity?.IsAuthenticated == true)
-            {
-                <div class="dropdown dropdown-end ml-2">
-                    <button tabindex="0" class="btn btn-ghost btn-circle avatar">
-                        <div class="w-9 rounded-full ring-2 ring-primary/25 ring-offset-base-100 ring-offset-2">
-                            <img src="https://api.dicebear.com/7.x/initials/svg?seed=@Context.Session.GetString("UserName")&backgroundColor=166534&textColor=ffffff" alt="Avatar" />
-                        </div>
-                    </button>
-                    <ul tabindex="0" class="dropdown-content menu bg-white rounded-2xl z-50 w-60 p-3 shadow-xl border border-base-300/40 mt-3">
-                        <li class="px-3 py-3 mb-1.5">
-                            <div class="flex flex-col gap-0.5 hover:bg-transparent cursor-default p-0">
-                                <span class="font-bold text-sm text-base-content">@Context.Session.GetString("UserName")</span>
-                                <span class="text-xs text-base-content/45">Cuenta personal</span>
-                            </div>
-                        </li>
-                        <div class="h-px bg-base-300/40 mx-2 mb-1.5"></div>
-                        @if (Context.Session.GetString("UserRole") == "Admin")
-                        {
-                            <li><a asp-page="/AdminPanel" class="rounded-xl text-sm py-2.5"><i class="fa-solid fa-shield-halved mr-2.5 text-primary/60 text-xs w-4"></i>Panel Admin</a></li>
-                        }
-                        <li><a asp-page="/Pedidos" class="rounded-xl text-sm py-2.5"><i class="fa-solid fa-box mr-2.5 text-primary/60 text-xs w-4"></i>Mis Pedidos</a></li>
-                        <li><a asp-page="/Favoritos" class="rounded-xl text-sm py-2.5"><i class="fa-solid fa-heart mr-2.5 text-error/50 text-xs w-4"></i>Favoritos</a></li>
-                        <div class="h-px bg-base-300/40 mx-2 my-1.5"></div>
-                        <li>
-                            <a asp-page="/Logout" class="text-error/80 hover:text-error rounded-xl text-sm py-2.5">
-                                <i class="fa-solid fa-right-from-bracket mr-2.5 text-xs w-4"></i>Cerrar sesión
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            }
-            else
-            {
-                <a asp-page="/Login" class="btn btn-primary btn-sm ml-2 rounded-xl shadow-md font-semibold gap-1.5">
-                    <i class="fa-solid fa-right-to-bracket text-xs"></i>
-                    Entrar
+            <!-- Nav Links centrados -->
+            <div class="hidden md:flex items-center gap-1 mx-auto">
+                <a asp-page="/Index" class="btn btn-ghost btn-sm rounded-xl text-xs font-semibold text-base-content/50 hover:text-primary gap-1.5 px-4">
+                    <i class="fa-solid fa-store text-[10px]"></i> Tienda
                 </a>
-            }
+                <a asp-page="/Favoritos" class="btn btn-ghost btn-sm rounded-xl text-xs font-semibold text-base-content/50 hover:text-error gap-1.5 px-4 relative" id="nav-fav-link">
+                    <i class="fa-solid fa-heart text-[10px]"></i> Favoritos
+                    @if (favCount > 0)
+                    {
+                        <span class="absolute -top-1 -right-1 w-4.5 h-4.5 rounded-full bg-error text-[9px] font-black text-white flex items-center justify-center shadow-md" id="fav-badge-desktop">@favCount</span>
+                    }
+                </a>
+                <a asp-page="/Pedidos" class="btn btn-ghost btn-sm rounded-xl text-xs font-semibold text-base-content/50 hover:text-primary gap-1.5 px-4">
+                    <i class="fa-solid fa-box text-[10px]"></i> Pedidos
+                </a>
+                @if (Context.Session.GetString("UserRole") == "Admin")
+                {
+                    <a asp-page="/AdminPanel" class="btn btn-ghost btn-sm rounded-xl text-xs font-semibold text-base-content/50 hover:text-accent gap-1.5 px-4">
+                        <i class="fa-solid fa-shield text-[10px]"></i> Admin
+                    </a>
+                }
+            </div>
+
+            <!-- Acciones derecha -->
+            <div class="flex items-center gap-1.5 shrink-0 ml-auto md:ml-0">
+                <!-- Toggle Tema -->
+                <button onclick="toggleTheme()" class="btn btn-ghost btn-sm btn-circle theme-toggle text-base-content/40 hover:text-primary" title="Cambiar tema">
+                    <i class="fa-solid fa-sun text-sm sun-icon"></i>
+                    <i class="fa-solid fa-moon text-sm moon-icon"></i>
+                </button>
+
+                <!-- Búsqueda compacta -->
+                <div class="dropdown dropdown-end">
+                    <button tabindex="0" class="btn btn-ghost btn-sm btn-circle text-base-content/40 hover:text-primary">
+                        <i class="fa-solid fa-search text-sm"></i>
+                    </button>
+                    <div tabindex="0" class="dropdown-content mt-3 p-4 z-50 w-80 rounded-2xl">
+                        <form method="get" asp-page="/Index">
+                            <input type="text" name="buscar" placeholder="Buscar productos..."
+                                   class="input input-bordered w-full rounded-xl h-10 text-sm border-base-300/20 focus:border-primary/40 placeholder:text-base-content/25" autofocus />
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Carrito con badge -->
+                <a asp-page="/Carrito" id="cart-icon" class="btn btn-ghost btn-sm btn-circle text-base-content/40 hover:text-primary relative" title="Carrito">
+                    <i class="fa-solid fa-bag-shopping text-sm"></i>
+                    @if (cartCount > 0)
+                    {
+                        <span class="absolute -top-1 -right-1 w-4.5 h-4.5 rounded-full bg-primary text-[9px] font-black text-primary-content flex items-center justify-center shadow-md cart-badge-pop" id="cart-badge">@cartCount</span>
+                    }
+                </a>
+
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <!-- Menú móvil -->
+                    <div class="dropdown dropdown-end md:hidden">
+                        <button tabindex="0" class="btn btn-ghost btn-sm btn-circle text-base-content/40">
+                            <i class="fa-solid fa-bars text-sm"></i>
+                        </button>
+                        <ul tabindex="0" class="dropdown-content menu rounded-2xl z-50 w-56 p-2 shadow-xl mt-3">
+                            <li><a asp-page="/Index" class="rounded-xl text-sm py-2"><i class="fa-solid fa-store mr-2 text-xs w-4 text-primary/50"></i>Tienda</a></li>
+                            <li>
+                                <a asp-page="/Favoritos" class="rounded-xl text-sm py-2 relative">
+                                    <i class="fa-solid fa-heart mr-2 text-xs w-4 text-error/50"></i>Favoritos
+                                    @if (favCount > 0)
+                                    {
+                                        <span class="ml-auto w-5 h-5 rounded-full bg-error text-[9px] font-black text-white flex items-center justify-center">@favCount</span>
+                                    }
+                                </a>
+                            </li>
+                            <li><a asp-page="/Pedidos" class="rounded-xl text-sm py-2"><i class="fa-solid fa-box mr-2 text-xs w-4 text-primary/50"></i>Pedidos</a></li>
+                            @if (Context.Session.GetString("UserRole") == "Admin")
+                            {
+                                <li><a asp-page="/AdminPanel" class="rounded-xl text-sm py-2"><i class="fa-solid fa-shield mr-2 text-xs w-4 text-accent/50"></i>Admin</a></li>
+                            }
+                            <div class="h-px bg-base-300/20 mx-2 my-1"></div>
+                            <li>
+                                <button onclick="openLogoutModal()" class="text-error/70 hover:text-error rounded-xl text-sm py-2 w-full text-left">
+                                    <i class="fa-solid fa-right-from-bracket mr-2 text-xs w-4"></i>Salir
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Avatar desktop -->
+                    <div class="dropdown dropdown-end hidden md:block">
+                        <button tabindex="0" class="btn btn-ghost btn-circle btn-sm avatar">
+                            <div class="w-8 rounded-full ring-2 ring-primary/20 ring-offset-base-100 ring-offset-1">
+                                <img src="https://api.dicebear.com/7.x/initials/svg?seed=@Context.Session.GetString("UserName")&backgroundColor=10b981&textColor=ffffff" alt="Avatar" />
+                            </div>
+                        </button>
+                        <ul tabindex="0" class="dropdown-content menu rounded-2xl z-50 w-56 p-2 shadow-xl mt-3">
+                            <li class="px-3 py-2 mb-1">
+                                <div class="flex flex-col gap-0 hover:bg-transparent cursor-default p-0">
+                                    <span class="font-bold text-sm">@Context.Session.GetString("UserName")</span>
+                                    <span class="text-[10px] text-primary/50 font-medium">Cuenta personal</span>
+                                </div>
+                            </li>
+                            <div class="h-px bg-base-300/20 mx-2 mb-1"></div>
+                            <li>
+                                <button onclick="openLogoutModal()" class="text-error/70 hover:text-error hover:bg-error/10 rounded-xl text-sm py-2 w-full text-left">
+                                    <i class="fa-solid fa-right-from-bracket mr-2 text-xs w-4"></i>Cerrar sesión
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                }
+                else
+                {
+                    <a asp-page="/Login" class="btn btn-primary btn-sm rounded-xl shadow-md font-bold gap-1.5 text-[11px] px-4 h-8 min-h-0">
+                        Entrar
+                    </a>
+                }
+            </div>
         </div>
     </nav>
 
+    <!-- Modal Logout -->
+    <dialog id="logoutModal" class="modal modal-bottom sm:modal-middle">
+        <div class="modal-box max-w-sm rounded-3xl border border-base-300/15">
+            <div class="flex flex-col items-center text-center p-2">
+                <div class="w-14 h-14 rounded-full bg-error/10 flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-right-from-bracket text-error text-xl"></i>
+                </div>
+                <h3 class="font-black text-lg tracking-tight mb-2">¿Cerrar sesión?</h3>
+                <p class="text-sm text-base-content/50 font-medium mb-6">Tu sesión actual se cerrará y volverás al inicio.</p>
+                <div class="flex gap-3 justify-center">
+                    <button onclick="closeLogoutModal()" class="btn btn-ghost btn-sm rounded-xl font-bold text-xs px-6 h-10 min-h-0">
+                        Cancelar
+                    </button>
+                    <a asp-page="/Logout" class="btn btn-error btn-sm rounded-xl font-bold text-xs px-6 h-10 min-h-0 gap-2 text-white">
+                        <i class="fa-solid fa-right-from-bracket text-[10px]"></i>
+                        Cerrar sesión
+                    </a>
+                </div>
+            </div>
+        </div>
+        <form method="dialog" class="modal-backdrop">
+            <button>close</button>
+        </form>
+    </dialog>
+
     <!-- Contenido principal -->
-    <main class="flex-1">
+    <main class="flex-1 relative z-10">
         @RenderBody()
     </main>
 
     <!-- Footer -->
-    <footer class="border-t border-base-300/40 bg-gradient-to-b from-white to-base-200/80">
-        <div class="max-w-7xl mx-auto px-6 py-12">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-                <!-- Brand -->
-                <div class="flex items-center gap-3">
-                    <span class="w-11 h-11 rounded-2xl bg-gradient-to-br from-primary via-primary to-secondary flex items-center justify-center shadow-lg">
-                        <i class="fa-solid fa-paw text-white text-base"></i>
+    <footer class="relative z-10 border-t border-base-300/10 mt-20">
+        <div class="max-w-7xl mx-auto px-6 py-10">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <a asp-page="/Index" class="flex items-center gap-2">
+                    <span class="w-7 h-7 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+                        <i class="fa-solid fa-paw text-base-100 text-[10px]"></i>
                     </span>
-                    <div>
-                        <p class="font-extrabold text-base-content tracking-tight text-lg">PandaDaw</p>
-                        <p class="text-xs text-base-content/40 font-medium">Tu tienda tech premium</p>
-                    </div>
+                    <span class="font-bold text-sm text-gradient-emerald">PandaDaw</span>
+                </a>
+                <div class="flex items-center gap-4">
+                    <a href="#" class="text-base-content/20 hover:text-primary text-xs transition-colors"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="text-base-content/20 hover:text-primary text-xs transition-colors"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#" class="text-base-content/20 hover:text-primary text-xs transition-colors"><i class="fa-brands fa-github"></i></a>
                 </div>
-                <!-- Social -->
-                <div class="flex items-center justify-center gap-4">
-                    <a href="#" class="w-9 h-9 rounded-xl bg-base-200/80 flex items-center justify-center text-base-content/40 hover:bg-primary hover:text-white transition-all duration-300">
-                        <i class="fa-brands fa-instagram text-sm"></i>
-                    </a>
-                    <a href="#" class="w-9 h-9 rounded-xl bg-base-200/80 flex items-center justify-center text-base-content/40 hover:bg-primary hover:text-white transition-all duration-300">
-                        <i class="fa-brands fa-twitter text-sm"></i>
-                    </a>
-                    <a href="#" class="w-9 h-9 rounded-xl bg-base-200/80 flex items-center justify-center text-base-content/40 hover:bg-primary hover:text-white transition-all duration-300">
-                        <i class="fa-brands fa-github text-sm"></i>
-                    </a>
-                    <a href="#" class="w-9 h-9 rounded-xl bg-base-200/80 flex items-center justify-center text-base-content/40 hover:bg-primary hover:text-white transition-all duration-300">
-                        <i class="fa-brands fa-youtube text-sm"></i>
-                    </a>
-                </div>
-                <!-- Copyright -->
-                <p class="text-xs text-base-content/35 text-right font-medium">&copy; 2025 PandaDaw. Todos los derechos reservados.</p>
+                <p class="text-[10px] text-base-content/20 font-medium">&copy; 2026 PandaDaw</p>
             </div>
         </div>
     </footer>
 
     @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        // ========================================
+        //  THEME TOGGLE (vanilla JS)
+        // ========================================
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            const next = current === 'pandadaw' ? 'pandadaw-light' : 'pandadaw';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('pandadaw-theme', next);
+        }
+
+        // ========================================
+        //  FLY-TO-CART (CSS transition simple)
+        // ========================================
+        function findProductImage(el) {
+            let node = el;
+            for (let i = 0; i < 10; i++) {
+                node = node.parentElement;
+                if (!node) break;
+                const img = node.querySelector('img[src]:not([src*="dicebear"]):not([src*="initials"])');
+                if (img && img.naturalWidth > 0) return img;
+            }
+            return null;
+        }
+
+        function flyToCart(imgSrc, startRect) {
+            const cartEl = document.getElementById('cart-icon');
+            if (!cartEl) return;
+            const cartRect = cartEl.getBoundingClientRect();
+
+            const flyImg = document.createElement('img');
+            flyImg.src = imgSrc;
+            Object.assign(flyImg.style, {
+                position: 'fixed', zIndex: '99999', objectFit: 'cover',
+                borderRadius: '16px', pointerEvents: 'none',
+                top: startRect.top + 'px', left: startRect.left + 'px',
+                width: startRect.width + 'px', height: startRect.height + 'px',
+                boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
+                transition: 'all 0.6s cubic-bezier(0.22,0.61,0.36,1)'
+            });
+            document.body.appendChild(flyImg);
+
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    Object.assign(flyImg.style, {
+                        top: (cartRect.top + cartRect.height / 2 - 14) + 'px',
+                        left: (cartRect.left + cartRect.width / 2 - 14) + 'px',
+                        width: '28px', height: '28px',
+                        borderRadius: '50%', opacity: '0.5'
+                    });
+                });
+            });
+
+            flyImg.addEventListener('transitionend', () => {
+                flyImg.remove();
+                // Cart bounce
+                cartEl.style.transition = 'transform 0.3s cubic-bezier(0.22,0.61,0.36,1)';
+                cartEl.style.transform = 'scale(1.3)';
+                setTimeout(() => { cartEl.style.transform = 'scale(1)'; }, 200);
+                // Badge pop
+                const badge = document.getElementById('cart-badge');
+                if (badge) { badge.classList.remove('cart-badge-pop'); void badge.offsetWidth; badge.classList.add('cart-badge-pop'); }
+            }, { once: true });
+        }
+
+        document.addEventListener('submit', function (e) {
+            const form = e.target;
+            if (!form || !form.action) return;
+
+            const isAddToCart = form.action.includes('handler=AddToCart') ||
+                form.action.includes('Handler=AddToCart') ||
+                form.querySelector('button[formaction*="AddToCart"]') ||
+                (form.method === 'post' && form.querySelector('button .fa-cart-plus, button .fa-plus'));
+
+            if (!isAddToCart) return;
+            if (form.dataset.flyDone === '1') { form.dataset.flyDone = '0'; return; }
+
+            const img = findProductImage(form);
+            if (!img) return;
+
+            e.preventDefault();
+            const rect = img.getBoundingClientRect();
+            flyToCart(img.src, rect);
+
+            setTimeout(() => {
+                form.dataset.flyDone = '1';
+                form.requestSubmit ? form.requestSubmit() : form.submit();
+            }, 700);
+        });
+
+        // ========================================
+        //  LOGOUT MODAL (dialog nativo)
+        // ========================================
+        function openLogoutModal() {
+            document.getElementById('logoutModal').showModal();
+        }
+
+        function closeLogoutModal() {
+            document.getElementById('logoutModal').close();
+        }
+    </script>
 </body>
 </html>
