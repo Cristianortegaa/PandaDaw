@@ -11,13 +11,8 @@ using PandaBack.Services.Factura;
 using PandaBack.Services.Stripe;
 using PandaBack.Repository;
 using PandaDawRazor.Filters;
-using PandaDawRazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Cargar variables de entorno desde .env (el archivo queda fuera del repo)
-PandaBack.config.DotEnvLoader.Load(Path.Combine(Directory.GetCurrentDirectory(), "..", ".env"));
-builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddRazorPages(options =>
 {
