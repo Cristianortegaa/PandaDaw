@@ -1,4 +1,4 @@
-﻿using Moq;
+﻿﻿using Moq;
 using PandaBack.Services;
 using PandaBack.Models;
 using PandaBack.Repositories;
@@ -47,7 +47,7 @@ namespace Tests.Services
         public async Task ObtenerCarrito_SiNoExiste_DebeCrearUnoVacio()
         {
             // PREPARAR
-            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync((Carrito)null);
+            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync((Carrito)null!);
 
             // ACTUAR
             var resultado = await _service.GetCarritoByUserIdAsync(TestUserId);

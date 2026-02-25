@@ -1,4 +1,4 @@
-﻿using Moq;
+﻿﻿using Moq;
 using PandaBack.Services;
 using PandaBack.Models;
 using PandaBack.Repositories;
@@ -44,7 +44,7 @@ namespace Tests.Services
             var dto = new CreateFavoritoDto { ProductoId = 99 }; 
             string userId = "test-user-id";
             
-            _repoProductosFalso.Setup(r => r.GetByIdAsync(dto.ProductoId)).ReturnsAsync((Producto)null);
+            _repoProductosFalso.Setup(r => r.GetByIdAsync(dto.ProductoId)).ReturnsAsync((Producto)null!);
 
             var resultado = await _service.AddToFavoritosAsync(userId, dto);
 
