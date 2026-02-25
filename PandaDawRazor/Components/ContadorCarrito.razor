@@ -1,0 +1,56 @@
+@using PandaDawRazor.Services
+@inject NotificacionService NotificacionService
+@implements IDisposable
+
+@if (count > 0)
+{
+    <span class="absolute -top-1 -right-1 w-4.5 h-4.5 rounded-full bg-primary text-[9px] font-black text-primary-content flex items-center justify-center shadow-md @(animating ? "scale-125" : "")"
+          style="transition: transform 0.3s cubic-bezier(0.22,0.61,0.36,1)"
+          id="cart-badge-blazor">
+        @count
+    </span>
+}
+
+@code {
+    [Parameter] public string? UserId { get; set; }
+    [Parameter] public int InitialCount { get; set; }
+
+    private int count;
+    private bool animating;
+
+    protected override void OnInitialized()
+    {
+        count = InitialCount;
+        NotificacionService.OnCarritoActualizado += HandleCarritoActualizado;
+    }
+
+    protected override void OnParametersSet()
+    {
+        // Actualizar si el InitialCount cambia (por ejemplo, tras recarga parcial)
+        if (!animating)
+        {
+            count = InitialCount;
+        }
+    }
+
+    private async void HandleCarritoActualizado(string userId, int totalItems)
+    {
+        if (userId != UserId) return;
+
+        await InvokeAsync(async () =>
+        {
+            count = totalItems;
+            animating = true;
+            StateHasChanged();
+
+            await Task.Delay(300);
+            animating = false;
+            StateHasChanged();
+        });
+    }
+
+    public void Dispose()
+    {
+        NotificacionService.OnCarritoActualizado -= HandleCarritoActualizado;
+    }
+}

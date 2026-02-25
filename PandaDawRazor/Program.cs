@@ -8,6 +8,7 @@ using PandaBack.Services;
 using PandaBack.Services.Auth;
 using PandaBack.Repository;
 using PandaDawRazor.Filters;
+using PandaDawRazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -74,6 +75,10 @@ builder.Services.AddScoped<IValoracionService, ValoracionService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<TokenService>();
 
+// Blazor Server + Notificaciones en tiempo real
+builder.Services.AddServerSideBlazor();
+builder.Services.AddSingleton<NotificacionService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -96,6 +101,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
+app.MapBlazorHub();
 
 
 app.Run();

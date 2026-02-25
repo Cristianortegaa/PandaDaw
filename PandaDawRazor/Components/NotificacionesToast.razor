@@ -1,0 +1,145 @@
+@using PandaDawRazor.Services
+@inject NotificacionService NotificacionService
+@implements IDisposable
+
+<!-- Contenedor fijo de notificaciones toast -->
+<div class="fixed top-20 right-4 z-[9999] flex flex-col gap-3 pointer-events-none max-w-sm w-full">
+    @foreach (var notif in notificaciones.ToList())
+    {
+        <div class="pointer-events-auto" style="animation: toastSlideIn 0.4s cubic-bezier(0.22,0.61,0.36,1)">
+            <div class="rounded-2xl shadow-2xl border backdrop-blur-md p-4 flex items-start gap-3
+                        @GetContainerClass(notif.Tipo)">
+                <!-- Icono -->
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 @GetIconBgClass(notif.Tipo)">
+                    <i class="@notif.Icono text-lg @GetIconColorClass(notif.Tipo)"></i>
+                </div>
+
+                <!-- Contenido -->
+                <div class="flex-1 min-w-0">
+                    <p class="font-bold text-sm leading-tight">@notif.Titulo</p>
+                    <p class="text-xs opacity-70 mt-0.5 leading-snug">@notif.Mensaje</p>
+                    <p class="text-[9px] opacity-40 mt-1 font-medium">@notif.Fecha.ToString("HH:mm:ss")</p>
+                </div>
+
+                <!-- Botón cerrar -->
+                <button class="btn btn-ghost btn-xs btn-circle opacity-40 hover:opacity-100 shrink-0 mt-0.5"
+                        @onclick="() => CerrarNotificacion(notif)">
+                    <i class="fa-solid fa-xmark text-xs"></i>
+                </button>
+            </div>
+
+            <!-- Barra de progreso -->
+            <div class="h-0.5 rounded-full mt-0.5 mx-4 overflow-hidden bg-base-300/10">
+                <div class="h-full rounded-full @GetProgressClass(notif.Tipo)"
+                     style="animation: toastProgress 5s linear forwards"></div>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    @@keyframes toastSlideIn {
+        from {
+            opacity: 0;
+            transform: translateX(100%) scale(0.9);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+    }
+
+    @@keyframes toastProgress {
+        from { width: 100%; }
+        to { width: 0%; }
+    }
+</style>
+
+@code {
+    [Parameter] public string? UserId { get; set; }
+
+    private List<Notificacion> notificaciones = new();
+
+    protected override void OnInitialized()
+    {
+        NotificacionService.OnNotificacion += HandleNotificacion;
+    }
+
+    private async void HandleNotificacion(string targetUserId, Notificacion notif)
+    {
+        // Mostrar si es para este usuario o es broadcast (userId vacío)
+        if (!string.IsNullOrEmpty(targetUserId) && targetUserId != UserId) return;
+
+        await InvokeAsync(() =>
+        {
+            notificaciones.Add(notif);
+
+            // Máximo 5 notificaciones visibles
+            if (notificaciones.Count > 5)
+            {
+                notificaciones.RemoveAt(0);
+            }
+
+            StateHasChanged();
+
+            // Auto-cerrar tras 5 segundos
+            _ = AutoCerrar(notif);
+        });
+    }
+
+    private async Task AutoCerrar(Notificacion notif)
+    {
+        await Task.Delay(5200);
+        await InvokeAsync(() =>
+        {
+            notificaciones.Remove(notif);
+            StateHasChanged();
+        });
+    }
+
+    private void CerrarNotificacion(Notificacion notif)
+    {
+        notificaciones.Remove(notif);
+    }
+
+    private string GetContainerClass(string tipo) => tipo switch
+    {
+        "success" => "bg-success/95 text-success-content border-success/30",
+        "warning" => "bg-warning/95 text-warning-content border-warning/30",
+        "error"   => "bg-error/95 text-error-content border-error/30",
+        "info"    => "bg-info/95 text-info-content border-info/30",
+        _         => "bg-base-100/95 text-base-content border-base-300/30"
+    };
+
+    private string GetIconBgClass(string tipo) => tipo switch
+    {
+        "success" => "bg-success-content/15",
+        "warning" => "bg-warning-content/15",
+        "error"   => "bg-error-content/15",
+        "info"    => "bg-info-content/15",
+        _         => "bg-base-content/10"
+    };
+
+    private string GetIconColorClass(string tipo) => tipo switch
+    {
+        "success" => "text-success-content",
+        "warning" => "text-warning-content",
+        "error"   => "text-error-content",
+        "info"    => "text-info-content",
+        _         => "text-base-content"
+    };
+
+    private string GetProgressClass(string tipo) => tipo switch
+    {
+        "success" => "bg-success-content/30",
+        "warning" => "bg-warning-content/30",
+        "error"   => "bg-error-content/30",
+        "info"    => "bg-info-content/30",
+        _         => "bg-base-content/20"
+    };
+
+    public void Dispose()
+    {
+        NotificacionService.OnNotificacion -= HandleNotificacion;
+    }
+}

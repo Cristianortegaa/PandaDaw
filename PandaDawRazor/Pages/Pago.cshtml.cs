@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using PandaBack.Dtos.Carrito;
 using PandaBack.Dtos.Ventas;
 using PandaBack.Services;
+using PandaDawRazor.Services;
 
 namespace PandaDawRazor.Pages;
 
@@ -10,11 +11,13 @@ public class PagoModel : PageModel
 {
     private readonly ICarritoService _carritoService;
     private readonly IVentaService _ventaService;
+    private readonly NotificacionService _notificacionService;
 
-    public PagoModel(ICarritoService carritoService, IVentaService ventaService)
+    public PagoModel(ICarritoService carritoService, IVentaService ventaService, NotificacionService notificacionService)
     {
         _carritoService = carritoService;
         _ventaService = ventaService;
+        _notificacionService = notificacionService;
     }
 
     public CarritoDto? Carrito { get; set; }
@@ -62,6 +65,18 @@ public class PagoModel : PageModel
             PagoExitoso = true;
             VentaCreada = ventaResult.Value;
             Carrito = new CarritoDto();
+
+            // Alerta: Pedido creado exitosamente
+            _notificacionService.Enviar(UserId, new Notificacion
+            {
+                Tipo = "success",
+                Titulo = "¡Pedido confirmado!",
+                Mensaje = $"Tu pedido #{VentaCreada.Id} ha sido creado por {VentaCreada.Total:C}",
+                Icono = "fa-solid fa-check-circle"
+            });
+
+            // Actualizar carrito a 0
+            _notificacionService.NotificarCarritoActualizado(UserId, 0);
         }
         else
         {
