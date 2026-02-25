@@ -6,6 +6,9 @@ using PandaBack.Repositories;
 using PandaBack.Repositories.Auth;
 using PandaBack.Services;
 using PandaBack.Services.Auth;
+using PandaBack.Services.Email;
+using PandaBack.Services.Factura;
+using PandaBack.Services.Stripe;
 using PandaBack.Repository;
 using PandaDawRazor.Filters;
 
@@ -72,7 +75,22 @@ builder.Services.AddScoped<IFavoritoService, FavoritoService>();
 builder.Services.AddScoped<IVentaService, VentaService>();
 builder.Services.AddScoped<IValoracionService, ValoracionService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<PandaBack.Services.Auth.TokenService>();
+
+// Stripe
+StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
+builder.Services.AddScoped<IStripeService, StripeService>();
+
+// QuestPDF (Community license para uso gratuito)
+QuestPDF.Settings.License = LicenseType.Community;
+builder.Services.AddScoped<IFacturaService, FacturaService>();
+
+// Email (MailKit)
+builder.Services.AddScoped<IEmailService, EmailService>();
+
+// Blazor Server + Notificaciones en tiempo real
+builder.Services.AddServerSideBlazor();
+builder.Services.AddSingleton<NotificacionService>();
 
 var app = builder.Build();
 
@@ -96,6 +114,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
+app.MapBlazorHub();
 
 
 app.Run();

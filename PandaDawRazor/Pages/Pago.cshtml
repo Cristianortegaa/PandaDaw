@@ -27,7 +27,7 @@
         </div>
     </div>
 
-    @if (Model.PagoExitoso && Model.VentaCreada != null)
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
     {
         <!-- Confirmación: centrada y limpia -->
         <div class="max-w-md mx-auto text-center">

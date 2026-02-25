@@ -175,6 +175,10 @@
         @RenderBody()
     </main>
 
+    <!-- Componente Blazor: Notificaciones Toast en tiempo real -->
+    <component type="typeof(PandaDawRazor.Components.NotificacionesToast)" render-mode="Server"
+               param-UserId="@Context.Session.GetString("UserId")" />
+
     <!-- Footer -->
     <footer class="relative z-10 border-t border-base-300/10 mt-20">
         <div class="max-w-7xl mx-auto px-6 py-10">

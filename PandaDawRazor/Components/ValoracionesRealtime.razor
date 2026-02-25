@@ -1,0 +1,328 @@
+@using PandaBack.Dtos.Valoraciones
+@using PandaBack.Services
+@using PandaDawRazor.Services
+@inject IValoracionService ValoracionService
+@inject NotificacionService NotificacionService
+@implements IDisposable
+
+<div class="mt-16" id="valoraciones-section">
+    <h2 class="text-4xl font-bold mb-10 flex items-center gap-3 text-primary">
+        <i class="fa-solid fa-star text-warning text-3xl"></i>
+        Valoraciones
+        <span class="text-2xl text-base-content/60">(@valoraciones.Count)</span>
+        @if (cargando)
+        {
+            <span class="loading loading-spinner loading-sm text-primary ml-2"></span>
+        }
+        @if (hayNueva)
+        {
+            <span class="badge badge-success badge-sm animate-bounce ml-2 gap-1">
+                <i class="fa-solid fa-bolt text-[8px]"></i> En vivo
+            </span>
+        }
+    </h2>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Formulario de valoración -->
+        @if (EstaAutenticado)
+        {
+            <div class="card bg-base-100 shadow-lg border border-base-300">
+                <div class="card-body">
+                    <h3 class="font-bold text-xl text-primary mb-6">Deja tu valoración</h3>
+
+                    <div class="form-control mb-6">
+                        <label class="label">
+                            <span class="label-text font-bold text-base text-primary">Puntuación</span>
+                        </label>
+                        <div class="rating rating-lg gap-2">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                var star = i;
+                                <input type="radio"
+                                       name="estrellas-blazor"
+                                       class="mask mask-star-2 bg-warning"
+                                       checked="@(estrellas == star)"
+                                       @onclick="() => estrellas = star" />
+                            }
+                        </div>
+                    </div>
+
+                    <div class="form-control mb-6">
+                        <label class="label">
+                            <span class="label-text font-bold text-base text-primary">Tu opinión</span>
+                        </label>
+                        <textarea @bind="resena"
+                                  class="textarea textarea-bordered h-32 focus:textarea-primary text-base font-medium"
+                                  placeholder="¿Qué te ha parecido este producto?"></textarea>
+                    </div>
+
+                    <button type="button"
+                            class="btn btn-primary btn-lg w-full font-bold gap-2"
+                            disabled="@enviando"
+                            @onclick="EnviarValoracion">
+                        @if (enviando)
+                        {
+                            <span class="loading loading-spinner loading-sm"></span>
+                            <span>Enviando...</span>
+                        }
+                        else
+                        {
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Enviar valoración</span>
+                        }
+                    </button>
+
+                    @if (!string.IsNullOrEmpty(mensajeError))
+                    {
+                        <div class="alert alert-error mt-4 rounded-xl text-sm">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                            <span>@mensajeError</span>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(mensajeExito))
+                    {
+                        <div class="alert alert-success mt-4 rounded-xl text-sm">
+                            <i class="fa-solid fa-check-circle"></i>
+                            <span>@mensajeExito</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="card bg-base-100 shadow-lg border border-base-300">
+                <div class="card-body items-center text-center py-16">
+                    <div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                        <i class="fa-solid fa-user-lock text-4xl text-primary"></i>
+                    </div>
+                    <p class="text-lg font-semibold text-base-content/70 mb-4">Inicia sesión para valorar</p>
+                    <a href="/Login" class="btn btn-primary btn-md font-bold gap-2">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        Iniciar sesión
+                    </a>
+                </div>
+            </div>
+        }
+
+        <!-- Lista de valoraciones en tiempo real -->
+        <div class="lg:col-span-2 flex flex-col gap-5">
+            @if (!valoraciones.Any())
+            {
+                <div class="card bg-base-100 shadow-lg border border-base-300">
+                    <div class="card-body items-center text-center py-16">
+                        <div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                            <i class="fa-regular fa-star text-4xl text-primary"></i>
+                        </div>
+                        <p class="font-bold text-xl text-base-content mb-2">Sin valoraciones todavía</p>
+                        <p class="text-base font-medium text-base-content/60">¡Sé el primero en valorar este producto!</p>
+                    </div>
+                </div>
+            }
+            else
+            {
+                @foreach (var valoracion in valoraciones.OrderByDescending(v => v.Fecha))
+                {
+                    var esNueva = ultimaValoracionId == valoracion.Id;
+                    <div class="card bg-base-100 shadow-md border border-base-300 hover:shadow-lg transition-all duration-300 @(esNueva ? "ring-2 ring-primary/40 shadow-primary/20" : "")"
+                         style="@(esNueva ? "animation: slideInValoracion 0.5s ease-out" : "")">
+                        <div class="card-body py-5">
+                            @if (esNueva)
+                            {
+                                <div class="flex justify-end -mt-2 -mr-2 mb-1">
+                                    <span class="badge badge-primary badge-xs gap-1 font-bold">
+                                        <i class="fa-solid fa-bolt text-[7px]"></i> Nueva
+                                    </span>
+                                </div>
+                            }
+                            <div class="flex items-start justify-between gap-4 mb-3">
+                                <div class="flex items-center gap-3">
+                                    <div class="avatar">
+                                        <div class="w-12 h-12 rounded-full ring ring-primary ring-offset-base-100 ring-offset-1">
+                                            <img src="https://api.dicebear.com/7.x/initials/svg?seed=@(valoracion.UsuarioNombre ?? "U")" alt="Avatar" />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <p class="font-bold text-base text-primary">@(valoracion.UsuarioNombre ?? "Usuario")</p>
+                                        <p class="text-sm font-medium text-base-content/60">@valoracion.Fecha.ToString("dd MMM yyyy · HH:mm")</p>
+                                    </div>
+                                </div>
+                                <div class="rating rating-sm gap-1">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        var idx = i;
+                                        <input type="radio" class="mask mask-star-2 bg-warning" disabled
+                                               checked="@(idx <= valoracion.Estrellas)" />
+                                    }
+                                </div>
+                            </div>
+                            @if (!string.IsNullOrEmpty(valoracion.Resena))
+                            {
+                                <p class="text-base text-base-content/75 leading-relaxed">@valoracion.Resena</p>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    @@keyframes slideInValoracion {
+        from {
+            opacity: 0;
+            transform: translateY(-20px) scale(0.97);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+</style>
+
+@code {
+    [Parameter] public long ProductoId { get; set; }
+    [Parameter] public string? UserId { get; set; }
+    [Parameter] public bool EstaAutenticado { get; set; }
+    [Parameter] public string? UsuarioNombre { get; set; }
+
+    private List<ValoracionResponseDto> valoraciones = new();
+    private int estrellas = 5;
+    private string resena = "";
+    private bool cargando = false;
+    private bool enviando = false;
+    private bool hayNueva = false;
+    private string? mensajeError;
+    private string? mensajeExito;
+    private long? ultimaValoracionId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        NotificacionService.OnNuevaValoracion += HandleNuevaValoracion;
+        await CargarValoraciones();
+    }
+
+    private async Task CargarValoraciones()
+    {
+        cargando = true;
+        var result = await ValoracionService.GetValoracionesByProductoAsync(ProductoId);
+        if (result.IsSuccess)
+        {
+            valoraciones = result.Value.ToList();
+        }
+        cargando = false;
+    }
+
+    private async void HandleNuevaValoracion(long productoId)
+    {
+        if (productoId != ProductoId) return;
+
+        await InvokeAsync(async () =>
+        {
+            var countAntes = valoraciones.Count;
+            await CargarValoraciones();
+
+            if (valoraciones.Count > countAntes)
+            {
+                ultimaValoracionId = valoraciones.OrderByDescending(v => v.Fecha).First().Id;
+                hayNueva = true;
+                StateHasChanged();
+
+                // Quitar indicador "nueva" tras 4 segundos
+                _ = Task.Run(async () =>
+                {
+                    await Task.Delay(4000);
+                    await InvokeAsync(() =>
+                    {
+                        hayNueva = false;
+                        ultimaValoracionId = null;
+                        StateHasChanged();
+                    });
+                });
+            }
+            else
+            {
+                StateHasChanged();
+            }
+        });
+    }
+
+    private async Task EnviarValoracion()
+    {
+        if (string.IsNullOrEmpty(UserId)) return;
+
+        mensajeError = null;
+        mensajeExito = null;
+
+        if (estrellas < 1 || estrellas > 5)
+        {
+            mensajeError = "La puntuación debe estar entre 1 y 5";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(resena))
+        {
+            mensajeError = "Escribe tu opinión sobre el producto";
+            return;
+        }
+
+        enviando = true;
+
+        var dto = new CreateValoracionDto
+        {
+            ProductoId = ProductoId,
+            Estrellas = estrellas,
+            Resena = resena
+        };
+
+        var result = await ValoracionService.CreateValoracionAsync(UserId, dto);
+
+        if (result.IsSuccess)
+        {
+            mensajeExito = "¡Valoración añadida correctamente!";
+            resena = "";
+            estrellas = 5;
+
+            await CargarValoraciones();
+            ultimaValoracionId = valoraciones.OrderByDescending(v => v.Fecha).First().Id;
+            hayNueva = true;
+
+            // Notificar a otros usuarios viendo el mismo producto
+            NotificacionService.NotificarNuevaValoracion(ProductoId);
+
+            // Toast para todos
+            NotificacionService.EnviarATodos(new Notificacion
+            {
+                Tipo = "info",
+                Titulo = "Nueva valoración",
+                Mensaje = $"{UsuarioNombre ?? "Alguien"} ha valorado este producto con {estrellas}★",
+                Icono = "fa-solid fa-star"
+            });
+
+            // Limpiar mensajes tras unos segundos
+            _ = Task.Run(async () =>
+            {
+                await Task.Delay(5000);
+                await InvokeAsync(() =>
+                {
+                    mensajeExito = null;
+                    hayNueva = false;
+                    ultimaValoracionId = null;
+                    StateHasChanged();
+                });
+            });
+        }
+        else
+        {
+            mensajeError = result.Error?.Message ?? "Error al enviar la valoración";
+        }
+
+        enviando = false;
+    }
+
+    public void Dispose()
+    {
+        NotificacionService.OnNuevaValoracion -= HandleNuevaValoracion;
+    }
+}

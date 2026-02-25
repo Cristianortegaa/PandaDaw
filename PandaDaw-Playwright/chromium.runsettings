@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+  Configuración de Playwright NUnit para ejecutar en TODOS los navegadores.
+  Uso: dotnet test --settings:chromium.runsettings
+       dotnet test --settings:firefox.runsettings
+       dotnet test --settings:webkit.runsettings
+  O simplemente: dotnet test (usa .runsettings por defecto)
+-->
+<RunSettings>
+  <Playwright>
+    <BrowserName>chromium</BrowserName>
+    <LaunchOptions>
+      <Headless>false</Headless>
+      <SlowMo>200</SlowMo>
+    </LaunchOptions>
+  </Playwright>
+  <NUnit>
+    <NumberOfTestWorkers>1</NumberOfTestWorkers>
+  </NUnit>
+</RunSettings>

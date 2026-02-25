@@ -4,6 +4,7 @@ using PandaBack.Dtos.Productos;
 using PandaBack.Dtos.Favoritos;
 using PandaBack.Models;
 using PandaBack.Services;
+using PandaDawRazor.Services;
 
 namespace PandaDawRazor.Pages;
 
@@ -12,12 +13,14 @@ public class IndexModel : PageModel
     private readonly IProductoService _productoService;
     private readonly ICarritoService _carritoService;
     private readonly IFavoritoService _favoritoService;
+    private readonly NotificacionService _notificacionService;
 
-    public IndexModel(IProductoService productoService, ICarritoService carritoService, IFavoritoService favoritoService)
+    public IndexModel(IProductoService productoService, ICarritoService carritoService, IFavoritoService favoritoService, NotificacionService notificacionService)
     {
         _productoService = productoService;
         _carritoService = carritoService;
         _favoritoService = favoritoService;
+        _notificacionService = notificacionService;
     }
 
     public List<Producto> Productos { get; set; } = new();
@@ -81,6 +84,53 @@ public class IndexModel : PageModel
         }
 
         await _carritoService.AddLineaCarritoAsync(userId, productoId, 1);
+
+        // Obtener info del producto para notificaciones
+        var productoResult = await _productoService.GetProductoByIdAsync(productoId);
+        if (productoResult.IsSuccess)
+        {
+            var prod = productoResult.Value;
+
+            // Alerta: Añadido al carrito
+            _notificacionService.Enviar(userId, new Notificacion
+            {
+                Tipo = "success",
+                Titulo = "¡Añadido al carrito!",
+                Mensaje = $"{prod.Nombre} se ha añadido a tu carrito",
+                Icono = "fa-solid fa-cart-plus"
+            });
+
+            // Alerta: Stock bajo
+            if (prod.Stock > 0 && prod.Stock <= 5)
+            {
+                _notificacionService.EnviarATodos(new Notificacion
+                {
+                    Tipo = "warning",
+                    Titulo = "¡Quedan pocas unidades!",
+                    Mensaje = $"Solo quedan {prod.Stock} unidades de {prod.Nombre}",
+                    Icono = "fa-solid fa-triangle-exclamation"
+                });
+            }
+
+            if (prod.Stock <= 0)
+            {
+                _notificacionService.EnviarATodos(new Notificacion
+                {
+                    Tipo = "error",
+                    Titulo = "Producto agotado",
+                    Mensaje = $"{prod.Nombre} se ha agotado",
+                    Icono = "fa-solid fa-box-open"
+                });
+            }
+        }
+
+        // Actualizar contador carrito en tiempo real
+        var carritoResult = await _carritoService.GetCarritoByUserIdAsync(userId);
+        if (carritoResult.IsSuccess)
+        {
+            _notificacionService.NotificarCarritoActualizado(userId, carritoResult.Value.TotalItems);
+        }
+
         return RedirectToPage();
     }
 
