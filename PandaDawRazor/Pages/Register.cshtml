@@ -5,22 +5,28 @@
     Layout = "_Layout";
 }
 
-<div class="min-h-[calc(100vh-200px)] flex items-center justify-center p-6">
-    <div class="card w-full max-w-md bg-white shadow-xl border border-base-300/50 rounded-2xl">
-        <div class="card-body gap-6 p-8">
-            <div class="flex flex-col items-center gap-3 text-center">
-                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg">
+<div class="min-h-[calc(100vh-200px)] flex items-center justify-center p-6 relative">
+    <!-- Decoración de fondo -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute -top-40 -left-40 w-96 h-96 rounded-full bg-secondary/3 blur-3xl"></div>
+        <div class="absolute -bottom-40 -right-40 w-96 h-96 rounded-full bg-primary/3 blur-3xl"></div>
+    </div>
+    
+    <div class="card w-full max-w-md bg-white shadow-xl border-0 rounded-3xl relative z-10">
+        <div class="card-body gap-7 p-9">
+            <div class="flex flex-col items-center gap-4 text-center">
+                <div class="w-16 h-16 rounded-3xl bg-gradient-to-br from-primary via-primary to-secondary flex items-center justify-center shadow-xl">
                     <i class="fa-solid fa-user-plus text-2xl text-white"></i>
                 </div>
                 <div>
                     <h1 class="text-2xl font-extrabold text-base-content tracking-tight">Crear cuenta</h1>
-                    <p class="text-sm text-base-content/50">Únete a PandaDaw</p>
+                    <p class="text-sm text-base-content/45 mt-1">Únete a PandaDaw hoy</p>
                 </div>
             </div>
 
             @if (!string.IsNullOrEmpty(Model.ErrorMessage))
             {
-                <div class="alert alert-error shadow-lg">
+                <div class="alert alert-error shadow-lg rounded-2xl">
                     <i class="fa-solid fa-circle-exclamation"></i>
                     <span>@Model.ErrorMessage</span>
                 </div>
@@ -32,19 +38,19 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div class="form-control gap-2">
                         <label class="label py-0" for="regNombre">
-                            <span class="label-text font-medium">Nombre</span>
+                            <span class="label-text font-semibold text-xs uppercase tracking-wider text-base-content/60">Nombre</span>
                         </label>
                         <input asp-for="Input.Nombre" id="regNombre" type="text"
-                               class="input input-bordered focus:input-primary" placeholder="Juan"
+                               class="input input-bordered focus:input-primary rounded-2xl h-11 text-sm bg-base-200/30" placeholder="Juan"
                                autocomplete="given-name" required autofocus />
                         <span asp-validation-for="Input.Nombre" class="text-error text-xs"></span>
                     </div>
                     <div class="form-control gap-2">
                         <label class="label py-0" for="regApellidos">
-                            <span class="label-text font-medium">Apellidos</span>
+                            <span class="label-text font-semibold text-xs uppercase tracking-wider text-base-content/60">Apellidos</span>
                         </label>
                         <input asp-for="Input.Apellidos" id="regApellidos" type="text"
-                               class="input input-bordered focus:input-primary" placeholder="García"
+                               class="input input-bordered focus:input-primary rounded-2xl h-11 text-sm bg-base-200/30" placeholder="García"
                                autocomplete="family-name" required />
                         <span asp-validation-for="Input.Apellidos" class="text-error text-xs"></span>
                     </div>
@@ -52,11 +58,11 @@
 
                 <div class="form-control gap-2">
                     <label class="label py-0" for="regEmail">
-                        <span class="label-text font-medium">Correo electrónico</span>
+                        <span class="label-text font-semibold text-xs uppercase tracking-wider text-base-content/60">Correo electrónico</span>
                     </label>
-                    <label class="input input-bordered flex items-center gap-3 focus-within:input-primary">
-                        <i class="fa-solid fa-envelope text-base-content/40"></i>
-                        <input asp-for="Input.Email" id="regEmail" type="email" class="grow"
+                    <label class="input input-bordered flex items-center gap-3 focus-within:input-primary rounded-2xl h-11 bg-base-200/30">
+                        <i class="fa-solid fa-envelope text-base-content/30 text-sm"></i>
+                        <input asp-for="Input.Email" id="regEmail" type="email" class="grow text-sm"
                                placeholder="tu@correo.com" autocomplete="email" required />
                     </label>
                     <span asp-validation-for="Input.Email" class="text-error text-xs"></span>
@@ -64,16 +70,16 @@
 
                 <div class="form-control gap-2">
                     <label class="label py-0" for="regPassword">
-                        <span class="label-text font-medium">Contraseña</span>
+                        <span class="label-text font-semibold text-xs uppercase tracking-wider text-base-content/60">Contraseña</span>
                     </label>
-                    <label class="input input-bordered flex items-center gap-3 focus-within:input-primary">
-                        <i class="fa-solid fa-lock text-base-content/40"></i>
-                        <input asp-for="Input.Password" id="regPassword" type="password" class="grow"
+                    <label class="input input-bordered flex items-center gap-3 focus-within:input-primary rounded-2xl h-11 bg-base-200/30">
+                        <i class="fa-solid fa-lock text-base-content/30 text-sm"></i>
+                        <input asp-for="Input.Password" id="regPassword" type="password" class="grow text-sm"
                                placeholder="Al menos 6 caracteres" autocomplete="new-password" required />
                         <button type="button" onclick="togglePassword('regPassword', 'eyeIconReg')"
-                                class="btn btn-ghost btn-xs btn-circle text-base-content/40 hover:text-base-content"
+                                class="btn btn-ghost btn-xs btn-circle text-base-content/30 hover:text-base-content"
                                 tabindex="-1" aria-label="Mostrar/ocultar contraseña">
-                            <i id="eyeIconReg" class="fa-solid fa-eye"></i>
+                            <i id="eyeIconReg" class="fa-solid fa-eye text-xs"></i>
                         </button>
                     </label>
                     <span asp-validation-for="Input.Password" class="text-error text-xs"></span>
@@ -81,32 +87,32 @@
 
                 <div class="form-control gap-2">
                     <label class="label py-0" for="regConfirm">
-                        <span class="label-text font-medium">Confirmar contraseña</span>
+                        <span class="label-text font-semibold text-xs uppercase tracking-wider text-base-content/60">Confirmar contraseña</span>
                     </label>
-                    <label class="input input-bordered flex items-center gap-3 focus-within:input-primary">
-                        <i class="fa-solid fa-lock text-base-content/40"></i>
-                        <input asp-for="Input.ConfirmPassword" id="regConfirm" type="password" class="grow"
+                    <label class="input input-bordered flex items-center gap-3 focus-within:input-primary rounded-2xl h-11 bg-base-200/30">
+                        <i class="fa-solid fa-lock text-base-content/30 text-sm"></i>
+                        <input asp-for="Input.ConfirmPassword" id="regConfirm" type="password" class="grow text-sm"
                                placeholder="Repite la contraseña" autocomplete="new-password" required />
                         <button type="button" onclick="togglePassword('regConfirm', 'eyeIconConfirm')"
-                                class="btn btn-ghost btn-xs btn-circle text-base-content/40 hover:text-base-content"
+                                class="btn btn-ghost btn-xs btn-circle text-base-content/30 hover:text-base-content"
                                 tabindex="-1" aria-label="Mostrar/ocultar contraseña">
-                            <i id="eyeIconConfirm" class="fa-solid fa-eye"></i>
+                            <i id="eyeIconConfirm" class="fa-solid fa-eye text-xs"></i>
                         </button>
                     </label>
                     <span asp-validation-for="Input.ConfirmPassword" class="text-error text-xs"></span>
                 </div>
 
-                <button type="submit" class="btn btn-primary w-full mt-2 rounded-xl font-semibold">
-                    <i class="fa-solid fa-user-plus mr-2"></i>
+                <button type="submit" class="btn btn-primary w-full mt-1 rounded-2xl font-bold h-12 text-sm">
                     Crear cuenta
+                    <i class="fa-solid fa-arrow-right ml-1 text-xs"></i>
                 </button>
             </form>
 
-            <div class="divider text-base-content/30 text-xs">o</div>
+            <div class="divider text-base-content/25 text-xs font-medium my-0">o</div>
 
-            <p class="text-center text-sm text-base-content/50">
+            <p class="text-center text-sm text-base-content/45">
                 ¿Ya tienes cuenta?
-                <a asp-page="/Login" class="link link-primary font-semibold">Inicia sesión</a>
+                <a asp-page="/Login" class="link link-primary font-bold no-underline hover:underline">Inicia sesión</a>
             </p>
         </div>
     </div>

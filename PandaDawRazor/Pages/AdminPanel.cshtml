@@ -5,21 +5,23 @@
     Layout = "_Layout";
 }
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
     <!-- Header -->
-    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-10">
         <div>
-            <p class="text-xs font-semibold uppercase tracking-widest text-primary/70 mb-1">Administración</p>
-            <h1 class="text-2xl font-extrabold text-base-content tracking-tight flex items-center gap-3">
-                <i class="fa-solid fa-gear text-primary"></i>
-                Panel de Administración
+            <div class="flex items-center gap-2 mb-2">
+                <span class="w-8 h-0.5 bg-primary rounded-full"></span>
+                <p class="text-xs font-bold uppercase tracking-[0.2em] text-primary/60">Administración</p>
+            </div>
+            <h1 class="text-3xl font-extrabold text-base-content tracking-tight flex items-center gap-3">
+                <i class="fa-solid fa-shield-halved text-primary/80"></i>
+                Panel de Admin
             </h1>
-            <p class="text-base-content/50 mt-1 text-sm">Gestiona los productos de la tienda</p>
+            <p class="text-base-content/40 mt-1.5 text-sm font-medium">Gestiona los productos de la tienda</p>
         </div>
         
-        <!-- Botón crear producto -->
-        <button onclick="modal_crear.showModal()" class="btn btn-primary gap-2 rounded-xl font-semibold">
-            <i class="fa-solid fa-plus"></i>
+        <button onclick="modal_crear.showModal()" class="btn btn-primary gap-2 rounded-2xl font-bold shadow-lg">
+            <i class="fa-solid fa-plus text-xs"></i>
             Nuevo Producto
         </button>
     </div>
@@ -27,77 +29,77 @@
     <!-- Mensajes -->
     @if (!string.IsNullOrEmpty(Model.SuccessMessage))
     {
-        <div class="alert alert-success mb-6">
+        <div class="alert alert-success mb-7 rounded-2xl">
             <i class="fa-solid fa-check-circle"></i>
             <span>@Model.SuccessMessage</span>
         </div>
     }
     @if (!string.IsNullOrEmpty(Model.ErrorMessage))
     {
-        <div class="alert alert-error mb-6">
+        <div class="alert alert-error mb-7 rounded-2xl">
             <i class="fa-solid fa-exclamation-circle"></i>
             <span>@Model.ErrorMessage</span>
         </div>
     }
 
     <!-- Filtros -->
-    <div class="card bg-white shadow-sm mb-6 rounded-2xl border border-base-300/50">
-        <div class="card-body p-4">
+    <div class="card bg-white shadow-sm mb-7 rounded-2xl border-0">
+        <div class="card-body p-5">
             <form method="get" class="flex flex-col sm:flex-row gap-4 items-center">
                 <div class="form-control flex-1 w-full">
                     <div class="relative">
                         <input type="text" name="filtro" value="@Model.Filtro" placeholder="Buscar productos..." 
-                               class="input input-bordered w-full pl-10 rounded-xl" />
-                        <i class="fa-solid fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-base-content/35 text-sm"></i>
+                               class="input input-bordered w-full pl-11 rounded-2xl h-11 text-sm bg-base-200/30" />
+                        <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-base-content/30 text-xs"></i>
                     </div>
                 </div>
-                <label class="label cursor-pointer gap-2">
+                <label class="label cursor-pointer gap-2.5 px-3">
                     <input type="checkbox" name="mostrarEliminados" value="true" @(Model.MostrarEliminados ? "checked" : "") 
-                           class="checkbox checkbox-primary checkbox-sm" />
-                    <span class="label-text text-sm">Mostrar eliminados</span>
+                           class="checkbox checkbox-primary checkbox-sm rounded-lg" />
+                    <span class="label-text text-xs font-semibold">Mostrar eliminados</span>
                 </label>
-                <button type="submit" class="btn btn-primary btn-sm rounded-xl font-medium">
-                    <i class="fa-solid fa-filter text-xs"></i>
+                <button type="submit" class="btn btn-primary btn-sm rounded-2xl font-bold text-xs gap-1.5">
+                    <i class="fa-solid fa-filter text-[10px]"></i>
                     Filtrar
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- Estadísticas rápidas -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div class="stat bg-white rounded-2xl shadow-sm border border-base-300/50">
+    <!-- Estadísticas -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-7">
+        <div class="stat bg-white rounded-3xl shadow-md border-0 py-5">
             <div class="stat-figure text-primary">
-                <i class="fa-solid fa-box text-2xl"></i>
+                <i class="fa-solid fa-box text-xl"></i>
             </div>
             <div class="stat-title">Total Productos</div>
-            <div class="stat-value text-primary">@Model.Productos.Count</div>
+            <div class="stat-value text-primary text-2xl">@Model.Productos.Count</div>
         </div>
-        <div class="stat bg-white rounded-2xl shadow-sm border border-base-300/50">
+        <div class="stat bg-white rounded-3xl shadow-md border-0 py-5">
             <div class="stat-figure text-success">
-                <i class="fa-solid fa-check-circle text-2xl"></i>
+                <i class="fa-solid fa-check-circle text-xl"></i>
             </div>
             <div class="stat-title">Activos</div>
-            <div class="stat-value text-success">@Model.Productos.Count(p => !p.IsDeleted)</div>
+            <div class="stat-value text-success text-2xl">@Model.Productos.Count(p => !p.IsDeleted)</div>
         </div>
-        <div class="stat bg-white rounded-2xl shadow-sm border border-base-300/50">
+        <div class="stat bg-white rounded-3xl shadow-md border-0 py-5">
             <div class="stat-figure text-error">
-                <i class="fa-solid fa-trash text-2xl"></i>
+                <i class="fa-solid fa-trash text-xl"></i>
             </div>
             <div class="stat-title">Eliminados</div>
-            <div class="stat-value text-error">@Model.Productos.Count(p => p.IsDeleted)</div>
+            <div class="stat-value text-error text-2xl">@Model.Productos.Count(p => p.IsDeleted)</div>
         </div>
-        <div class="stat bg-white rounded-2xl shadow-sm border border-base-300/50">
+        <div class="stat bg-white rounded-3xl shadow-md border-0 py-5">
             <div class="stat-figure text-warning">
-                <i class="fa-solid fa-exclamation-triangle text-2xl"></i>
+                <i class="fa-solid fa-exclamation-triangle text-xl"></i>
             </div>
             <div class="stat-title">Sin Stock</div>
-            <div class="stat-value text-warning">@Model.Productos.Count(p => p.Stock == 0 && !p.IsDeleted)</div>
+            <div class="stat-value text-warning text-2xl">@Model.Productos.Count(p => p.Stock == 0 && !p.IsDeleted)</div>
         </div>
     </div>
 
-    <!-- Tabla de productos -->
-    <div class="card bg-white shadow-md overflow-hidden rounded-2xl border border-base-300/50">
+    <!-- Tabla -->
+    <div class="card bg-white shadow-md overflow-hidden rounded-3xl border-0">
         <div class="overflow-x-auto">
             <table class="table table-zebra">
                 <thead class="bg-base-200">
@@ -115,11 +117,11 @@
                 <tbody>
                     @foreach (var producto in Model.Productos)
                     {
-                        <tr class="@(producto.IsDeleted ? "opacity-50" : "")">
-                            <td class="font-mono text-sm">@producto.Id</td>
+                        <tr class="@(producto.IsDeleted ? "opacity-40" : "") hover:bg-base-200/30 transition-colors">
+                            <td class="font-mono text-xs text-base-content/50">@producto.Id</td>
                             <td>
                                 <div class="avatar">
-                                    <div class="w-12 h-12 rounded-lg bg-base-200">
+                                    <div class="w-11 h-11 rounded-xl bg-base-200/60">
                                         @if (!string.IsNullOrEmpty(producto.Imagen))
                                         {
                                             <img src="@producto.Imagen" alt="@producto.Nombre" class="object-cover" />
@@ -127,82 +129,78 @@
                                         else
                                         {
                                             <div class="w-full h-full flex items-center justify-center">
-                                                <i class="fa-solid fa-image text-base-content/30"></i>
+                                                <i class="fa-solid fa-image text-base-content/20 text-xs"></i>
                                             </div>
                                         }
                                     </div>
                                 </div>
                             </td>
                             <td>
-                                <div class="font-semibold line-clamp-1">@producto.Nombre</div>
+                                <div class="font-bold text-sm line-clamp-1">@producto.Nombre</div>
                                 @if (!string.IsNullOrEmpty(producto.Descripcion))
                                 {
-                                    <div class="text-xs text-base-content/60 line-clamp-1">@producto.Descripcion</div>
+                                    <div class="text-[11px] text-base-content/40 line-clamp-1 mt-0.5">@producto.Descripcion</div>
                                 }
                             </td>
                             <td>
-                                <span class="badge badge-outline badge-sm">@producto.Category</span>
+                                <span class="badge badge-outline badge-sm rounded-xl text-[10px] font-bold uppercase tracking-wider">@producto.Category</span>
                             </td>
-                            <td class="font-semibold">
+                            <td class="font-bold text-sm">
                                 @producto.Precio.ToString("C", new System.Globalization.CultureInfo("es-ES"))
                             </td>
                             <td>
                                 @if (producto.Stock > 10)
                                 {
-                                    <span class="badge badge-success badge-sm">@producto.Stock</span>
+                                    <span class="badge badge-success badge-sm rounded-xl font-bold text-[10px]">@producto.Stock</span>
                                 }
                                 else if (producto.Stock > 0)
                                 {
-                                    <span class="badge badge-warning badge-sm">@producto.Stock</span>
+                                    <span class="badge badge-warning badge-sm rounded-xl font-bold text-[10px]">@producto.Stock</span>
                                 }
                                 else
                                 {
-                                    <span class="badge badge-error badge-sm">0</span>
+                                    <span class="badge badge-error badge-sm rounded-xl font-bold text-[10px]">0</span>
                                 }
                             </td>
                             <td>
                                 @if (producto.IsDeleted)
                                 {
-                                    <span class="badge badge-error gap-1">
-                                        <i class="fa-solid fa-trash text-xs"></i> Eliminado
+                                    <span class="badge badge-error gap-1 rounded-xl font-bold text-[10px] uppercase tracking-wider">
+                                        <i class="fa-solid fa-trash text-[8px]"></i> Eliminado
                                     </span>
                                 }
                                 else
                                 {
-                                    <span class="badge badge-success gap-1">
-                                        <i class="fa-solid fa-check text-xs"></i> Activo
+                                    <span class="badge badge-success gap-1 rounded-xl font-bold text-[10px] uppercase tracking-wider">
+                                        <i class="fa-solid fa-check text-[8px]"></i> Activo
                                     </span>
                                 }
                             </td>
                             <td>
-                                <div class="flex gap-2">
+                                <div class="flex gap-1.5">
                                     @if (!producto.IsDeleted)
                                     {
-                                        <!-- Editar -->
                                         <button onclick="abrirModalEditar(@producto.Id, '@producto.Nombre.Replace("'", "\\'")' , '@(producto.Descripcion?.Replace("'", "\\'") ?? "")', @producto.Precio.ToString(System.Globalization.CultureInfo.InvariantCulture), @producto.Stock, '@producto.Category', '@(producto.Imagen ?? "")')" 
-                                                class="btn btn-ghost btn-sm btn-square" title="Editar">
-                                            <i class="fa-solid fa-edit text-info"></i>
+                                                class="btn btn-ghost btn-sm btn-square rounded-xl hover:bg-info/8" title="Editar">
+                                            <i class="fa-solid fa-edit text-info text-xs"></i>
                                         </button>
-                                        <!-- Eliminar -->
                                         <form method="post" asp-page-handler="Eliminar" asp-route-id="@producto.Id" class="inline">
-                                            <button type="submit" class="btn btn-ghost btn-sm btn-square" 
+                                            <button type="submit" class="btn btn-ghost btn-sm btn-square rounded-xl hover:bg-error/8" 
                                                     title="Eliminar" onclick="return confirm('¿Seguro que quieres eliminar este producto?')">
-                                                <i class="fa-solid fa-trash text-error"></i>
+                                                <i class="fa-solid fa-trash text-error text-xs"></i>
                                             </button>
                                         </form>
                                     }
                                     else
                                     {
-                                        <!-- Restaurar -->
                                         <form method="post" asp-page-handler="Restaurar" asp-route-id="@producto.Id" class="inline">
-                                            <button type="submit" class="btn btn-ghost btn-sm btn-square" title="Restaurar">
-                                                <i class="fa-solid fa-undo text-success"></i>
+                                            <button type="submit" class="btn btn-ghost btn-sm btn-square rounded-xl hover:bg-success/8" title="Restaurar">
+                                                <i class="fa-solid fa-undo text-success text-xs"></i>
                                             </button>
                                         </form>
                                     }
-                                    <!-- Ver -->
-                                    <a asp-page="/Detalle" asp-route-id="@producto.Id" class="btn btn-ghost btn-sm btn-square" title="Ver">
-                                        <i class="fa-solid fa-eye text-primary"></i>
+                                    <a asp-page="/Detalle" asp-route-id="@producto.Id" class="btn btn-ghost btn-sm btn-square rounded-xl hover:bg-primary/8" title="Ver">
+                                        <i class="fa-solid fa-eye text-primary text-xs"></i>
                                     </a>
                                 </div>
                             </td>
@@ -214,65 +212,69 @@
         
         @if (!Model.Productos.Any())
         {
-            <div class="p-12 text-center">
-                <i class="fa-solid fa-box-open text-6xl text-base-content/20 mb-4"></i>
-                <h3 class="text-xl font-semibold text-base-content/60">No hay productos</h3>
-                <p class="text-base-content/40">Crea tu primer producto para empezar</p>
+            <div class="p-16 text-center">
+                <div class="w-20 h-20 rounded-3xl bg-base-200/50 flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-box-open text-4xl text-base-content/15"></i>
+                </div>
+                <h3 class="text-lg font-extrabold text-base-content/50 tracking-tight">No hay productos</h3>
+                <p class="text-base-content/35 text-sm mt-1">Crea tu primer producto para empezar</p>
             </div>
         }
     </div>
 </div>
 
-<!-- Modal Crear Producto -->
+<!-- Modal Crear -->
 <dialog id="modal_crear" class="modal">
-    <div class="modal-box w-11/12 max-w-2xl rounded-2xl">
+    <div class="modal-box w-11/12 max-w-2xl rounded-3xl">
         <form method="dialog">
-            <button class="btn btn-sm btn-circle btn-ghost absolute right-3 top-3">✕</button>
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-4 top-4">✕</button>
         </form>
-        <h3 class="font-extrabold text-xl mb-6 flex items-center gap-2 tracking-tight">
-            <i class="fa-solid fa-plus text-primary text-sm"></i>
+        <h3 class="font-extrabold text-xl mb-7 flex items-center gap-2.5 tracking-tight">
+            <span class="w-8 h-8 rounded-xl bg-primary/8 flex items-center justify-center">
+                <i class="fa-solid fa-plus text-primary text-xs"></i>
+            </span>
             Crear Nuevo Producto
         </h3>
         
         <form method="post" asp-page-handler="Crear">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="form-control md:col-span-2">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div class="form-control md:col-span-2 gap-1.5">
                     <label class="label">
-                        <span class="label-text font-medium">Nombre *</span>
+                        <span class="label-text font-semibold text-xs uppercase tracking-wider text-base-content/60">Nombre *</span>
                     </label>
                     <input type="text" name="ProductoInput.Nombre" required
-                           class="input input-bordered w-full" placeholder="Nombre del producto" />
+                           class="input input-bordered w-full rounded-2xl h-11 text-sm bg-base-200/30" placeholder="Nombre del producto" />
                 </div>
                 
-                <div class="form-control md:col-span-2">
+                <div class="form-control md:col-span-2 gap-1.5">
                     <label class="label">
-                        <span class="label-text font-medium">Descripción</span>
+                        <span class="label-text font-semibold text-xs uppercase tracking-wider text-base-content/60">Descripción</span>
                     </label>
                     <textarea name="ProductoInput.Descripcion" rows="3"
-                              class="textarea textarea-bordered w-full" placeholder="Descripción del producto"></textarea>
+                              class="textarea textarea-bordered w-full rounded-2xl text-sm bg-base-200/30" placeholder="Descripción del producto"></textarea>
                 </div>
                 
-                <div class="form-control">
+                <div class="form-control gap-1.5">
                     <label class="label">
-                        <span class="label-text font-medium">Precio *</span>
+                        <span class="label-text font-semibold text-xs uppercase tracking-wider text-base-content/60">Precio *</span>
                     </label>
                     <input type="number" name="ProductoInput.Precio" step="0.01" min="0" required
-                           class="input input-bordered w-full" placeholder="0.00" />
+                           class="input input-bordered w-full rounded-2xl h-11 text-sm bg-base-200/30" placeholder="0.00" />
                 </div>
                 
-                <div class="form-control">
+                <div class="form-control gap-1.5">
                     <label class="label">
-                        <span class="label-text font-medium">Stock *</span>
+                        <span class="label-text font-semibold text-xs uppercase tracking-wider text-base-content/60">Stock *</span>
                     </label>
                     <input type="number" name="ProductoInput.Stock" min="0" required
-                           class="input input-bordered w-full" placeholder="0" />
+                           class="input input-bordered w-full rounded-2xl h-11 text-sm bg-base-200/30" placeholder="0" />
                 </div>
                 
-                <div class="form-control">
+                <div class="form-control gap-1.5">
                     <label class="label">
-                        <span class="label-text font-medium">Categoría *</span>
+                        <span class="label-text font-semibold text-xs uppercase tracking-wider text-base-content/60">Categoría *</span>
                     </label>
-                    <select name="ProductoInput.Categoria" required class="select select-bordered w-full">
+                    <select name="ProductoInput.Categoria" required class="select select-bordered w-full rounded-2xl h-11 text-sm bg-base-200/30">
                         <option value="">Seleccionar...</option>
                         <option value="Audio">Audio</option>
                         <option value="Imagen">Imagen</option>
@@ -282,19 +284,19 @@
                     </select>
                 </div>
                 
-                <div class="form-control">
+                <div class="form-control gap-1.5">
                     <label class="label">
-                        <span class="label-text font-medium">URL de Imagen</span>
+                        <span class="label-text font-semibold text-xs uppercase tracking-wider text-base-content/60">URL de Imagen</span>
                     </label>
                     <input type="url" name="ProductoInput.ImagenUrl"
-                           class="input input-bordered w-full" placeholder="https://..." />
+                           class="input input-bordered w-full rounded-2xl h-11 text-sm bg-base-200/30" placeholder="https://..." />
                 </div>
             </div>
             
-            <div class="modal-action">
-                <button type="button" onclick="modal_crear.close()" class="btn btn-ghost rounded-xl">Cancelar</button>
-                <button type="submit" class="btn btn-primary gap-2 rounded-xl font-semibold">
-                    <i class="fa-solid fa-save"></i>
+            <div class="modal-action mt-7">
+                <button type="button" onclick="modal_crear.close()" class="btn btn-ghost rounded-2xl font-semibold">Cancelar</button>
+                <button type="submit" class="btn btn-primary gap-2 rounded-2xl font-bold shadow-md">
+                    <i class="fa-solid fa-save text-xs"></i>
                     Crear Producto
                 </button>
             </div>
@@ -305,58 +307,60 @@
     </form>
 </dialog>
 
-<!-- Modal Editar Producto -->
+<!-- Modal Editar -->
 <dialog id="modal_editar" class="modal">
-    <div class="modal-box w-11/12 max-w-2xl rounded-2xl">
+    <div class="modal-box w-11/12 max-w-2xl rounded-3xl">
         <form method="dialog">
-            <button class="btn btn-sm btn-circle btn-ghost absolute right-3 top-3">✕</button>
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-4 top-4">✕</button>
         </form>
-        <h3 class="font-extrabold text-xl mb-6 flex items-center gap-2 tracking-tight">
-            <i class="fa-solid fa-edit text-info text-sm"></i>
+        <h3 class="font-extrabold text-xl mb-7 flex items-center gap-2.5 tracking-tight">
+            <span class="w-8 h-8 rounded-xl bg-info/8 flex items-center justify-center">
+                <i class="fa-solid fa-edit text-info text-xs"></i>
+            </span>
             Editar Producto
         </h3>
         
         <form method="post" asp-page-handler="Editar" id="form_editar">
             <input type="hidden" name="id" id="editar_id" />
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="form-control md:col-span-2">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div class="form-control md:col-span-2 gap-1.5">
                     <label class="label">
-                        <span class="label-text font-medium">Nombre *</span>
+                        <span class="label-text font-semibold text-xs uppercase tracking-wider text-base-content/60">Nombre *</span>
                     </label>
                     <input type="text" name="ProductoInput.Nombre" id="editar_nombre" required
-                           class="input input-bordered w-full" />
+                           class="input input-bordered w-full rounded-2xl h-11 text-sm bg-base-200/30" />
                 </div>
                 
-                <div class="form-control md:col-span-2">
+                <div class="form-control md:col-span-2 gap-1.5">
                     <label class="label">
-                        <span class="label-text font-medium">Descripción</span>
+                        <span class="label-text font-semibold text-xs uppercase tracking-wider text-base-content/60">Descripción</span>
                     </label>
                     <textarea name="ProductoInput.Descripcion" id="editar_descripcion" rows="3"
-                              class="textarea textarea-bordered w-full"></textarea>
+                              class="textarea textarea-bordered w-full rounded-2xl text-sm bg-base-200/30"></textarea>
                 </div>
                 
-                <div class="form-control">
+                <div class="form-control gap-1.5">
                     <label class="label">
-                        <span class="label-text font-medium">Precio *</span>
+                        <span class="label-text font-semibold text-xs uppercase tracking-wider text-base-content/60">Precio *</span>
                     </label>
                     <input type="number" name="ProductoInput.Precio" id="editar_precio" step="0.01" min="0" required
-                           class="input input-bordered w-full" />
+                           class="input input-bordered w-full rounded-2xl h-11 text-sm bg-base-200/30" />
                 </div>
                 
-                <div class="form-control">
+                <div class="form-control gap-1.5">
                     <label class="label">
-                        <span class="label-text font-medium">Stock *</span>
+                        <span class="label-text font-semibold text-xs uppercase tracking-wider text-base-content/60">Stock *</span>
                     </label>
                     <input type="number" name="ProductoInput.Stock" id="editar_stock" min="0" required
-                           class="input input-bordered w-full" />
+                           class="input input-bordered w-full rounded-2xl h-11 text-sm bg-base-200/30" />
                 </div>
                 
-                <div class="form-control">
+                <div class="form-control gap-1.5">
                     <label class="label">
-                        <span class="label-text font-medium">Categoría *</span>
+                        <span class="label-text font-semibold text-xs uppercase tracking-wider text-base-content/60">Categoría *</span>
                     </label>
-                    <select name="ProductoInput.Categoria" id="editar_categoria" required class="select select-bordered w-full">
+                    <select name="ProductoInput.Categoria" id="editar_categoria" required class="select select-bordered w-full rounded-2xl h-11 text-sm bg-base-200/30">
                         <option value="Audio">Audio</option>
                         <option value="Imagen">Imagen</option>
                         <option value="Smartphones">Smartphones</option>
@@ -365,19 +369,19 @@
                     </select>
                 </div>
                 
-                <div class="form-control">
+                <div class="form-control gap-1.5">
                     <label class="label">
-                        <span class="label-text font-medium">URL de Imagen</span>
+                        <span class="label-text font-semibold text-xs uppercase tracking-wider text-base-content/60">URL de Imagen</span>
                     </label>
                     <input type="url" name="ProductoInput.ImagenUrl" id="editar_imagen"
-                           class="input input-bordered w-full" />
+                           class="input input-bordered w-full rounded-2xl h-11 text-sm bg-base-200/30" />
                 </div>
             </div>
             
-            <div class="modal-action">
-                <button type="button" onclick="modal_editar.close()" class="btn btn-ghost rounded-xl">Cancelar</button>
-                <button type="submit" class="btn btn-info gap-2 rounded-xl font-semibold">
-                    <i class="fa-solid fa-save"></i>
+            <div class="modal-action mt-7">
+                <button type="button" onclick="modal_editar.close()" class="btn btn-ghost rounded-2xl font-semibold">Cancelar</button>
+                <button type="submit" class="btn btn-info gap-2 rounded-2xl font-bold shadow-md">
+                    <i class="fa-solid fa-save text-xs"></i>
                     Guardar Cambios
                 </button>
             </div>
@@ -399,7 +403,6 @@
             document.getElementById('editar_categoria').value = categoria;
             document.getElementById('editar_imagen').value = imagen;
             
-            // Actualizar el action del formulario
             document.getElementById('form_editar').action = '?handler=Editar&id=' + id;
             
             modal_editar.showModal();

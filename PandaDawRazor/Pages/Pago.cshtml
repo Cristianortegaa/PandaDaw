@@ -8,10 +8,10 @@
     var total = subtotal + iva;
 }
 
-<div class="bg-base-200 min-h-screen">
-    <!-- Pasos -->
-    <div class="max-w-4xl mx-auto px-6 pt-8">
-        <ul class="steps w-full text-sm font-medium">
+<div class="min-h-screen">
+    <!-- Steps -->
+    <div class="max-w-4xl mx-auto px-6 pt-10">
+        <ul class="steps w-full text-xs font-bold">
             <li class="step step-primary">Carrito</li>
             <li class="step @(Model.PagoExitoso ? "step-primary" : "step-primary")">Pago</li>
             <li class="step @(Model.PagoExitoso ? "step-primary" : "")">Confirmación</li>
@@ -20,45 +20,45 @@
 
     @if (Model.PagoExitoso && Model.VentaCreada != null)
     {
-        <!-- Confirmación de pago exitoso -->
-        <div class="max-w-2xl mx-auto p-6">
-            <div class="card bg-white shadow-xl rounded-2xl border border-base-300/50">
-                <div class="card-body items-center text-center gap-4 p-8">
-                    <div class="w-20 h-20 rounded-2xl bg-success/10 flex items-center justify-center">
-                        <i class="fa-solid fa-check text-4xl text-success"></i>
+        <!-- Confirmación exitosa -->
+        <div class="max-w-2xl mx-auto p-6 mt-4">
+            <div class="card bg-white shadow-xl rounded-3xl border-0">
+                <div class="card-body items-center text-center gap-5 p-10">
+                    <div class="w-24 h-24 rounded-3xl bg-success/8 flex items-center justify-center">
+                        <i class="fa-solid fa-check text-5xl text-success"></i>
                     </div>
                     <h2 class="text-2xl font-extrabold text-base-content tracking-tight">¡Pago realizado con éxito!</h2>
-                    <p class="text-base-content/50">
+                    <p class="text-base-content/45 text-sm font-medium">
                         Tu pedido #@Model.VentaCreada.Id ha sido procesado correctamente.
                     </p>
                     
-                    <div class="divider"></div>
+                    <div class="h-px bg-base-300/25 w-full my-2"></div>
                     
                     <div class="w-full text-left">
-                        <h3 class="font-bold mb-3">Resumen del pedido</h3>
-                        <div class="flex flex-col gap-2 text-sm">
+                        <h3 class="font-bold text-sm mb-4">Resumen del pedido</h3>
+                        <div class="flex flex-col gap-2.5 text-sm">
                             @foreach (var linea in Model.VentaCreada.Lineas)
                             {
-                                <div class="flex justify-between">
-                                    <span>@linea.ProductoNombre x@linea.Cantidad</span>
-                                    <span>@((linea.PrecioUnitario * linea.Cantidad).ToString("C", new System.Globalization.CultureInfo("es-ES")))</span>
+                                <div class="flex justify-between text-base-content/60">
+                                    <span class="font-medium">@linea.ProductoNombre x@linea.Cantidad</span>
+                                    <span class="font-semibold">@((linea.PrecioUnitario * linea.Cantidad).ToString("C", new System.Globalization.CultureInfo("es-ES")))</span>
                                 </div>
                             }
-                            <div class="divider my-1"></div>
-                            <div class="flex justify-between font-bold">
+                            <div class="h-px bg-base-300/25 my-1"></div>
+                            <div class="flex justify-between font-extrabold text-base">
                                 <span>Total</span>
-                                <span>@Model.VentaCreada.Total.ToString("C", new System.Globalization.CultureInfo("es-ES"))</span>
+                                <span class="text-primary">@Model.VentaCreada.Total.ToString("C", new System.Globalization.CultureInfo("es-ES"))</span>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="flex gap-3 mt-4 w-full">
-                        <a asp-page="/Pedidos" class="btn btn-outline flex-1 rounded-xl">
-                            <i class="fa-solid fa-box mr-2"></i>
+                    <div class="flex gap-3 mt-6 w-full">
+                        <a asp-page="/Pedidos" class="btn btn-outline flex-1 rounded-2xl font-bold text-sm gap-2">
+                            <i class="fa-solid fa-box text-xs"></i>
                             Ver mis pedidos
                         </a>
-                        <a asp-page="/Index" class="btn btn-primary flex-1 rounded-xl">
-                            <i class="fa-solid fa-home mr-2"></i>
+                        <a asp-page="/Index" class="btn btn-primary flex-1 rounded-2xl font-bold text-sm gap-2">
+                            <i class="fa-solid fa-home text-xs"></i>
                             Ir al inicio
                         </a>
                     </div>
@@ -69,14 +69,16 @@
     else if (Model.Carrito == null || !Model.Carrito.Lineas.Any())
     {
         <!-- Carrito vacío -->
-        <div class="max-w-2xl mx-auto p-6">
-            <div class="card bg-white shadow-xl rounded-2xl border border-base-300/50">
-                <div class="card-body items-center text-center gap-4 p-8">
-                    <i class="fa-solid fa-cart-shopping text-6xl text-base-content/20"></i>
-                    <h2 class="text-xl font-bold">No hay productos para pagar</h2>
-                    <p class="text-base-content/50">Tu carrito está vacío. Añade productos antes de continuar.</p>
-                    <a asp-page="/Index" class="btn btn-primary rounded-xl font-semibold">
-                        <i class="fa-solid fa-shopping-bag mr-2"></i>
+        <div class="max-w-2xl mx-auto p-6 mt-4">
+            <div class="card bg-white shadow-xl rounded-3xl border-0">
+                <div class="card-body items-center text-center gap-5 p-10">
+                    <div class="w-24 h-24 rounded-3xl bg-gradient-to-br from-primary/6 to-secondary/6 flex items-center justify-center">
+                        <i class="fa-solid fa-bag-shopping text-4xl text-base-content/15"></i>
+                    </div>
+                    <h2 class="text-xl font-extrabold tracking-tight">No hay productos para pagar</h2>
+                    <p class="text-base-content/40 text-sm font-medium">Tu carrito está vacío. Añade productos antes de continuar.</p>
+                    <a asp-page="/Index" class="btn btn-primary rounded-2xl font-bold gap-2 mt-2">
+                        <i class="fa-solid fa-bag-shopping text-sm"></i>
                         Explorar productos
                     </a>
                 </div>
@@ -86,137 +88,139 @@
     else
     {
         <!-- Formulario de pago -->
-        <div class="max-w-4xl mx-auto p-6 flex flex-col lg:flex-row gap-6">
-            <form method="post" asp-page-handler="ConfirmarPago" class="flex flex-col gap-4 flex-1">
+        <div class="max-w-4xl mx-auto p-6 flex flex-col lg:flex-row gap-7 mt-4">
+            <form method="post" asp-page-handler="ConfirmarPago" class="flex flex-col gap-5 flex-1">
                 <!-- Datos personales -->
-                <div class="card bg-white shadow-md rounded-2xl border border-base-300/50">
-                    <div class="card-body gap-4 p-6">
-                        <h2 class="font-bold text-base-content text-lg flex items-center gap-2">
-                            <i class="fa-solid fa-user text-primary text-sm"></i>
+                <div class="card bg-white shadow-md rounded-3xl border-0">
+                    <div class="card-body gap-5 p-7">
+                        <h2 class="font-extrabold text-base-content text-base flex items-center gap-2.5 tracking-tight">
+                            <span class="w-7 h-7 rounded-xl bg-primary/8 flex items-center justify-center">
+                                <i class="fa-solid fa-user text-primary text-xs"></i>
+                            </span>
                             Datos de facturación
                         </h2>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <div class="form-control gap-1">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="form-control gap-1.5">
                                 <label class="label py-0" for="nombre">
-                                    <span class="label-text font-medium">Nombre</span>
+                                    <span class="label-text font-semibold text-xs uppercase tracking-wider text-base-content/60">Nombre</span>
                                 </label>
-                                <input id="nombre" type="text" class="input input-bordered w-full" placeholder="Juan" required />
+                                <input id="nombre" type="text" class="input input-bordered w-full rounded-2xl h-11 text-sm bg-base-200/30" placeholder="Juan" required />
                             </div>
-                            <div class="form-control gap-1">
+                            <div class="form-control gap-1.5">
                                 <label class="label py-0" for="apellidos">
-                                    <span class="label-text font-medium">Apellidos</span>
+                                    <span class="label-text font-semibold text-xs uppercase tracking-wider text-base-content/60">Apellidos</span>
                                 </label>
-                                <input id="apellidos" type="text" class="input input-bordered w-full" placeholder="García López" required />
+                                <input id="apellidos" type="text" class="input input-bordered w-full rounded-2xl h-11 text-sm bg-base-200/30" placeholder="García López" required />
                             </div>
                         </div>
 
-                        <div class="form-control gap-1">
+                        <div class="form-control gap-1.5">
                             <label class="label py-0" for="emailPago">
-                                <span class="label-text font-medium">Correo electrónico</span>
+                                <span class="label-text font-semibold text-xs uppercase tracking-wider text-base-content/60">Correo electrónico</span>
                             </label>
-                            <label class="input input-bordered flex items-center gap-2">
-                                <i class="fa-solid fa-envelope text-base-content/40 text-sm"></i>
-                                <input id="emailPago" type="email" class="grow" placeholder="tu@correo.com" required />
+                            <label class="input input-bordered flex items-center gap-2 rounded-2xl h-11 bg-base-200/30">
+                                <i class="fa-solid fa-envelope text-base-content/30 text-xs"></i>
+                                <input id="emailPago" type="email" class="grow text-sm" placeholder="tu@correo.com" required />
                             </label>
                         </div>
 
-                        <div class="form-control gap-1">
+                        <div class="form-control gap-1.5">
                             <label class="label py-0" for="direccion">
-                                <span class="label-text font-medium">Dirección</span>
+                                <span class="label-text font-semibold text-xs uppercase tracking-wider text-base-content/60">Dirección</span>
                             </label>
-                            <input id="direccion" type="text" class="input input-bordered w-full" placeholder="Calle Mayor 1, 2º A" required />
+                            <input id="direccion" type="text" class="input input-bordered w-full rounded-2xl h-11 text-sm bg-base-200/30" placeholder="Calle Mayor 1, 2º A" required />
                         </div>
 
-                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                            <div class="form-control gap-1 sm:col-span-1">
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                            <div class="form-control gap-1.5 sm:col-span-1">
                                 <label class="label py-0" for="cp">
-                                    <span class="label-text font-medium">C. Postal</span>
+                                    <span class="label-text font-semibold text-xs uppercase tracking-wider text-base-content/60">C. Postal</span>
                                 </label>
-                                <input id="cp" type="text" class="input input-bordered w-full" placeholder="28001" maxlength="5" required />
+                                <input id="cp" type="text" class="input input-bordered w-full rounded-2xl h-11 text-sm bg-base-200/30" placeholder="28001" maxlength="5" required />
                             </div>
-                            <div class="form-control gap-1 col-span-1 sm:col-span-2">
+                            <div class="form-control gap-1.5 col-span-1 sm:col-span-2">
                                 <label class="label py-0" for="ciudad">
-                                    <span class="label-text font-medium">Ciudad</span>
+                                    <span class="label-text font-semibold text-xs uppercase tracking-wider text-base-content/60">Ciudad</span>
                                 </label>
-                                <input id="ciudad" type="text" class="input input-bordered w-full" placeholder="Madrid" required />
+                                <input id="ciudad" type="text" class="input input-bordered w-full rounded-2xl h-11 text-sm bg-base-200/30" placeholder="Madrid" required />
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Método de pago -->
-                <div class="card bg-white shadow-md rounded-2xl border border-base-300/50">
-                    <div class="card-body gap-4 p-6">
-                        <h2 class="font-bold text-base-content text-lg flex items-center gap-2">
-                            <i class="fa-solid fa-credit-card text-primary text-sm"></i>
+                <div class="card bg-white shadow-md rounded-3xl border-0">
+                    <div class="card-body gap-5 p-7">
+                        <h2 class="font-extrabold text-base-content text-base flex items-center gap-2.5 tracking-tight">
+                            <span class="w-7 h-7 rounded-xl bg-primary/8 flex items-center justify-center">
+                                <i class="fa-solid fa-credit-card text-primary text-xs"></i>
+                            </span>
                             Método de pago
                         </h2>
 
-                        <!-- Selector método -->
                         <div class="flex gap-3">
                             <label class="flex-1">
                                 <input type="radio" name="metodo" value="tarjeta" class="hidden peer" checked />
-                                <div class="border-2 border-base-300 peer-checked:border-primary rounded-xl p-3 flex flex-col items-center gap-1 cursor-pointer transition-colors">
-                                    <i class="fa-solid fa-credit-card text-xl text-base-content/60"></i>
-                                    <span class="text-xs font-medium">Tarjeta</span>
+                                <div class="border-2 border-base-300/40 peer-checked:border-primary peer-checked:bg-primary/3 rounded-2xl p-3.5 flex flex-col items-center gap-1.5 cursor-pointer transition-all duration-300">
+                                    <i class="fa-solid fa-credit-card text-xl text-base-content/40 peer-checked:text-primary"></i>
+                                    <span class="text-[10px] font-bold uppercase tracking-wider">Tarjeta</span>
                                 </div>
                             </label>
                             <label class="flex-1">
                                 <input type="radio" name="metodo" value="paypal" class="hidden peer" />
-                                <div class="border-2 border-base-300 peer-checked:border-primary rounded-xl p-3 flex flex-col items-center gap-1 cursor-pointer transition-colors">
-                                    <i class="fa-brands fa-paypal text-xl text-base-content/60"></i>
-                                    <span class="text-xs font-medium">PayPal</span>
+                                <div class="border-2 border-base-300/40 peer-checked:border-primary peer-checked:bg-primary/3 rounded-2xl p-3.5 flex flex-col items-center gap-1.5 cursor-pointer transition-all duration-300">
+                                    <i class="fa-brands fa-paypal text-xl text-base-content/40"></i>
+                                    <span class="text-[10px] font-bold uppercase tracking-wider">PayPal</span>
                                 </div>
                             </label>
                             <label class="flex-1">
                                 <input type="radio" name="metodo" value="bizum" class="hidden peer" />
-                                <div class="border-2 border-base-300 peer-checked:border-primary rounded-xl p-3 flex flex-col items-center gap-1 cursor-pointer transition-colors">
-                                    <i class="fa-solid fa-mobile-screen text-xl text-base-content/60"></i>
-                                    <span class="text-xs font-medium">Bizum</span>
+                                <div class="border-2 border-base-300/40 peer-checked:border-primary peer-checked:bg-primary/3 rounded-2xl p-3.5 flex flex-col items-center gap-1.5 cursor-pointer transition-all duration-300">
+                                    <i class="fa-solid fa-mobile-screen text-xl text-base-content/40"></i>
+                                    <span class="text-[10px] font-bold uppercase tracking-wider">Bizum</span>
                                 </div>
                             </label>
                         </div>
 
-                        <!-- Datos tarjeta -->
-                        <div id="datosTarjeta" class="flex flex-col gap-3">
-                            <div class="form-control gap-1">
+                        <div id="datosTarjeta" class="flex flex-col gap-4">
+                            <div class="form-control gap-1.5">
                                 <label class="label py-0" for="titular">
-                                    <span class="label-text font-medium">Titular de la tarjeta</span>
+                                    <span class="label-text font-semibold text-xs uppercase tracking-wider text-base-content/60">Titular de la tarjeta</span>
                                 </label>
-                                <label class="input input-bordered flex items-center gap-2">
-                                    <i class="fa-solid fa-user text-base-content/40 text-sm"></i>
-                                    <input id="titular" type="text" class="grow" placeholder="JUAN GARCIA LOPEZ" />
+                                <label class="input input-bordered flex items-center gap-2 rounded-2xl h-11 bg-base-200/30">
+                                    <i class="fa-solid fa-user text-base-content/30 text-xs"></i>
+                                    <input id="titular" type="text" class="grow text-sm" placeholder="JUAN GARCIA LOPEZ" />
                                 </label>
                             </div>
 
-                            <div class="form-control gap-1">
+                            <div class="form-control gap-1.5">
                                 <label class="label py-0" for="numTarjeta">
-                                    <span class="label-text font-medium">Número de tarjeta</span>
+                                    <span class="label-text font-semibold text-xs uppercase tracking-wider text-base-content/60">Número de tarjeta</span>
                                 </label>
-                                <label class="input input-bordered flex items-center gap-2">
-                                    <i class="fa-solid fa-credit-card text-base-content/40 text-sm"></i>
-                                    <input id="numTarjeta" type="text" class="grow" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this)" />
+                                <label class="input input-bordered flex items-center gap-2 rounded-2xl h-11 bg-base-200/30">
+                                    <i class="fa-solid fa-credit-card text-base-content/30 text-xs"></i>
+                                    <input id="numTarjeta" type="text" class="grow text-sm" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this)" />
                                 </label>
                             </div>
 
-                            <div class="grid grid-cols-2 gap-3">
-                                <div class="form-control gap-1">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="form-control gap-1.5">
                                     <label class="label py-0" for="caducidad">
-                                        <span class="label-text font-medium">Caducidad</span>
+                                        <span class="label-text font-semibold text-xs uppercase tracking-wider text-base-content/60">Caducidad</span>
                                     </label>
-                                    <label class="input input-bordered flex items-center gap-2">
-                                        <i class="fa-solid fa-calendar text-base-content/40 text-sm"></i>
-                                        <input id="caducidad" type="text" class="grow" placeholder="MM/AA" maxlength="5" oninput="formatExpiry(this)" />
+                                    <label class="input input-bordered flex items-center gap-2 rounded-2xl h-11 bg-base-200/30">
+                                        <i class="fa-solid fa-calendar text-base-content/30 text-xs"></i>
+                                        <input id="caducidad" type="text" class="grow text-sm" placeholder="MM/AA" maxlength="5" oninput="formatExpiry(this)" />
                                     </label>
                                 </div>
-                                <div class="form-control gap-1">
+                                <div class="form-control gap-1.5">
                                     <label class="label py-0" for="cvv">
-                                        <span class="label-text font-medium">CVV</span>
+                                        <span class="label-text font-semibold text-xs uppercase tracking-wider text-base-content/60">CVV</span>
                                     </label>
-                                    <label class="input input-bordered flex items-center gap-2">
-                                        <i class="fa-solid fa-lock text-base-content/40 text-sm"></i>
-                                        <input id="cvv" type="password" class="grow" placeholder="•••" maxlength="4" />
+                                    <label class="input input-bordered flex items-center gap-2 rounded-2xl h-11 bg-base-200/30">
+                                        <i class="fa-solid fa-lock text-base-content/30 text-xs"></i>
+                                        <input id="cvv" type="password" class="grow text-sm" placeholder="•••" maxlength="4" />
                                     </label>
                                 </div>
                             </div>
@@ -224,54 +228,53 @@
                     </div>
                 </div>
 
-                <!-- Botón submit móvil -->
-                <button type="submit" class="btn btn-primary w-full lg:hidden rounded-xl font-semibold">
-                    <i class="fa-solid fa-lock mr-1"></i>
+                <button type="submit" class="btn btn-primary w-full lg:hidden rounded-2xl font-bold h-12 text-sm gap-2">
+                    <i class="fa-solid fa-lock text-xs"></i>
                     Pagar @total.ToString("C", new System.Globalization.CultureInfo("es-ES"))
                 </button>
             </form>
 
-            <!-- Resumen -->
+            <!-- Resumen lateral -->
             <div class="lg:w-80">
-                <div class="card bg-white shadow-xl sticky top-6 rounded-2xl border border-base-300/50">
-                    <div class="card-body gap-4 p-6">
-                        <h2 class="text-lg font-bold text-base-content">Resumen</h2>
+                <div class="card bg-white shadow-xl sticky top-20 rounded-3xl border-0">
+                    <div class="card-body gap-5 p-7">
+                        <h2 class="text-base font-extrabold text-base-content tracking-tight">Resumen</h2>
 
-                        <div class="flex flex-col gap-2 text-sm max-h-48 overflow-y-auto">
+                        <div class="flex flex-col gap-2 text-sm max-h-48 overflow-y-auto pr-1">
                             @foreach (var linea in Model.Carrito.Lineas)
                             {
-                                <div class="flex justify-between text-base-content/70">
-                                    <span class="truncate flex-1 mr-2">@linea.ProductoNombre</span>
-                                    <span class="whitespace-nowrap">@((linea.PrecioUnitario * linea.Cantidad).ToString("C", new System.Globalization.CultureInfo("es-ES")))</span>
+                                <div class="flex justify-between text-base-content/50 font-medium">
+                                    <span class="truncate flex-1 mr-2 text-xs">@linea.ProductoNombre</span>
+                                    <span class="whitespace-nowrap text-xs font-semibold">@((linea.PrecioUnitario * linea.Cantidad).ToString("C", new System.Globalization.CultureInfo("es-ES")))</span>
                                 </div>
                             }
                         </div>
                         
-                        <div class="divider my-1"></div>
-                        <div class="flex flex-col gap-2 text-sm">
-                            <div class="flex justify-between text-base-content/70">
+                        <div class="h-px bg-base-300/25 my-1"></div>
+                        <div class="flex flex-col gap-2.5 text-sm">
+                            <div class="flex justify-between text-base-content/45 font-medium text-xs">
                                 <span>Subtotal</span>
                                 <span>@subtotal.ToString("C", new System.Globalization.CultureInfo("es-ES"))</span>
                             </div>
-                            <div class="flex justify-between text-base-content/70">
+                            <div class="flex justify-between text-base-content/45 font-medium text-xs">
                                 <span>IVA (21%)</span>
                                 <span>@iva.ToString("C", new System.Globalization.CultureInfo("es-ES"))</span>
                             </div>
-                            <div class="divider my-1"></div>
-                            <div class="flex justify-between font-bold text-base-content text-base">
+                            <div class="h-px bg-base-300/25 my-1"></div>
+                            <div class="flex justify-between font-extrabold text-base-content text-base">
                                 <span>Total</span>
-                                <span>@total.ToString("C", new System.Globalization.CultureInfo("es-ES"))</span>
+                                <span class="text-primary">@total.ToString("C", new System.Globalization.CultureInfo("es-ES"))</span>
                             </div>
                         </div>
 
-                        <button type="submit" form="pagoForm" class="btn btn-primary w-full hidden lg:flex"
+                        <button type="submit" form="pagoForm" class="btn btn-primary w-full hidden lg:flex rounded-2xl font-bold h-12 text-sm gap-2"
                                 onclick="document.querySelector('form').submit()">
-                            <i class="fa-solid fa-lock mr-1"></i>
+                            <i class="fa-solid fa-lock text-xs"></i>
                             Pagar @total.ToString("C", new System.Globalization.CultureInfo("es-ES"))
                         </button>
 
-                        <p class="text-xs text-center text-base-content/50 flex items-center justify-center gap-1">
-                            <i class="fa-solid fa-shield-halved"></i>
+                        <p class="text-[10px] text-center text-base-content/35 flex items-center justify-center gap-1.5 font-medium">
+                            <i class="fa-solid fa-shield-halved text-[9px]"></i>
                             Pago 100% seguro y cifrado
                         </p>
                     </div>
