@@ -19,6 +19,7 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["PandaDawRazor/PandaDawRazor.csproj", "PandaDawRazor/"]
+COPY ["PandaBack/PandaBack.csproj", "PandaBack/"]
 RUN dotnet restore "PandaDawRazor/PandaDawRazor.csproj"
 COPY . .
 # Copiar el CSS generado por Tailwind

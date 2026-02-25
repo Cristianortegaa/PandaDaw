@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PandaBack.config;
 using PandaBack.Data;
+using PandaBack.Middleware;
 using PandaBack.Models;
 using PandaBack.Repositories;
 using PandaBack.Services;
@@ -77,6 +78,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();
 }
+
+app.UseGlobalExceptionHandler();
 
 app.UseAuthentication(); 
 app.UseAuthorization();  
