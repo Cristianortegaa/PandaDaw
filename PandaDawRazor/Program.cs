@@ -10,7 +10,6 @@ using PandaBack.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddRazorPages();
 
 // Session para almacenar UserId
@@ -31,11 +30,24 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
     {
         options.Password.RequireDigit = true;
         options.Password.RequireLowercase = true;
+        options.Password.RequireUppercase = true;
+        options.Password.RequireNonAlphanumeric = true;
         options.Password.RequiredLength = 6;
         options.User.RequireUniqueEmail = true;
     })
     .AddEntityFrameworkStores<PandaDbContext>()
     .AddDefaultTokenProviders();
+
+// Cookie de Identity: rutas de login/acceso denegado
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Login";
+    options.AccessDeniedPath = "/Login";
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+    options.ExpireTimeSpan = TimeSpan.FromDays(7);
+    options.SlidingExpiration = true;
+});
 
 // Repositories
 builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
@@ -72,6 +84,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseSession();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();

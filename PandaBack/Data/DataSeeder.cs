@@ -1,15 +1,76 @@
-﻿using PandaBack.Models;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using PandaBack.Models;
 
 namespace PandaBack.Data;
 
-public class DataSeeder
+public static class DataSeeder
 {
-    public static void Initialize(PandaDbContext context)
+    public static async Task InitializeAsync(IServiceProvider serviceProvider)
     {
-        if (!context.Productos.Any())
+        var context = serviceProvider.GetRequiredService<PandaDbContext>();
+        var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
+
+        await context.Database.EnsureCreatedAsync();
+        await SeedProductosAsync(context);
+        await SeedUsersAsync(userManager);
+    }
+
+    private static async Task SeedUsersAsync(UserManager<User> userManager)
+    {
+        if (await userManager.Users.AnyAsync()) return;
+
+        var admin = new User
         {
-            var productosMarca = new List<Producto>
+            UserName = "admin@pandadaw.com",
+            Email = "admin@pandadaw.com",
+            EmailConfirmed = true,
+            Nombre = "Admin",
+            Apellidos = "Sistema",
+            Role = Role.Admin,
+            FechaAlta = DateTime.UtcNow,
+            IsDeleted = false
+        };
+        var adminResult = await userManager.CreateAsync(admin, "Admin123!");
+        if (!adminResult.Succeeded)
+            throw new Exception($"Error creando admin: {string.Join(", ", adminResult.Errors.Select(e => e.Description))}");
+
+        var usuario1 = new User
+        {
+            UserName = "usuario1@pandadaw.com",
+            Email = "usuario1@pandadaw.com",
+            EmailConfirmed = true,
+            Nombre = "Juan",
+            Apellidos = "Pérez García",
+            Role = Role.User,
+            FechaAlta = DateTime.UtcNow,
+            IsDeleted = false
+        };
+        var u1Result = await userManager.CreateAsync(usuario1, "Usuario123!");
+        if (!u1Result.Succeeded)
+            throw new Exception($"Error creando usuario1: {string.Join(", ", u1Result.Errors.Select(e => e.Description))}");
+
+        var usuario2 = new User
+        {
+            UserName = "usuario2@pandadaw.com",
+            Email = "usuario2@pandadaw.com",
+            EmailConfirmed = true,
+            Nombre = "María",
+            Apellidos = "López Martínez",
+            Role = Role.User,
+            FechaAlta = DateTime.UtcNow,
+            IsDeleted = false
+        };
+        var u2Result = await userManager.CreateAsync(usuario2, "Usuario123!");
+        if (!u2Result.Succeeded)
+            throw new Exception($"Error creando usuario2: {string.Join(", ", u2Result.Errors.Select(e => e.Description))}");
+    }
+
+    private static async Task SeedProductosAsync(PandaDbContext context)
+    {
+        if (context.Productos.Any()) return;
+
+        var productosMarca = new List<Producto>
             {
                 new Producto
                 {
@@ -257,65 +318,6 @@ public class DataSeeder
             };
 
             context.Productos.AddRange(productosMarca);
-            context.SaveChanges();
-        }
-
-        if (!context.Users.Any())
-        {
-            var passwordHasher = new PasswordHasher<User>();
-
-            var admin = new User
-            {
-                UserName = "admin",
-                NormalizedUserName = "ADMIN",
-                Email = "admin@pandadaw.com",
-                NormalizedEmail = "ADMIN@PANDADAW.COM",
-                EmailConfirmed = true,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                Nombre = "Admin",
-                Apellidos = "Sistema",
-                Role = Role.Admin,
-                FechaAlta = DateTime.UtcNow,
-                IsDeleted = false
-            };
-            admin.PasswordHash = passwordHasher.HashPassword(admin, "Admin123!");
-            context.Users.Add(admin);
-
-            var usuario1 = new User
-            {
-                UserName = "usuario1",
-                NormalizedUserName = "USUARIO1",
-                Email = "usuario1@pandadaw.com",
-                NormalizedEmail = "USUARIO1@PANDADAW.COM",
-                EmailConfirmed = true,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                Nombre = "Juan",
-                Apellidos = "Pérez García",
-                Role = Role.User,
-                FechaAlta = DateTime.UtcNow,
-                IsDeleted = false
-            };
-            usuario1.PasswordHash = passwordHasher.HashPassword(usuario1, "Usuario123!");
-            context.Users.Add(usuario1);
-
-            var usuario2 = new User
-            {
-                UserName = "usuario2",
-                NormalizedUserName = "USUARIO2",
-                Email = "usuario2@pandadaw.com",
-                NormalizedEmail = "USUARIO2@PANDADAW.COM",
-                EmailConfirmed = true,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                Nombre = "María",
-                Apellidos = "López Martínez",
-                Role = Role.User,
-                FechaAlta = DateTime.UtcNow,
-                IsDeleted = false
-            };
-            usuario2.PasswordHash = passwordHasher.HashPassword(usuario2, "Usuario123!");
-            context.Users.Add(usuario2);
-
-            context.SaveChanges();
-        }
+            await context.SaveChangesAsync();
     }
 }

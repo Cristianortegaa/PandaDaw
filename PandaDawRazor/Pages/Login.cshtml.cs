@@ -1,110 +1,67 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using PandaBack.Dtos.Auth;
-using PandaBack.Services.Auth;
+using PandaBack.Models;
 
 namespace PandaDawRazor.Pages;
 
-public class LoginModel : PageModel
+public class LoginModel(
+    SignInManager<User> signInManager,
+    UserManager<User> userManager,
+    ILogger<LoginModel> logger) : PageModel
 {
-    private readonly IAuthService _authService;
-
-    public LoginModel(IAuthService authService)
-    {
-        _authService = authService;
-    }
-
     [BindProperty]
-    public LoginInputModel LoginInput { get; set; } = new();
-
-    [BindProperty]
-    public RegisterInputModel RegisterInput { get; set; } = new();
+    public LoginInputModel Input { get; set; } = new();
 
     public string? ErrorMessage { get; set; }
-    public string? SuccessMessage { get; set; }
-    public bool ShowRegister { get; set; }
 
     public void OnGet()
     {
-        // Si ya está autenticado, redirigir a inicio
-        if (!string.IsNullOrEmpty(HttpContext.Session.GetString("UserId")))
-        {
-            Response.Redirect("/Index");
-        }
+        ErrorMessage = null;
     }
 
-    public async Task<IActionResult> OnPostLoginAsync()
+    public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
     {
+        returnUrl ??= Url.Content("~/");
+
         if (!ModelState.IsValid)
         {
             return Page();
         }
 
-        var loginDto = new LoginDto
+        try
         {
-            Email = LoginInput.Email,
-            Password = LoginInput.Password
-        };
+            var user = await userManager.FindByEmailAsync(Input.Email);
+            if (user == null)
+            {
+                ErrorMessage = "Email o contraseña incorrectos";
+                return Page();
+            }
 
-        var result = await _authService.LoginAsync(loginDto);
-        
-        if (result.IsSuccess)
-        {
-            // Guardar datos en sesión
-            HttpContext.Session.SetString("UserId", result.Value.Id);
-            HttpContext.Session.SetString("Token", result.Value.Token);
-            HttpContext.Session.SetString("UserName", result.Value.Nombre);
-            HttpContext.Session.SetString("UserEmail", result.Value.Email);
-            HttpContext.Session.SetString("UserRole", result.Value.Role);
-            
-            return RedirectToPage("/Index");
-        }
+            var result = await signInManager.PasswordSignInAsync(
+                user.UserName!, Input.Password, isPersistent: true, lockoutOnFailure: false);
 
-        ErrorMessage = "Email o contraseña incorrectos";
-        return Page();
-    }
+            if (result.Succeeded)
+            {
+                HttpContext.Session.SetString("UserId", user.Id);
+                HttpContext.Session.SetString("UserName", user.Nombre);
+                HttpContext.Session.SetString("UserEmail", user.Email!);
+                HttpContext.Session.SetString("UserRole", user.Role.ToString());
 
-    public async Task<IActionResult> OnPostRegisterAsync()
-    {
-        ShowRegister = true;
-        
-        if (!ModelState.IsValid)
-        {
+                logger.LogInformation("Usuario {Email} ha iniciado sesión.", user.Email);
+                return LocalRedirect(returnUrl);
+            }
+
+            ErrorMessage = "Email o contraseña incorrectos";
             return Page();
         }
-
-        if (RegisterInput.Password != RegisterInput.ConfirmPassword)
+        catch (Exception ex)
         {
-            ErrorMessage = "Las contraseñas no coinciden";
+            logger.LogError(ex, "Error durante el inicio de sesión");
+            ErrorMessage = "Ocurrió un error al intentar iniciar sesión.";
             return Page();
         }
-
-        var registerDto = new RegisterDto
-        {
-            Nombre = RegisterInput.Nombre,
-            Apellidos = RegisterInput.Apellidos,
-            Email = RegisterInput.Email,
-            Password = RegisterInput.Password
-        };
-
-        var result = await _authService.RegisterAsync(registerDto);
-        
-        if (result.IsSuccess)
-        {
-            SuccessMessage = "Cuenta creada correctamente. Ya puedes iniciar sesión.";
-            ShowRegister = false;
-            return Page();
-        }
-
-        ErrorMessage = "No se pudo crear la cuenta. El email puede estar en uso.";
-        return Page();
-    }
-
-    public IActionResult OnPostLogout()
-    {
-        HttpContext.Session.Clear();
-        return RedirectToPage("/Index");
     }
 
     public class LoginInputModel
@@ -115,26 +72,5 @@ public class LoginModel : PageModel
 
         [Required(ErrorMessage = "La contraseña es obligatoria")]
         public string Password { get; set; } = string.Empty;
-    }
-
-    public class RegisterInputModel
-    {
-        [Required(ErrorMessage = "El nombre es obligatorio")]
-        public string Nombre { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "Los apellidos son obligatorios")]
-        public string Apellidos { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "El email es obligatorio")]
-        [EmailAddress(ErrorMessage = "Formato de email no válido")]
-        public string Email { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "La contraseña es obligatoria")]
-        [MinLength(6, ErrorMessage = "La contraseña debe tener al menos 6 caracteres")]
-        public string Password { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "Confirma tu contraseña")]
-        [Compare("Password", ErrorMessage = "Las contraseñas no coinciden")]
-        public string ConfirmPassword { get; set; } = string.Empty;
     }
 }
