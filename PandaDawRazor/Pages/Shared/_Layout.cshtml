@@ -6,15 +6,24 @@
     <title>@ViewData["Title"] - PandaDaw</title>
     <link rel="stylesheet" href="~/css/output.css" asp-append-version="true"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Inter', system-ui, sans-serif; }</style>
 </head>
 <body class="bg-base-200 min-h-screen flex flex-col">
+    <!-- Barra superior decorativa -->
+    <div class="h-1 bg-gradient-to-r from-primary via-secondary to-accent"></div>
+
     <!-- Navbar -->
-    <nav class="navbar bg-base-100 border-b border-base-300 px-4 lg:px-8 sticky top-0 z-50 shadow-sm">
+    <nav class="navbar bg-white/85 backdrop-blur-xl border-b border-base-300/60 px-4 lg:px-8 sticky top-0 z-50 shadow-sm">
         <!-- Logo -->
         <div class="flex-none">
-            <a asp-page="/Index" class="flex items-center gap-2 text-xl font-bold text-primary hover:opacity-80 transition-opacity">
-                <i class="fa-solid fa-paw"></i>
-                <span>PandaDaw</span>
+            <a asp-page="/Index" class="flex items-center gap-2.5 text-xl font-extrabold tracking-tight hover:opacity-80 transition-opacity">
+                <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-md">
+                    <i class="fa-solid fa-paw text-white text-sm"></i>
+                </span>
+                <span class="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">PandaDaw</span>
             </a>
         </div>
 
@@ -23,45 +32,50 @@
             <form method="get" asp-page="/Index" class="w-full max-w-lg">
                 <div class="relative">
                     <input type="text" name="buscar" placeholder="Buscar productos..." 
-                           class="input input-bordered w-full pl-10 bg-base-200 focus:bg-base-100" />
-                    <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-base-content/40"></i>
+                           class="input input-bordered w-full pl-10 bg-base-200/60 focus:bg-white border-base-300/60 rounded-xl" />
+                    <i class="fa-solid fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-base-content/35 text-sm"></i>
                 </div>
             </form>
         </div>
 
         <!-- Iconos derecha -->
-        <div class="flex-none flex items-center gap-2">
+        <div class="flex-none flex items-center gap-1">
             <!-- Favoritos -->
-            <a asp-page="/Favoritos" class="btn btn-ghost btn-circle" title="Favoritos">
-                <i class="fa-regular fa-heart text-xl"></i>
+            <a asp-page="/Favoritos" class="btn btn-ghost btn-circle hover:bg-error/8" title="Favoritos">
+                <i class="fa-regular fa-heart text-lg text-base-content/60"></i>
             </a>
 
             <!-- Carrito -->
-            <a asp-page="/Carrito" class="btn btn-ghost btn-circle" title="Carrito">
-                <i class="fa-solid fa-shopping-cart text-xl"></i>
+            <a asp-page="/Carrito" class="btn btn-ghost btn-circle hover:bg-primary/8" title="Carrito">
+                <i class="fa-solid fa-shopping-bag text-lg text-base-content/60"></i>
             </a>
 
             <!-- Usuario -->
             @if (User.Identity?.IsAuthenticated == true)
             {
-                <div class="dropdown dropdown-end">
+                <div class="dropdown dropdown-end ml-1">
                     <button tabindex="0" class="btn btn-ghost btn-circle avatar">
-                        <div class="w-9 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                            <img src="https://api.dicebear.com/7.x/initials/svg?seed=@Context.Session.GetString("UserName")" alt="Avatar" />
+                        <div class="w-9 rounded-full ring-2 ring-primary/30 ring-offset-base-100 ring-offset-2">
+                            <img src="https://api.dicebear.com/7.x/initials/svg?seed=@Context.Session.GetString("UserName")&backgroundColor=166534&textColor=ffffff" alt="Avatar" />
                         </div>
                     </button>
-                    <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-50 w-52 p-2 shadow-lg border border-base-300 mt-3">
-                        <li class="menu-title px-4 py-2">
-                            <span class="text-xs text-base-content/60">@Context.Session.GetString("UserName")</span>
+                    <ul tabindex="0" class="dropdown-content menu bg-white rounded-2xl z-50 w-56 p-2.5 shadow-xl border border-base-300/50 mt-3">
+                        <li class="px-3 py-2.5 mb-1">
+                            <div class="flex flex-col gap-0.5 hover:bg-transparent cursor-default p-0">
+                                <span class="font-semibold text-sm text-base-content">@Context.Session.GetString("UserName")</span>
+                                <span class="text-xs text-base-content/50">Cuenta personal</span>
+                            </div>
                         </li>
+                        <div class="h-px bg-base-300/50 mx-2 mb-1"></div>
                         @if (Context.Session.GetString("UserRole") == "Admin")
                         {
-                            <li><a asp-page="/AdminPanel"><i class="fa-solid fa-gear mr-2"></i>Panel Admin</a></li>
+                            <li><a asp-page="/AdminPanel" class="rounded-xl"><i class="fa-solid fa-gear mr-2 text-primary/70"></i>Panel Admin</a></li>
                         }
-                        <li><a asp-page="/Pedidos"><i class="fa-solid fa-box mr-2"></i>Mis Pedidos</a></li>
-                        <li><a asp-page="/Favoritos"><i class="fa-solid fa-heart mr-2"></i>Favoritos</a></li>
-                        <li class="border-t border-base-300 mt-2 pt-2">
-                            <a asp-page="/Logout" class="text-error">
+                        <li><a asp-page="/Pedidos" class="rounded-xl"><i class="fa-solid fa-box mr-2 text-primary/70"></i>Mis Pedidos</a></li>
+                        <li><a asp-page="/Favoritos" class="rounded-xl"><i class="fa-solid fa-heart mr-2 text-primary/70"></i>Favoritos</a></li>
+                        <div class="h-px bg-base-300/50 mx-2 my-1"></div>
+                        <li>
+                            <a asp-page="/Logout" class="text-error rounded-xl">
                                 <i class="fa-solid fa-right-from-bracket mr-2"></i>Cerrar sesión
                             </a>
                         </li>
@@ -70,7 +84,7 @@
             }
             else
             {
-                <a asp-page="/Login" class="btn btn-primary btn-sm">
+                <a asp-page="/Login" class="btn btn-primary btn-sm ml-2 rounded-xl shadow-md">
                     <i class="fa-solid fa-right-to-bracket mr-1"></i>
                     Iniciar sesión
                 </a>
@@ -84,14 +98,26 @@
     </main>
 
     <!-- Footer -->
-    <footer class="footer footer-center p-8 bg-base-100 border-t border-base-300 text-base-content">
-        <aside>
-            <div class="flex items-center gap-2 text-2xl font-bold text-primary mb-2">
-                <i class="fa-solid fa-paw"></i>
-                <span>PandaDaw</span>
+    <footer class="border-t border-base-300/60 bg-gradient-to-b from-base-100 to-base-200">
+        <div class="max-w-7xl mx-auto px-6 py-10">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex items-center gap-3">
+                    <span class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-md">
+                        <i class="fa-solid fa-paw text-white text-sm"></i>
+                    </span>
+                    <div>
+                        <p class="font-bold text-base-content tracking-tight">PandaDaw</p>
+                        <p class="text-xs text-base-content/50">Tu tienda tech premium</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-6">
+                    <a href="#" class="text-base-content/40 hover:text-primary transition-colors"><i class="fa-brands fa-instagram text-lg"></i></a>
+                    <a href="#" class="text-base-content/40 hover:text-primary transition-colors"><i class="fa-brands fa-twitter text-lg"></i></a>
+                    <a href="#" class="text-base-content/40 hover:text-primary transition-colors"><i class="fa-brands fa-github text-lg"></i></a>
+                </div>
+                <p class="text-xs text-base-content/40">&copy; 2026 PandaDaw. Todos los derechos reservados.</p>
             </div>
-            <p class="text-base-content/60">Tu tienda de música digital &copy; 2026</p>
-        </aside>
+        </div>
     </footer>
 
     @await RenderSectionAsync("Scripts", required: false)

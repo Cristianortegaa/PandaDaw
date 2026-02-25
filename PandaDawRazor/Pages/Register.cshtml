@@ -6,15 +6,15 @@
 }
 
 <div class="min-h-[calc(100vh-200px)] flex items-center justify-center p-6">
-    <div class="card w-full max-w-md bg-base-100 shadow-xl border border-base-300">
-        <div class="card-body gap-6">
+    <div class="card w-full max-w-md bg-white shadow-xl border border-base-300/50 rounded-2xl">
+        <div class="card-body gap-6 p-8">
             <div class="flex flex-col items-center gap-3 text-center">
-                <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                    <i class="fa-solid fa-user-plus text-3xl text-primary"></i>
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg">
+                    <i class="fa-solid fa-user-plus text-2xl text-white"></i>
                 </div>
                 <div>
-                    <h1 class="text-2xl font-bold text-base-content">Crear cuenta</h1>
-                    <p class="text-sm text-base-content/60">Únete a PandaDaw</p>
+                    <h1 class="text-2xl font-extrabold text-base-content tracking-tight">Crear cuenta</h1>
+                    <p class="text-sm text-base-content/50">Únete a PandaDaw</p>
                 </div>
             </div>
 
@@ -96,15 +96,15 @@
                     <span asp-validation-for="Input.ConfirmPassword" class="text-error text-xs"></span>
                 </div>
 
-                <button type="submit" class="btn btn-primary w-full mt-2">
+                <button type="submit" class="btn btn-primary w-full mt-2 rounded-xl font-semibold">
                     <i class="fa-solid fa-user-plus mr-2"></i>
                     Crear cuenta
                 </button>
             </form>
 
-            <div class="divider text-base-content/40 text-sm">o</div>
+            <div class="divider text-base-content/30 text-xs">o</div>
 
-            <p class="text-center text-sm text-base-content/60">
+            <p class="text-center text-sm text-base-content/50">
                 ¿Ya tienes cuenta?
                 <a asp-page="/Login" class="link link-primary font-semibold">Inicia sesión</a>
             </p>
