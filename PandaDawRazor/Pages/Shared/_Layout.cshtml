@@ -1,42 +1,101 @@
-﻿﻿<!DOCTYPE html>
-<html lang="en" data-theme="azul">
+﻿<!DOCTYPE html>
+<html lang="es" data-theme="pandadaw">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - PandaDawRazor</title>
-    <script type="importmap"></script>
+    <title>@ViewData["Title"] - PandaDaw</title>
     <link rel="stylesheet" href="~/css/output.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/PandaDawRazor.styles.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
 </head>
-<body>
-<header>
-    <div class="navbar bg-base-100 shadow-lg">
-        <div class="flex-1">
-            <a class="btn btn-ghost text-xl" asp-area="" asp-page="/Index">PandaDawRazor</a>
-        </div>
+<body class="bg-base-200 min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <nav class="navbar bg-base-100 border-b border-base-300 px-4 lg:px-8 sticky top-0 z-50 shadow-sm">
+        <!-- Logo -->
         <div class="flex-none">
-            <ul class="menu menu-horizontal px-1">
-                <li><a asp-area="" asp-page="/Index">Home</a></li>
-                <li><a asp-area="" asp-page="/Privacy">Privacy</a></li>
-            </ul>
+            <a asp-page="/Index" class="flex items-center gap-2 text-xl font-bold text-primary hover:opacity-80 transition-opacity">
+                <i class="fa-solid fa-paw"></i>
+                <span>PandaDaw</span>
+            </a>
         </div>
-    </div>
-</header>
-<div class="container mx-auto px-4">
-    <main role="main" class="py-4">
+
+        <!-- Buscador centrado -->
+        <div class="flex-1 flex justify-center px-4">
+            <form method="get" asp-page="/Index" class="w-full max-w-lg">
+                <div class="relative">
+                    <input type="text" name="buscar" placeholder="Buscar productos..." 
+                           class="input input-bordered w-full pl-10 bg-base-200 focus:bg-base-100" />
+                    <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-base-content/40"></i>
+                </div>
+            </form>
+        </div>
+
+        <!-- Iconos derecha -->
+        <div class="flex-none flex items-center gap-2">
+            <!-- Favoritos -->
+            <a asp-page="/Favoritos" class="btn btn-ghost btn-circle" title="Favoritos">
+                <i class="fa-regular fa-heart text-xl"></i>
+            </a>
+
+            <!-- Carrito -->
+            <a asp-page="/Carrito" class="btn btn-ghost btn-circle" title="Carrito">
+                <i class="fa-solid fa-shopping-cart text-xl"></i>
+            </a>
+
+            <!-- Usuario -->
+            @if (Context.Session.GetString("Token") != null)
+            {
+                <div class="dropdown dropdown-end">
+                    <button tabindex="0" class="btn btn-ghost btn-circle avatar">
+                        <div class="w-9 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                            <img src="https://api.dicebear.com/7.x/initials/svg?seed=@Context.Session.GetString("UserName")" alt="Avatar" />
+                        </div>
+                    </button>
+                    <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-50 w-52 p-2 shadow-lg border border-base-300 mt-3">
+                        <li class="menu-title px-4 py-2">
+                            <span class="text-xs text-base-content/60">@Context.Session.GetString("UserName")</span>
+                        </li>
+                        @if (Context.Session.GetString("UserRole") == "Admin")
+                        {
+                            <li><a asp-page="/AdminPanel"><i class="fa-solid fa-gear mr-2"></i>Panel Admin</a></li>
+                        }
+                        <li><a asp-page="/Pedidos"><i class="fa-solid fa-box mr-2"></i>Mis Pedidos</a></li>
+                        <li><a asp-page="/Favoritos"><i class="fa-solid fa-heart mr-2"></i>Favoritos</a></li>
+                        <li class="border-t border-base-300 mt-2 pt-2">
+                            <form method="post" asp-page="/Login" asp-page-handler="Logout">
+                                <button type="submit" class="w-full text-left text-error">
+                                    <i class="fa-solid fa-right-from-bracket mr-2"></i>Cerrar sesión
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            }
+            else
+            {
+                <a asp-page="/Login" class="btn btn-primary btn-sm">
+                    <i class="fa-solid fa-right-to-bracket mr-1"></i>
+                    Iniciar sesión
+                </a>
+            }
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <main class="flex-1">
         @RenderBody()
     </main>
-</div>
 
-<footer class="footer footer-center p-4 bg-base-200 text-base-content border-t">
-    <div>
-        <p>&copy; 2026 - PandaDawRazor - <a class="link link-primary" asp-area="" asp-page="/Privacy">Privacy</a></p>
-    </div>
-</footer>
+    <!-- Footer -->
+    <footer class="footer footer-center p-8 bg-base-100 border-t border-base-300 text-base-content">
+        <aside>
+            <div class="flex items-center gap-2 text-2xl font-bold text-primary mb-2">
+                <i class="fa-solid fa-paw"></i>
+                <span>PandaDaw</span>
+            </div>
+            <p class="text-base-content/60">Tu tienda de música digital &copy; 2026</p>
+        </aside>
+    </footer>
 
-<script src="~/js/site.js" asp-append-version="true"></script>
-
-@await RenderSectionAsync("Scripts", required: false)
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

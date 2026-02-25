@@ -1,0 +1,109 @@
+@page
+@model PandaDawRazor.Pages.FavoritosModel
+@{
+    ViewData["Title"] = "Mis Favoritos";
+    Layout = "_Layout";
+}
+
+<div class="max-w-7xl mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-base-content flex items-center gap-3">
+                <i class="fa-solid fa-heart text-error"></i>
+                Mis Favoritos
+            </h1>
+            <p class="text-base-content/60 mt-1">
+                @Model.Favoritos.Count @(Model.Favoritos.Count == 1 ? "producto guardado" : "productos guardados")
+            </p>
+        </div>
+        <a asp-page="/Index" class="btn btn-ghost btn-sm">
+            <i class="fa-solid fa-arrow-left mr-2"></i>
+            Seguir comprando
+        </a>
+    </div>
+
+    @if (!Model.Favoritos.Any())
+    {
+        <!-- Lista vacía -->
+        <div class="card bg-base-100 shadow-md border border-base-300">
+            <div class="card-body items-center text-center py-16">
+                <div class="w-20 h-20 rounded-full bg-base-200 flex items-center justify-center mb-4">
+                    <i class="fa-regular fa-heart text-4xl text-base-content/30"></i>
+                </div>
+                <h2 class="text-xl font-bold text-base-content">No tienes favoritos</h2>
+                <p class="text-base-content/60 max-w-md">
+                    Guarda tus productos favoritos haciendo clic en el corazón para encontrarlos fácilmente.
+                </p>
+                <a asp-page="/Index" class="btn btn-primary mt-4">
+                    <i class="fa-solid fa-shopping-bag mr-2"></i>
+                    Explorar productos
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Grid de favoritos -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            @foreach (var favorito in Model.Favoritos)
+            {
+                <div class="card bg-base-100 shadow-md hover:shadow-xl transition-all duration-300 border border-base-300 overflow-hidden group">
+                    <figure class="relative aspect-square bg-base-200 overflow-hidden">
+                        <a asp-page="/Detalle" asp-route-id="@favorito.ProductoId" class="w-full h-full">
+                            @if (!string.IsNullOrEmpty(favorito.ProductoImagen))
+                            {
+                                <img src="@favorito.ProductoImagen" alt="@favorito.ProductoNombre" 
+                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                            }
+                            else
+                            {
+                                <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
+                                    <i class="fa-solid fa-music text-5xl text-primary/30"></i>
+                                </div>
+                            }
+                        </a>
+                        <!-- Botón eliminar de favoritos -->
+                        <form method="post" asp-page-handler="RemoveFavorito" asp-route-favoritoId="@favorito.Id" 
+                              class="absolute top-3 right-3">
+                            <button type="submit" class="btn btn-circle btn-sm shadow-md bg-white hover:bg-error hover:border-error">
+                                <i class="fa-solid fa-heart text-error hover:text-white"></i>
+                            </button>
+                        </form>
+                        <span class="badge badge-primary badge-sm absolute top-3 left-3 shadow-md">@favorito.ProductoCategoria</span>
+                    </figure>
+                    <div class="card-body p-4">
+                        <a asp-page="/Detalle" asp-route-id="@favorito.ProductoId" 
+                           class="font-semibold text-base-content hover:text-primary transition-colors line-clamp-2 min-h-[3rem]">
+                            @favorito.ProductoNombre
+                        </a>
+                        <div class="flex items-center justify-between mt-2">
+                            <span class="text-xl font-bold text-primary">
+                                @favorito.ProductoPrecio.ToString("C", new System.Globalization.CultureInfo("es-ES"))
+                            </span>
+                            <form method="post" asp-page-handler="AddToCart" asp-route-productoId="@favorito.ProductoId">
+                                <button type="submit" class="btn btn-primary btn-sm">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+            <!-- Acciones bulk -->
+            <div class="card bg-base-100 shadow mt-6">
+                <div class="card-body py-4 flex-row items-center justify-between">
+                    <p class="text-base-content/60">
+                        <i class="fa-solid fa-info-circle mr-1"></i>
+                        Haz clic en el corazón para eliminar de favoritos
+                    </p>
+                    <a asp-page="/Index" class="btn btn-outline btn-sm">
+                        <i class="fa-solid fa-plus mr-1"></i>
+                        Añadir más
+                    </a>
+                </div>
+            </div>
+        }
+    </div>

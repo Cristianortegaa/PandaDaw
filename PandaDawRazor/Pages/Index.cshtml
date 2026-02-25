@@ -1,70 +1,136 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Inicio";
+    Layout = "_Layout";
 }
 
-<div class="hero min-h-[60vh] bg-base-200">
-    <div class="hero-content text-center">
-        <div class="max-w-md">
-            <h1 class="text-5xl font-bold">¡Bienvenido a PandaDaw!</h1>
-            <p class="py-6">Este proyecto usa Tailwind CSS con DaisyUI y un tema personalizado llamado "azul". Explora los componentes a continuación.</p>
-            <button class="btn btn-primary">Comenzar</button>
+<div class="max-w-7xl mx-auto px-4 py-8">
+    <!-- Header con título y filtros -->
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-base-content">Catálogo</h1>
+            <p class="text-base-content/60 mt-1">@Model.Productos.Count productos disponibles</p>
+        </div>
+        
+        <!-- Filtros por categoría -->
+        <div class="flex flex-wrap gap-2">
+            <a asp-page="/Index" class="btn @(Model.Categoria == null ? "btn-primary" : "btn-ghost") btn-sm">
+                Todos
+            </a>
+            <a asp-page="/Index" asp-route-categoria="Software" class="btn @(Model.Categoria == "Software" ? "btn-primary" : "btn-ghost") btn-sm">
+                <i class="fa-solid fa-laptop-code"></i> Software
+            </a>
+            <a asp-page="/Index" asp-route-categoria="Samples" class="btn @(Model.Categoria == "Samples" ? "btn-primary" : "btn-ghost") btn-sm">
+                <i class="fa-solid fa-music"></i> Samples
+            </a>
+            <a asp-page="/Index" asp-route-categoria="Plugins" class="btn @(Model.Categoria == "Plugins" ? "btn-primary" : "btn-ghost") btn-sm">
+                <i class="fa-solid fa-plug"></i> Plugins
+            </a>
+            <a asp-page="/Index" asp-route-categoria="Hardware" class="btn @(Model.Categoria == "Hardware" ? "btn-primary" : "btn-ghost") btn-sm">
+                <i class="fa-solid fa-microphone"></i> Hardware
+            </a>
         </div>
     </div>
-</div>
 
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 my-8">
-    <!-- Card 1 -->
-    <div class="card bg-base-100 shadow-xl">
-        <div class="card-body">
-            <h2 class="card-title text-primary">Botones</h2>
-            <p>Ejemplos de botones con el tema personalizado</p>
-            <div class="card-actions justify-end flex-wrap gap-2">
-                <button class="btn btn-primary">Primary</button>
-                <button class="btn btn-secondary">Secondary</button>
-                <button class="btn btn-accent">Accent</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Card 2 -->
-    <div class="card bg-base-100 shadow-xl">
-        <div class="card-body">
-            <h2 class="card-title text-secondary">Alertas</h2>
-            <p>Diferentes tipos de alertas</p>
-            <div class="space-y-2">
-                <div class="alert alert-info">
-                    <span>Info alert</span>
+    <!-- Grid de productos -->
+    @if (Model.Productos.Any())
+    {
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            @foreach (var producto in Model.Productos)
+            {
+                var esFavorito = Model.FavoritosMap.ContainsKey(producto.Id);
+                var favoritoId = esFavorito ? Model.FavoritosMap[producto.Id] : 0;
+                
+                <div class="card bg-base-100 shadow-md hover:shadow-xl transition-all duration-300 border border-base-300 overflow-hidden group">
+                    <!-- Imagen del producto -->
+                    <figure class="relative aspect-square bg-base-200 overflow-hidden">
+                        @if (!string.IsNullOrEmpty(producto.Imagen))
+                        {
+                            <img src="@producto.Imagen" alt="@producto.Nombre" 
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                        }
+                        else
+                        {
+                            <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
+                                <i class="fa-solid fa-music text-5xl text-primary/30"></i>
+                            </div>
+                        }
+                        
+                        <!-- Badge categoría -->
+                        <span class="badge badge-primary badge-sm absolute top-3 left-3 shadow-md">
+                            @producto.Category
+                        </span>
+                        
+                        <!-- Botón favorito -->
+                        <form method="post" asp-page-handler="ToggleFavorito" class="absolute top-3 right-3">
+                            <input type="hidden" name="productoId" value="@producto.Id" />
+                            @if (esFavorito)
+                            {
+                                <input type="hidden" name="favoritoId" value="@favoritoId" />
+                            }
+                            <button type="submit" class="btn btn-circle btn-sm shadow-md @(esFavorito ? "btn-error" : "bg-white hover:bg-error hover:border-error")">
+                                <i class="fa-@(esFavorito ? "solid" : "regular") fa-heart @(esFavorito ? "text-white" : "text-error")"></i>
+                            </button>
+                        </form>
+                    </figure>
+                    
+                    <div class="card-body p-4">
+                        <!-- Nombre -->
+                        <a asp-page="/Detalle" asp-route-id="@producto.Id" 
+                           class="font-semibold text-base-content hover:text-primary transition-colors line-clamp-2 min-h-[3rem]">
+                            @producto.Nombre
+                        </a>
+                        
+                        <!-- Precio y stock -->
+                        <div class="flex items-center justify-between mt-2">
+                            <span class="text-xl font-bold text-primary">
+                                @producto.Precio.ToString("C", new System.Globalization.CultureInfo("es-ES"))
+                            </span>
+                            @if (producto.Stock > 0)
+                            {
+                                <span class="badge badge-success badge-sm gap-1">
+                                    <i class="fa-solid fa-check text-[10px]"></i> Stock
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-error badge-sm">Agotado</span>
+                            }
+                        </div>
+                        
+                        <!-- Botón añadir al carrito -->
+                        <form method="post" asp-page-handler="AddToCart" class="mt-4">
+                            <input type="hidden" name="productoId" value="@producto.Id" />
+                            <button type="submit" 
+                                    class="btn btn-primary btn-sm w-full" 
+                                    @(producto.Stock <= 0 ? "disabled" : "")>
+                                <i class="fa-solid fa-cart-plus"></i>
+                                Añadir
+                            </button>
+                        </form>
+                    </div>
                 </div>
-                <div class="alert alert-success">
-                    <span>Success alert</span>
+            }
+        </div>
+    }
+    else
+    {
+        <!-- Estado vacío -->
+        <div class="card bg-base-100 shadow-md border border-base-300">
+            <div class="card-body items-center text-center py-16">
+                <div class="w-20 h-20 rounded-full bg-base-200 flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-box-open text-4xl text-base-content/30"></i>
                 </div>
+                <h2 class="text-xl font-bold text-base-content">No se encontraron productos</h2>
+                <p class="text-base-content/60 max-w-md">
+                    No hay productos que coincidan con tu búsqueda. Intenta con otros filtros.
+                </p>
+                <a asp-page="/Index" class="btn btn-primary mt-4">
+                    <i class="fa-solid fa-arrows-rotate mr-2"></i>
+                    Ver todos los productos
+                </a>
             </div>
         </div>
-    </div>
-
-    <!-- Card 3 -->
-    <div class="card bg-base-100 shadow-xl">
-        <div class="card-body">
-            <h2 class="card-title text-neutral">Badges</h2>
-            <p>Etiquetas con diferentes estilos</p>
-            <div class="card-actions justify-end flex-wrap gap-2">
-                <div class="badge badge-primary">Primary</div>
-                <div class="badge badge-secondary">Secondary</div>
-                <div class="badge badge-accent">Accent</div>
-                <div class="badge badge-ghost">Ghost</div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="prose max-w-none">
-    <h2>Características del Tema "Azul"</h2>
-    <ul>
-        <li>Colores en formato OKLCH para mejor precisión y consistencia</li>
-        <li>Bordes redondeados de 2rem para un look moderno</li>
-        <li>Esquema de colores light con tonos azules/púrpuras</li>
-        <li>Transiciones suaves de 0.25s en botones</li>
-    </ul>
+    }
 </div>
