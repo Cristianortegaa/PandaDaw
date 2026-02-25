@@ -1,0 +1,19 @@
+meta {
+  name: Delete Producto
+  type: http
+  seq: 10
+}
+
+delete {
+  url: {{baseUrl}}/Productos/1
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+assert {
+  res.status: eq 204
+}

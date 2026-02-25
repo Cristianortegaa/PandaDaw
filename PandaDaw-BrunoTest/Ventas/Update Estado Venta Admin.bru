@@ -1,0 +1,21 @@
+meta {
+  name: Update Estado Venta (Admin)
+  type: http
+  seq: 10
+}
+
+patch {
+  url: {{baseUrl}}/Ventas/1/estado?nuevoEstado=Procesando
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.id: eq 1
+  res.body.estado: isString
+}

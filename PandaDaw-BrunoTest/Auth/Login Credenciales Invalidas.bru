@@ -1,0 +1,23 @@
+meta {
+  name: Login Credenciales Invalidas
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/Auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "noexiste@fake.com",
+    "password": "wrongpassword"
+  }
+}
+
+assert {
+  res.status: eq 401
+  res.body.message: isString
+}

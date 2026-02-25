@@ -1,0 +1,24 @@
+meta {
+  name: Register Datos Invalidos
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/Auth/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombre": "",
+    "apellidos": "",
+    "email": "noesunmail",
+    "password": "12"
+  }
+}
+
+assert {
+  res.status: eq 400
+}

@@ -1,0 +1,32 @@
+meta {
+  name: Create Valoracion
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/Valoraciones
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "productoId": 1,
+    "estrellas": 5,
+    "resena": "Excelente producto, muy buena calidad de sonido"
+  }
+}
+
+assert {
+  res.status: eq 201
+  res.body.id: isNumber
+  res.body.estrellas: eq 5
+  res.body.resena: isString
+  res.body.productoId: eq 1
+  res.body.usuarioNombre: isString
+}

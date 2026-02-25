@@ -1,0 +1,27 @@
+meta {
+  name: Add Linea Producto No Existe
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/Carrito/lineas
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "productoId": 99999,
+    "cantidad": 1
+  }
+}
+
+assert {
+  res.status: eq 404
+  res.body.message: isString
+}

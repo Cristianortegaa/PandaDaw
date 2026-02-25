@@ -1,0 +1,15 @@
+meta {
+  name: Delete Producto Sin Auth
+  type: http
+  seq: 12
+}
+
+delete {
+  url: {{baseUrl}}/Productos/1
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 401
+}

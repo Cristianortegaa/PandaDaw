@@ -1,0 +1,26 @@
+meta {
+  name: Add Linea Cantidad Invalida
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/Carrito/lineas
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "productoId": 1,
+    "cantidad": 0
+  }
+}
+
+assert {
+  res.status: eq 400
+}

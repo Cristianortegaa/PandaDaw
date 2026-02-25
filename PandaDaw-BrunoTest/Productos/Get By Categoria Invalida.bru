@@ -1,0 +1,16 @@
+meta {
+  name: Get By Categoria Invalida
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/Productos/categoria/CategoriaInventada
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 400
+  res.body.message: isString
+}

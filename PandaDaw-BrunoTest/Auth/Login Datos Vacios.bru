@@ -1,0 +1,22 @@
+meta {
+  name: Login Datos Vacios
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/Auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "",
+    "password": ""
+  }
+}
+
+assert {
+  res.status: eq 401
+}

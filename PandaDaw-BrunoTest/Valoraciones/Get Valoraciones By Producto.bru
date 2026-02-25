@@ -1,0 +1,16 @@
+meta {
+  name: Get Valoraciones By Producto
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/Valoraciones/producto/1
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+}

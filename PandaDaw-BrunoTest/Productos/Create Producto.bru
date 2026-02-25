@@ -1,0 +1,30 @@
+meta {
+  name: Create Producto
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/Productos
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+body:multipart-form {
+  Nombre: Producto Test Bruno
+  Precio: 99.99
+  Stock: 10
+  Categoria: Audio
+}
+
+assert {
+  res.status: eq 201
+  res.body.nombre: eq Producto Test Bruno
+  res.body.precio: eq 99.99
+  res.body.stock: eq 10
+  res.body.categoria: eq Audio
+}

@@ -1,0 +1,26 @@
+meta {
+  name: Add Favorito Producto No Existe
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/Favoritos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "productoId": 99999
+  }
+}
+
+assert {
+  res.status: eq 404
+  res.body.message: isString
+}

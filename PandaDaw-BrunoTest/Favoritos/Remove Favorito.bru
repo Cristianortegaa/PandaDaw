@@ -1,0 +1,19 @@
+meta {
+  name: Remove Favorito
+  type: http
+  seq: 7
+}
+
+delete {
+  url: {{baseUrl}}/Favoritos/1
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+assert {
+  res.status: eq 204
+}

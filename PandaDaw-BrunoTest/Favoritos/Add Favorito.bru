@@ -1,0 +1,29 @@
+meta {
+  name: Add Favorito
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/Favoritos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "productoId": 2
+  }
+}
+
+assert {
+  res.status: eq 201
+  res.body.id: isNumber
+  res.body.productoId: eq 2
+  res.body.productoNombre: isString
+  res.body.productoPrecio: isNumber
+}

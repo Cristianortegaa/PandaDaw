@@ -1,0 +1,22 @@
+meta {
+  name: Add Linea Sin Auth
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/Carrito/lineas
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "productoId": 1,
+    "cantidad": 1
+  }
+}
+
+assert {
+  res.status: eq 401
+}

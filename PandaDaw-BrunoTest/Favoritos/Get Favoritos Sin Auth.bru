@@ -1,0 +1,15 @@
+meta {
+  name: Get Favoritos Sin Auth
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/Favoritos
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 401
+}

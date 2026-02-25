@@ -1,0 +1,20 @@
+meta {
+  name: Create Venta Carrito Vacio
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/Ventas
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+assert {
+  res.status: eq 400
+  res.body.message: isString
+}

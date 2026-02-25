@@ -1,0 +1,15 @@
+meta {
+  name: Update Estado Venta Sin Auth
+  type: http
+  seq: 12
+}
+
+patch {
+  url: {{baseUrl}}/Ventas/1/estado?nuevoEstado=Enviado
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 401
+}

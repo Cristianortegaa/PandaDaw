@@ -1,0 +1,20 @@
+meta {
+  name: Delete Producto No Existe
+  type: http
+  seq: 11
+}
+
+delete {
+  url: {{baseUrl}}/Productos/99999
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+assert {
+  res.status: eq 404
+  res.body.message: isString
+}

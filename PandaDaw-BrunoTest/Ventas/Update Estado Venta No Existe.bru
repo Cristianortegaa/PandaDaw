@@ -1,0 +1,20 @@
+meta {
+  name: Update Estado Venta No Existe
+  type: http
+  seq: 11
+}
+
+patch {
+  url: {{baseUrl}}/Ventas/99999/estado?nuevoEstado=Procesando
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+assert {
+  res.status: eq 404
+  res.body.message: isString
+}

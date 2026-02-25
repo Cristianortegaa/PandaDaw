@@ -1,0 +1,19 @@
+meta {
+  name: Vaciar Carrito
+  type: http
+  seq: 11
+}
+
+delete {
+  url: {{baseUrl}}/Carrito
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+assert {
+  res.status: eq 204
+}

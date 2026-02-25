@@ -1,0 +1,29 @@
+meta {
+  name: Update Producto
+  type: http
+  seq: 8
+}
+
+put {
+  url: {{baseUrl}}/Productos/1
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+body:multipart-form {
+  Nombre: Producto Actualizado
+  Precio: 149.99
+  Stock: 20
+  Categoria: Audio
+}
+
+assert {
+  res.status: eq 200
+  res.body.nombre: eq Producto Actualizado
+  res.body.precio: eq 149.99
+  res.body.stock: eq 20
+}

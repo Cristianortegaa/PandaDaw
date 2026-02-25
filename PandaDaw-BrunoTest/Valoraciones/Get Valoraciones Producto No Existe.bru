@@ -1,0 +1,16 @@
+meta {
+  name: Get Valoraciones Producto No Existe
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/Valoraciones/producto/99999
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 404
+  res.body.message: isString
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Get Mis Pedidos Sin Auth
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/Ventas/mis-pedidos
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 401
+}
