@@ -12,6 +12,8 @@ namespace Tests.Services
         private Mock<IVentaRepository> _repoVentasFalso;
         private Mock<ICarritoRepository> _repoCarritoFalso;
         private Mock<IProductoRepository> _repoProductosFalso;
+        private const string TestUserId = "test-user-id";
+        private const string OtherUserId = "other-user-id";
 
         [SetUp]
         public void PrepararTodo()
@@ -29,8 +31,8 @@ namespace Tests.Services
             // PREPARAR
             var listaFalsa = new List<Venta>
             {
-                new Venta { Id = 1, UserId = 1, Lineas = new List<LineaVenta>() },
-                new Venta { Id = 2, UserId = 2, Lineas = new List<LineaVenta>() }
+                new Venta { Id = 1, UserId = TestUserId, Lineas = new List<LineaVenta>() },
+                new Venta { Id = 2, UserId = OtherUserId, Lineas = new List<LineaVenta>() }
             };
             _repoVentasFalso.Setup(r => r.GetAllAsync()).ReturnsAsync(listaFalsa);
 
@@ -46,15 +48,14 @@ namespace Tests.Services
         public async Task ObtenerPorUsuario_DebeDevolverListaConExito()
         {
             // PREPARAR
-            long userId = 1;
             var listaFalsa = new List<Venta>
             {
-                new Venta { Id = 1, UserId = userId, Lineas = new List<LineaVenta>() }
+                new Venta { Id = 1, UserId = TestUserId, Lineas = new List<LineaVenta>() }
             };
-            _repoVentasFalso.Setup(r => r.GetByUserIdAsync(userId)).ReturnsAsync(listaFalsa);
+            _repoVentasFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync(listaFalsa);
 
             // ACTUAR
-            var resultado = await _service.GetVentasByUserAsync(userId);
+            var resultado = await _service.GetVentasByUserAsync(TestUserId);
 
             // COMPROBAR
             Assert.That(resultado.IsSuccess, Is.True);
@@ -79,7 +80,7 @@ namespace Tests.Services
         public async Task ObtenerPorId_SiExiste_DebeDevolverVentaConExito()
         {
             // PREPARAR
-            var venta = new Venta { Id = 1, UserId = 1, Lineas = new List<LineaVenta>() };
+            var venta = new Venta { Id = 1, UserId = TestUserId, Lineas = new List<LineaVenta>() };
             _repoVentasFalso.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(venta);
 
             // ACTUAR
@@ -98,10 +99,10 @@ namespace Tests.Services
         public async Task CrearVenta_SiCarritoNoExiste_DebeDarErrorCarritoVacio()
         {
             // PREPARAR
-            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(1)).ReturnsAsync((Carrito)null);
+            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync((Carrito)null);
 
             // ACTUAR
-            var resultado = await _service.CreateVentaFromCarritoAsync(1);
+            var resultado = await _service.CreateVentaFromCarritoAsync(TestUserId);
 
             // COMPROBAR
             Assert.That(resultado.IsFailure, Is.True);
@@ -115,13 +116,13 @@ namespace Tests.Services
             var carritoVacio = new Carrito
             {
                 Id = 10,
-                UserId = 1,
+                UserId = TestUserId,
                 LineasCarrito = new List<LineaCarrito>()
             };
-            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(1)).ReturnsAsync(carritoVacio);
+            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync(carritoVacio);
 
             // ACTUAR
-            var resultado = await _service.CreateVentaFromCarritoAsync(1);
+            var resultado = await _service.CreateVentaFromCarritoAsync(TestUserId);
 
             // COMPROBAR
             Assert.That(resultado.IsFailure, Is.True);
@@ -135,17 +136,17 @@ namespace Tests.Services
             var carrito = new Carrito
             {
                 Id = 10,
-                UserId = 1,
+                UserId = TestUserId,
                 LineasCarrito = new List<LineaCarrito>
                 {
                     new LineaCarrito { ProductoId = 99, Cantidad = 1 }
                 }
             };
-            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(1)).ReturnsAsync(carrito);
+            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync(carrito);
             _repoProductosFalso.Setup(r => r.GetByIdAsync(99)).ReturnsAsync((Producto)null);
 
             // ACTUAR
-            var resultado = await _service.CreateVentaFromCarritoAsync(1);
+            var resultado = await _service.CreateVentaFromCarritoAsync(TestUserId);
 
             // COMPROBAR
             Assert.That(resultado.IsFailure, Is.True);
@@ -160,18 +161,18 @@ namespace Tests.Services
             var carrito = new Carrito
             {
                 Id = 10,
-                UserId = 1,
+                UserId = TestUserId,
                 LineasCarrito = new List<LineaCarrito>
                 {
                     new LineaCarrito { ProductoId = 5, Cantidad = 10, Producto = producto }
                 }
             };
 
-            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(1)).ReturnsAsync(carrito);
+            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync(carrito);
             _repoProductosFalso.Setup(r => r.GetByIdAsync(5)).ReturnsAsync(producto);
 
             // ACTUAR
-            var resultado = await _service.CreateVentaFromCarritoAsync(1);
+            var resultado = await _service.CreateVentaFromCarritoAsync(TestUserId);
 
             // COMPROBAR
             Assert.That(resultado.IsFailure, Is.True);
@@ -186,23 +187,23 @@ namespace Tests.Services
             var carrito = new Carrito
             {
                 Id = 10,
-                UserId = 1,
+                UserId = TestUserId,
                 LineasCarrito = new List<LineaCarrito>
                 {
                     new LineaCarrito { ProductoId = 5, Cantidad = 2, Producto = producto }
                 }
             };
 
-            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(1)).ReturnsAsync(carrito);
+            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync(carrito);
             _repoProductosFalso.Setup(r => r.GetByIdAsync(5)).ReturnsAsync(producto);
 
             // ACTUAR
-            var resultado = await _service.CreateVentaFromCarritoAsync(1);
+            var resultado = await _service.CreateVentaFromCarritoAsync(TestUserId);
 
             // COMPROBAR
             Assert.That(resultado.IsSuccess, Is.True);
             Assert.That(resultado.Value.Total, Is.EqualTo(100)); // 2 * 50
-            _repoVentasFalso.Verify(r => r.AddAsync(It.IsAny<Venta>()), Times.Once);
+            _repoVentasFalso.Verify(r => r.AddAsync(It.Is<Venta>(v => v.UserId == TestUserId)), Times.Once);
             _repoCarritoFalso.Verify(r => r.DeleteAsync(carrito.Id), Times.Once);
         }
 
@@ -214,18 +215,18 @@ namespace Tests.Services
             var carrito = new Carrito
             {
                 Id = 10,
-                UserId = 1,
+                UserId = TestUserId,
                 LineasCarrito = new List<LineaCarrito>
                 {
                     new LineaCarrito { ProductoId = 5, Cantidad = 3, Producto = producto }
                 }
             };
 
-            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(1)).ReturnsAsync(carrito);
+            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync(carrito);
             _repoProductosFalso.Setup(r => r.GetByIdAsync(5)).ReturnsAsync(producto);
 
             // ACTUAR
-            await _service.CreateVentaFromCarritoAsync(1);
+            await _service.CreateVentaFromCarritoAsync(TestUserId);
 
             // COMPROBAR: El stock debe haberse reducido
             Assert.That(producto.Stock, Is.EqualTo(17)); // 20 - 3
@@ -256,7 +257,7 @@ namespace Tests.Services
             var venta = new Venta
             {
                 Id = 1,
-                UserId = 1,
+                UserId = TestUserId,
                 Estado = EstadoPedido.Pendiente,
                 Lineas = new List<LineaVenta>()
             };
@@ -277,7 +278,7 @@ namespace Tests.Services
             var venta = new Venta
             {
                 Id = 1,
-                UserId = 1,
+                UserId = TestUserId,
                 Estado = EstadoPedido.Cancelado,
                 Lineas = new List<LineaVenta>()
             };
@@ -298,7 +299,7 @@ namespace Tests.Services
             var venta = new Venta
             {
                 Id = 1,
-                UserId = 1,
+                UserId = TestUserId,
                 Estado = EstadoPedido.Entregado,
                 Lineas = new List<LineaVenta>()
             };
@@ -313,4 +314,3 @@ namespace Tests.Services
         }
     }
 }
-

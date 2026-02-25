@@ -25,7 +25,7 @@ namespace Tests.Services
         [Test]
         public async Task ObtenerFavoritos_DebeDevolverListaConExito()
         {
-            long userId = 1;
+            string userId = "test-user-id";
             var productoSimulado = new Producto { Nombre = "Test" }; 
             var listaFalsa = new List<Favorito> { new Favorito { ProductoId = 10, Producto = productoSimulado } };
     
@@ -42,10 +42,11 @@ namespace Tests.Services
         public async Task AgregarFavorito_SiProductoNoExiste_DebeDarError()
         {
             var dto = new CreateFavoritoDto { ProductoId = 99 }; 
+            string userId = "test-user-id";
             
             _repoProductosFalso.Setup(r => r.GetByIdAsync(dto.ProductoId)).ReturnsAsync((Producto)null);
 
-            var resultado = await _service.AddToFavoritosAsync(1, dto);
+            var resultado = await _service.AddToFavoritosAsync(userId, dto);
 
             Assert.That(resultado.IsFailure, Is.True);
         }
@@ -54,13 +55,14 @@ namespace Tests.Services
         public async Task AgregarFavorito_SiYaEstaEnFavoritos_DebeDarError()
         {
             var dto = new CreateFavoritoDto { ProductoId = 5 };
+            string userId = "test-user-id";
             var productoReal = new Producto { Id = 5 };
             var favoritoRepetido = new Favorito { ProductoId = 5 };
 
             _repoProductosFalso.Setup(r => r.GetByIdAsync(dto.ProductoId)).ReturnsAsync(productoReal);
-            _repoFavoritosFalso.Setup(r => r.GetByProductAndUserAsync(dto.ProductoId, 1)).ReturnsAsync(favoritoRepetido);
+            _repoFavoritosFalso.Setup(r => r.GetByProductAndUserAsync(dto.ProductoId, userId)).ReturnsAsync(favoritoRepetido);
 
-            var resultado = await _service.AddToFavoritosAsync(1, dto);
+            var resultado = await _service.AddToFavoritosAsync(userId, dto);
 
             Assert.That(resultado.IsFailure, Is.True);
         }
@@ -69,12 +71,13 @@ namespace Tests.Services
         public async Task AgregarFavorito_ConDatosCorrectos_DebeTenerExito()
         {
             var dto = new CreateFavoritoDto { ProductoId = 5 };
+            string userId = "test-user-id";
             var productoReal = new Producto { Id = 5 };
 
             _repoProductosFalso.Setup(r => r.GetByIdAsync(dto.ProductoId)).ReturnsAsync(productoReal);
-            _repoFavoritosFalso.Setup(r => r.GetByProductAndUserAsync(dto.ProductoId, 1)).ReturnsAsync((Favorito)null);
+            _repoFavoritosFalso.Setup(r => r.GetByProductAndUserAsync(dto.ProductoId, userId)).ReturnsAsync((Favorito)null);
 
-            var resultado = await _service.AddToFavoritosAsync(1, dto);
+            var resultado = await _service.AddToFavoritosAsync(userId, dto);
 
             Assert.That(resultado.IsSuccess, Is.True);
         }
@@ -83,9 +86,10 @@ namespace Tests.Services
         public async Task BorrarFavorito_SiNoExiste_DebeDarError()
         {
             long favoritoId = 99; 
+            string userId = "test-user-id";
             _repoFavoritosFalso.Setup(r => r.GetByIdAsync(favoritoId)).ReturnsAsync((Favorito)null);
 
-            var resultado = await _service.RemoveFromFavoritosAsync(favoritoId, 1);
+            var resultado = await _service.RemoveFromFavoritosAsync(favoritoId, userId);
 
             Assert.That(resultado.IsFailure, Is.True);
         }
@@ -94,11 +98,12 @@ namespace Tests.Services
         public async Task BorrarFavorito_SiExiste_DebeTenerExito()
         {
             long favoritoId = 10;
-            var favoritoReal = new Favorito { Id = favoritoId };
+            string userId = "test-user-id";
+            var favoritoReal = new Favorito { Id = favoritoId, UserId = userId };
             
             _repoFavoritosFalso.Setup(r => r.GetByIdAsync(favoritoId)).ReturnsAsync(favoritoReal);
 
-            var resultado = await _service.RemoveFromFavoritosAsync(favoritoId, 1);
+            var resultado = await _service.RemoveFromFavoritosAsync(favoritoId, userId);
 
             Assert.That(resultado.IsSuccess, Is.True);
         }

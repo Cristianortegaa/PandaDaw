@@ -9,7 +9,6 @@ using PandaBack.Models;
 using PandaBack.Repositories;
 using PandaBack.Services;
 using PandaBack.Services.Auth;
-using PandaBack.Seeders;
 
 var builder = WebApplication.CreateBuilder(args);
 

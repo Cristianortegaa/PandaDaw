@@ -11,6 +11,7 @@ namespace Tests.Services
         private CarritoService _service;
         private Mock<ICarritoRepository> _repoCarritoFalso;
         private Mock<IProductoRepository> _repoProductosFalso;
+        private const string TestUserId = "test-user-id";
 
         [SetUp]
         public void PrepararTodo()
@@ -25,18 +26,17 @@ namespace Tests.Services
         public async Task ObtenerCarrito_SiExiste_DebeDevolverCarritoConExito()
         {
             // PREPARAR
-            long userId = 1;
             var carritoExistente = new Carrito
             {
                 Id = 10,
-                UserId = userId,
+                UserId = TestUserId,
                 LineasCarrito = new List<LineaCarrito>()
             };
 
-            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(userId)).ReturnsAsync(carritoExistente);
+            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync(carritoExistente);
 
             // ACTUAR
-            var resultado = await _service.GetCarritoByUserIdAsync(userId);
+            var resultado = await _service.GetCarritoByUserIdAsync(TestUserId);
 
             // COMPROBAR
             Assert.That(resultado.IsSuccess, Is.True);
@@ -47,15 +47,14 @@ namespace Tests.Services
         public async Task ObtenerCarrito_SiNoExiste_DebeCrearUnoVacio()
         {
             // PREPARAR
-            long userId = 1;
-            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(userId)).ReturnsAsync((Carrito)null);
+            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync((Carrito)null);
 
             // ACTUAR
-            var resultado = await _service.GetCarritoByUserIdAsync(userId);
+            var resultado = await _service.GetCarritoByUserIdAsync(TestUserId);
 
             // COMPROBAR
             Assert.That(resultado.IsSuccess, Is.True);
-            _repoCarritoFalso.Verify(r => r.AddAsync(It.IsAny<Carrito>()), Times.Once);
+            _repoCarritoFalso.Verify(r => r.AddAsync(It.Is<Carrito>(c => c.UserId == TestUserId)), Times.Once);
         }
 
         // ==========================================
@@ -66,7 +65,7 @@ namespace Tests.Services
         public async Task AddLinea_SiCantidadEsCero_DebeDarError()
         {
             // PREPARAR & ACTUAR
-            var resultado = await _service.AddLineaCarritoAsync(1, 5, 0);
+            var resultado = await _service.AddLineaCarritoAsync(TestUserId, 5, 0);
 
             // COMPROBAR
             Assert.That(resultado.IsFailure, Is.True);
@@ -77,7 +76,7 @@ namespace Tests.Services
         public async Task AddLinea_SiCantidadEsNegativa_DebeDarError()
         {
             // PREPARAR & ACTUAR
-            var resultado = await _service.AddLineaCarritoAsync(1, 5, -3);
+            var resultado = await _service.AddLineaCarritoAsync(TestUserId, 5, -3);
 
             // COMPROBAR
             Assert.That(resultado.IsFailure, Is.True);
@@ -91,7 +90,7 @@ namespace Tests.Services
             _repoProductosFalso.Setup(r => r.GetByIdAsync(99)).ReturnsAsync((Producto)null);
 
             // ACTUAR
-            var resultado = await _service.AddLineaCarritoAsync(1, 99, 2);
+            var resultado = await _service.AddLineaCarritoAsync(TestUserId, 99, 2);
 
             // COMPROBAR
             Assert.That(resultado.IsFailure, Is.True);
@@ -106,7 +105,7 @@ namespace Tests.Services
             _repoProductosFalso.Setup(r => r.GetByIdAsync(5)).ReturnsAsync(producto);
 
             // ACTUAR
-            var resultado = await _service.AddLineaCarritoAsync(1, 5, 10);
+            var resultado = await _service.AddLineaCarritoAsync(TestUserId, 5, 10);
 
             // COMPROBAR
             Assert.That(resultado.IsFailure, Is.True);
@@ -117,14 +116,13 @@ namespace Tests.Services
         public async Task AddLinea_ConDatosCorrectos_DebeTenerExito()
         {
             // PREPARAR
-            long userId = 1;
             var producto = new Producto { Id = 5, Nombre = "Auriculares", Precio = 50, Stock = 20 };
 
             _repoProductosFalso.Setup(r => r.GetByIdAsync(5)).ReturnsAsync(producto);
-            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(userId)).ReturnsAsync((Carrito)null);
+            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync((Carrito)null);
 
             // ACTUAR
-            var resultado = await _service.AddLineaCarritoAsync(userId, 5, 2);
+            var resultado = await _service.AddLineaCarritoAsync(TestUserId, 5, 2);
 
             // COMPROBAR
             Assert.That(resultado.IsSuccess, Is.True);
@@ -134,12 +132,11 @@ namespace Tests.Services
         public async Task AddLinea_SiProductoYaEstaEnCarrito_DebeIncrementarCantidad()
         {
             // PREPARAR
-            long userId = 1;
             var producto = new Producto { Id = 5, Nombre = "Auriculares", Precio = 50, Stock = 20 };
             var carritoExistente = new Carrito
             {
                 Id = 10,
-                UserId = userId,
+                UserId = TestUserId,
                 LineasCarrito = new List<LineaCarrito>
                 {
                     new LineaCarrito { ProductoId = 5, Cantidad = 2, Producto = producto }
@@ -147,10 +144,10 @@ namespace Tests.Services
             };
 
             _repoProductosFalso.Setup(r => r.GetByIdAsync(5)).ReturnsAsync(producto);
-            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(userId)).ReturnsAsync(carritoExistente);
+            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync(carritoExistente);
 
             // ACTUAR
-            var resultado = await _service.AddLineaCarritoAsync(userId, 5, 3);
+            var resultado = await _service.AddLineaCarritoAsync(TestUserId, 5, 3);
 
             // COMPROBAR
             Assert.That(resultado.IsSuccess, Is.True);
@@ -161,12 +158,11 @@ namespace Tests.Services
         public async Task AddLinea_SiProductoYaEstaYStockInsuficiente_DebeDarError()
         {
             // PREPARAR
-            long userId = 1;
             var producto = new Producto { Id = 5, Nombre = "Auriculares", Precio = 50, Stock = 5 };
             var carritoExistente = new Carrito
             {
                 Id = 10,
-                UserId = userId,
+                UserId = TestUserId,
                 LineasCarrito = new List<LineaCarrito>
                 {
                     new LineaCarrito { ProductoId = 5, Cantidad = 3, Producto = producto }
@@ -174,10 +170,10 @@ namespace Tests.Services
             };
 
             _repoProductosFalso.Setup(r => r.GetByIdAsync(5)).ReturnsAsync(producto);
-            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(userId)).ReturnsAsync(carritoExistente);
+            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync(carritoExistente);
 
             // ACTUAR
-            var resultado = await _service.AddLineaCarritoAsync(userId, 5, 5);
+            var resultado = await _service.AddLineaCarritoAsync(TestUserId, 5, 5);
 
             // COMPROBAR
             Assert.That(resultado.IsFailure, Is.True);
@@ -192,7 +188,7 @@ namespace Tests.Services
         public async Task UpdateCantidad_SiCantidadEsCero_DebeDarError()
         {
             // PREPARAR & ACTUAR
-            var resultado = await _service.UpdateLineaCantidadAsync(1, 5, 0);
+            var resultado = await _service.UpdateLineaCantidadAsync(TestUserId, 5, 0);
 
             // COMPROBAR
             Assert.That(resultado.IsFailure, Is.True);
@@ -203,10 +199,10 @@ namespace Tests.Services
         public async Task UpdateCantidad_SiCarritoNoExiste_DebeDarErrorNotFound()
         {
             // PREPARAR
-            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(1)).ReturnsAsync((Carrito)null);
+            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync((Carrito)null);
 
             // ACTUAR
-            var resultado = await _service.UpdateLineaCantidadAsync(1, 5, 2);
+            var resultado = await _service.UpdateLineaCantidadAsync(TestUserId, 5, 2);
 
             // COMPROBAR
             Assert.That(resultado.IsFailure, Is.True);
@@ -217,17 +213,16 @@ namespace Tests.Services
         public async Task UpdateCantidad_SiProductoNoEstaEnCarrito_DebeDarErrorNotFound()
         {
             // PREPARAR
-            long userId = 1;
             var carritoExistente = new Carrito
             {
                 Id = 10,
-                UserId = userId,
+                UserId = TestUserId,
                 LineasCarrito = new List<LineaCarrito>()
             };
-            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(userId)).ReturnsAsync(carritoExistente);
+            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync(carritoExistente);
 
             // ACTUAR
-            var resultado = await _service.UpdateLineaCantidadAsync(userId, 99, 2);
+            var resultado = await _service.UpdateLineaCantidadAsync(TestUserId, 99, 2);
 
             // COMPROBAR
             Assert.That(resultado.IsFailure, Is.True);
@@ -238,23 +233,22 @@ namespace Tests.Services
         public async Task UpdateCantidad_SiStockInsuficiente_DebeDarError()
         {
             // PREPARAR
-            long userId = 1;
             var producto = new Producto { Id = 5, Nombre = "Auriculares", Precio = 50, Stock = 3 };
             var carritoExistente = new Carrito
             {
                 Id = 10,
-                UserId = userId,
+                UserId = TestUserId,
                 LineasCarrito = new List<LineaCarrito>
                 {
                     new LineaCarrito { ProductoId = 5, Cantidad = 1, Producto = producto }
                 }
             };
 
-            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(userId)).ReturnsAsync(carritoExistente);
+            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync(carritoExistente);
             _repoProductosFalso.Setup(r => r.GetByIdAsync(5)).ReturnsAsync(producto);
 
             // ACTUAR
-            var resultado = await _service.UpdateLineaCantidadAsync(userId, 5, 10);
+            var resultado = await _service.UpdateLineaCantidadAsync(TestUserId, 5, 10);
 
             // COMPROBAR
             Assert.That(resultado.IsFailure, Is.True);
@@ -265,23 +259,22 @@ namespace Tests.Services
         public async Task UpdateCantidad_ConDatosCorrectos_DebeTenerExito()
         {
             // PREPARAR
-            long userId = 1;
             var producto = new Producto { Id = 5, Nombre = "Auriculares", Precio = 50, Stock = 20 };
             var carritoExistente = new Carrito
             {
                 Id = 10,
-                UserId = userId,
+                UserId = TestUserId,
                 LineasCarrito = new List<LineaCarrito>
                 {
                     new LineaCarrito { ProductoId = 5, Cantidad = 1, Producto = producto }
                 }
             };
 
-            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(userId)).ReturnsAsync(carritoExistente);
+            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync(carritoExistente);
             _repoProductosFalso.Setup(r => r.GetByIdAsync(5)).ReturnsAsync(producto);
 
             // ACTUAR
-            var resultado = await _service.UpdateLineaCantidadAsync(userId, 5, 5);
+            var resultado = await _service.UpdateLineaCantidadAsync(TestUserId, 5, 5);
 
             // COMPROBAR
             Assert.That(resultado.IsSuccess, Is.True);
@@ -296,10 +289,10 @@ namespace Tests.Services
         public async Task RemoveLinea_SiCarritoNoExiste_DebeDarErrorNotFound()
         {
             // PREPARAR
-            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(1)).ReturnsAsync((Carrito)null);
+            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync((Carrito)null);
 
             // ACTUAR
-            var resultado = await _service.RemoveLineaCarritoAsync(1, 5);
+            var resultado = await _service.RemoveLineaCarritoAsync(TestUserId, 5);
 
             // COMPROBAR
             Assert.That(resultado.IsFailure, Is.True);
@@ -310,17 +303,16 @@ namespace Tests.Services
         public async Task RemoveLinea_SiProductoNoEstaEnCarrito_DebeDarErrorNotFound()
         {
             // PREPARAR
-            long userId = 1;
             var carritoExistente = new Carrito
             {
                 Id = 10,
-                UserId = userId,
+                UserId = TestUserId,
                 LineasCarrito = new List<LineaCarrito>()
             };
-            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(userId)).ReturnsAsync(carritoExistente);
+            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync(carritoExistente);
 
             // ACTUAR
-            var resultado = await _service.RemoveLineaCarritoAsync(userId, 99);
+            var resultado = await _service.RemoveLineaCarritoAsync(TestUserId, 99);
 
             // COMPROBAR
             Assert.That(resultado.IsFailure, Is.True);
@@ -331,19 +323,18 @@ namespace Tests.Services
         public async Task RemoveLinea_ConDatosCorrectos_DebeTenerExito()
         {
             // PREPARAR
-            long userId = 1;
             var producto = new Producto { Id = 5, Nombre = "Auriculares" };
             var linea = new LineaCarrito { ProductoId = 5, Cantidad = 2, Producto = producto };
             var carritoExistente = new Carrito
             {
                 Id = 10,
-                UserId = userId,
+                UserId = TestUserId,
                 LineasCarrito = new List<LineaCarrito> { linea }
             };
-            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(userId)).ReturnsAsync(carritoExistente);
+            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync(carritoExistente);
 
             // ACTUAR
-            var resultado = await _service.RemoveLineaCarritoAsync(userId, 5);
+            var resultado = await _service.RemoveLineaCarritoAsync(TestUserId, 5);
 
             // COMPROBAR
             Assert.That(resultado.IsSuccess, Is.True);
@@ -357,10 +348,10 @@ namespace Tests.Services
         public async Task VaciarCarrito_SiCarritoNoExiste_DebeDarErrorNotFound()
         {
             // PREPARAR
-            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(1)).ReturnsAsync((Carrito)null);
+            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync((Carrito)null);
 
             // ACTUAR
-            var resultado = await _service.VaciarCarritoAsync(1);
+            var resultado = await _service.VaciarCarritoAsync(TestUserId);
 
             // COMPROBAR
             Assert.That(resultado.IsFailure, Is.True);
@@ -371,17 +362,16 @@ namespace Tests.Services
         public async Task VaciarCarrito_SiExiste_DebeTenerExito()
         {
             // PREPARAR
-            long userId = 1;
             var carritoExistente = new Carrito
             {
                 Id = 10,
-                UserId = userId,
+                UserId = TestUserId,
                 LineasCarrito = new List<LineaCarrito>()
             };
-            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(userId)).ReturnsAsync(carritoExistente);
+            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync(carritoExistente);
 
             // ACTUAR
-            var resultado = await _service.VaciarCarritoAsync(userId);
+            var resultado = await _service.VaciarCarritoAsync(TestUserId);
 
             // COMPROBAR
             Assert.That(resultado.IsSuccess, Is.True);
@@ -389,4 +379,3 @@ namespace Tests.Services
         }
     }
 }
-

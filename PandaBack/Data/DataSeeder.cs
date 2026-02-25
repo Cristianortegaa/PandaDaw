@@ -1,11 +1,6 @@
 ﻿using PandaBack.Models;
-using PandaBack.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using PandaBack.Data;
 
-namespace PandaBack.Seeders;
+namespace PandaBack.Data;
 
 public class DataSeeder
 {

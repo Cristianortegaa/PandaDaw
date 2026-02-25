@@ -13,8 +13,8 @@ public static class ProductoMapper
             Nombre = producto.Nombre,
             Precio = producto.Precio,
             Stock = producto.Stock,
-            Imagen = producto.Imagen ?? "https://placehold.net/600x400.png", // Imagen por defecto
-            Categoria = producto.Category.ToString(), // Enum a String
+            Imagen = producto.Imagen ?? "https://placehold.net/600x400.png", 
+            Categoria = producto.Category.ToString(), 
             IsDeleted = producto.IsDeleted
         };
     }
@@ -26,7 +26,6 @@ public static class ProductoMapper
             Nombre = dto.Nombre,
             Precio = dto.Precio,
             Stock = dto.Stock,
-            // Convertir string a Enum (Manejar excepciones en servicio)
             Category = Enum.Parse<Categoria>(dto.Categoria, true),
             IsDeleted = false
         };

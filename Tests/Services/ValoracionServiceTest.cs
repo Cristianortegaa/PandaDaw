@@ -12,6 +12,8 @@ namespace Tests.Services
         private ValoracionService _service;
         private Mock<IValoracionRepository> _repoValoracionesFalso;
         private Mock<IProductoRepository> _repoProductosFalso;
+        private const string TestUserId = "test-user-id";
+        private const string OtherUserId = "other-user-id";
 
         [SetUp]
         public void PrepararTodo()
@@ -70,17 +72,16 @@ namespace Tests.Services
         public async Task ObtenerPorUsuario_DebeDevolverListaConExito()
         {
             // PREPARAR
-            long userId = 1;
             var producto = new Producto { Id = 5, Nombre = "Auriculares" };
             var listaFalsa = new List<Valoracion>
             {
-                new Valoracion { Id = 1, UserId = userId, Estrellas = 4, Resena = "Bueno", Producto = producto }
+                new Valoracion { Id = 1, UserId = TestUserId, Estrellas = 4, Resena = "Bueno", Producto = producto }
             };
 
-            _repoValoracionesFalso.Setup(r => r.GetByUserIdAsync(userId)).ReturnsAsync(listaFalsa);
+            _repoValoracionesFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync(listaFalsa);
 
             // ACTUAR
-            var resultado = await _service.GetValoracionesByUserAsync(userId);
+            var resultado = await _service.GetValoracionesByUserAsync(TestUserId);
 
             // COMPROBAR
             Assert.That(resultado.IsSuccess, Is.True);
@@ -99,7 +100,7 @@ namespace Tests.Services
             _repoProductosFalso.Setup(r => r.GetByIdAsync(dto.ProductoId)).ReturnsAsync((Producto)null);
 
             // ACTUAR
-            var resultado = await _service.CreateValoracionAsync(1, dto);
+            var resultado = await _service.CreateValoracionAsync(TestUserId, dto);
 
             // COMPROBAR
             Assert.That(resultado.IsFailure, Is.True);
@@ -112,13 +113,13 @@ namespace Tests.Services
             // PREPARAR
             var dto = new CreateValoracionDto { ProductoId = 5, Estrellas = 5, Resena = "Genial" };
             var producto = new Producto { Id = 5 };
-            var valoracionExistente = new Valoracion { ProductoId = 5, UserId = 1 };
+            var valoracionExistente = new Valoracion { ProductoId = 5, UserId = TestUserId };
 
             _repoProductosFalso.Setup(r => r.GetByIdAsync(dto.ProductoId)).ReturnsAsync(producto);
-            _repoValoracionesFalso.Setup(r => r.GetByProductoAndUserAsync(dto.ProductoId, 1)).ReturnsAsync(valoracionExistente);
+            _repoValoracionesFalso.Setup(r => r.GetByProductoAndUserAsync(dto.ProductoId, TestUserId)).ReturnsAsync(valoracionExistente);
 
             // ACTUAR
-            var resultado = await _service.CreateValoracionAsync(1, dto);
+            var resultado = await _service.CreateValoracionAsync(TestUserId, dto);
 
             // COMPROBAR
             Assert.That(resultado.IsFailure, Is.True);
@@ -133,10 +134,10 @@ namespace Tests.Services
             var producto = new Producto { Id = 5, Nombre = "Auriculares" };
 
             _repoProductosFalso.Setup(r => r.GetByIdAsync(dto.ProductoId)).ReturnsAsync(producto);
-            _repoValoracionesFalso.Setup(r => r.GetByProductoAndUserAsync(dto.ProductoId, 1)).ReturnsAsync((Valoracion)null);
+            _repoValoracionesFalso.Setup(r => r.GetByProductoAndUserAsync(dto.ProductoId, TestUserId)).ReturnsAsync((Valoracion)null);
 
             // ACTUAR
-            var resultado = await _service.CreateValoracionAsync(1, dto);
+            var resultado = await _service.CreateValoracionAsync(TestUserId, dto);
 
             // COMPROBAR
             Assert.That(resultado.IsSuccess, Is.True);
@@ -156,7 +157,7 @@ namespace Tests.Services
             _repoValoracionesFalso.Setup(r => r.GetByIdAsync(99)).ReturnsAsync((Valoracion)null);
 
             // ACTUAR
-            var resultado = await _service.UpdateValoracionAsync(99, 1, dto);
+            var resultado = await _service.UpdateValoracionAsync(99, TestUserId, dto);
 
             // COMPROBAR
             Assert.That(resultado.IsFailure, Is.True);
@@ -168,12 +169,12 @@ namespace Tests.Services
         {
             // PREPARAR
             var dto = new CreateValoracionDto { ProductoId = 5, Estrellas = 3, Resena = "Regular" };
-            var valoracionDeOtro = new Valoracion { Id = 10, UserId = 999, ProductoId = 5 };
+            var valoracionDeOtro = new Valoracion { Id = 10, UserId = OtherUserId, ProductoId = 5 };
 
             _repoValoracionesFalso.Setup(r => r.GetByIdAsync(10)).ReturnsAsync(valoracionDeOtro);
 
             // ACTUAR
-            var resultado = await _service.UpdateValoracionAsync(10, 1, dto);
+            var resultado = await _service.UpdateValoracionAsync(10, TestUserId, dto);
 
             // COMPROBAR
             Assert.That(resultado.IsFailure, Is.True);
@@ -188,13 +189,13 @@ namespace Tests.Services
             var producto = new Producto { Id = 5, Nombre = "Auriculares" };
             var valoracionExistente = new Valoracion
             {
-                Id = 10, UserId = 1, ProductoId = 5, Estrellas = 5, Resena = "Vieja", Producto = producto
+                Id = 10, UserId = TestUserId, ProductoId = 5, Estrellas = 5, Resena = "Vieja", Producto = producto
             };
 
             _repoValoracionesFalso.Setup(r => r.GetByIdAsync(10)).ReturnsAsync(valoracionExistente);
 
             // ACTUAR
-            var resultado = await _service.UpdateValoracionAsync(10, 1, dto);
+            var resultado = await _service.UpdateValoracionAsync(10, TestUserId, dto);
 
             // COMPROBAR
             Assert.That(resultado.IsSuccess, Is.True);
@@ -213,7 +214,7 @@ namespace Tests.Services
             _repoValoracionesFalso.Setup(r => r.GetByIdAsync(99)).ReturnsAsync((Valoracion)null);
 
             // ACTUAR
-            var resultado = await _service.DeleteValoracionAsync(99, 1);
+            var resultado = await _service.DeleteValoracionAsync(99, TestUserId);
 
             // COMPROBAR
             Assert.That(resultado.IsFailure, Is.True);
@@ -224,11 +225,11 @@ namespace Tests.Services
         public async Task EliminarValoracion_SiNoEsDelUsuario_DebeDarErrorOperacionNoPermitida()
         {
             // PREPARAR
-            var valoracionDeOtro = new Valoracion { Id = 10, UserId = 999 };
+            var valoracionDeOtro = new Valoracion { Id = 10, UserId = OtherUserId };
             _repoValoracionesFalso.Setup(r => r.GetByIdAsync(10)).ReturnsAsync(valoracionDeOtro);
 
             // ACTUAR
-            var resultado = await _service.DeleteValoracionAsync(10, 1);
+            var resultado = await _service.DeleteValoracionAsync(10, TestUserId);
 
             // COMPROBAR
             Assert.That(resultado.IsFailure, Is.True);
@@ -239,11 +240,11 @@ namespace Tests.Services
         public async Task EliminarValoracion_ConDatosCorrectos_DebeTenerExito()
         {
             // PREPARAR
-            var valoracionReal = new Valoracion { Id = 10, UserId = 1 };
+            var valoracionReal = new Valoracion { Id = 10, UserId = TestUserId };
             _repoValoracionesFalso.Setup(r => r.GetByIdAsync(10)).ReturnsAsync(valoracionReal);
 
             // ACTUAR
-            var resultado = await _service.DeleteValoracionAsync(10, 1);
+            var resultado = await _service.DeleteValoracionAsync(10, TestUserId);
 
             // COMPROBAR
             Assert.That(resultado.IsSuccess, Is.True);
@@ -251,4 +252,3 @@ namespace Tests.Services
         }
     }
 }
-
