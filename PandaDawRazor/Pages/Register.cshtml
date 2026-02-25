@@ -1,0 +1,129 @@
+@page
+@model PandaDawRazor.Pages.RegisterModel
+@{
+    ViewData["Title"] = "Crear cuenta";
+    Layout = "_Layout";
+}
+
+<div class="min-h-[calc(100vh-200px)] flex items-center justify-center p-6">
+    <div class="card w-full max-w-md bg-base-100 shadow-xl border border-base-300">
+        <div class="card-body gap-6">
+            <div class="flex flex-col items-center gap-3 text-center">
+                <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                    <i class="fa-solid fa-user-plus text-3xl text-primary"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-base-content">Crear cuenta</h1>
+                    <p class="text-sm text-base-content/60">Únete a PandaDaw</p>
+                </div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert alert-error shadow-lg">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span>@Model.ErrorMessage</span>
+                </div>
+            }
+
+            <form method="post" class="flex flex-col gap-4">
+                @Html.AntiForgeryToken()
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="form-control gap-2">
+                        <label class="label py-0" for="regNombre">
+                            <span class="label-text font-medium">Nombre</span>
+                        </label>
+                        <input asp-for="Input.Nombre" id="regNombre" type="text"
+                               class="input input-bordered focus:input-primary" placeholder="Juan"
+                               autocomplete="given-name" required autofocus />
+                        <span asp-validation-for="Input.Nombre" class="text-error text-xs"></span>
+                    </div>
+                    <div class="form-control gap-2">
+                        <label class="label py-0" for="regApellidos">
+                            <span class="label-text font-medium">Apellidos</span>
+                        </label>
+                        <input asp-for="Input.Apellidos" id="regApellidos" type="text"
+                               class="input input-bordered focus:input-primary" placeholder="García"
+                               autocomplete="family-name" required />
+                        <span asp-validation-for="Input.Apellidos" class="text-error text-xs"></span>
+                    </div>
+                </div>
+
+                <div class="form-control gap-2">
+                    <label class="label py-0" for="regEmail">
+                        <span class="label-text font-medium">Correo electrónico</span>
+                    </label>
+                    <label class="input input-bordered flex items-center gap-3 focus-within:input-primary">
+                        <i class="fa-solid fa-envelope text-base-content/40"></i>
+                        <input asp-for="Input.Email" id="regEmail" type="email" class="grow"
+                               placeholder="tu@correo.com" autocomplete="email" required />
+                    </label>
+                    <span asp-validation-for="Input.Email" class="text-error text-xs"></span>
+                </div>
+
+                <div class="form-control gap-2">
+                    <label class="label py-0" for="regPassword">
+                        <span class="label-text font-medium">Contraseña</span>
+                    </label>
+                    <label class="input input-bordered flex items-center gap-3 focus-within:input-primary">
+                        <i class="fa-solid fa-lock text-base-content/40"></i>
+                        <input asp-for="Input.Password" id="regPassword" type="password" class="grow"
+                               placeholder="Al menos 6 caracteres" autocomplete="new-password" required />
+                        <button type="button" onclick="togglePassword('regPassword', 'eyeIconReg')"
+                                class="btn btn-ghost btn-xs btn-circle text-base-content/40 hover:text-base-content"
+                                tabindex="-1" aria-label="Mostrar/ocultar contraseña">
+                            <i id="eyeIconReg" class="fa-solid fa-eye"></i>
+                        </button>
+                    </label>
+                    <span asp-validation-for="Input.Password" class="text-error text-xs"></span>
+                </div>
+
+                <div class="form-control gap-2">
+                    <label class="label py-0" for="regConfirm">
+                        <span class="label-text font-medium">Confirmar contraseña</span>
+                    </label>
+                    <label class="input input-bordered flex items-center gap-3 focus-within:input-primary">
+                        <i class="fa-solid fa-lock text-base-content/40"></i>
+                        <input asp-for="Input.ConfirmPassword" id="regConfirm" type="password" class="grow"
+                               placeholder="Repite la contraseña" autocomplete="new-password" required />
+                        <button type="button" onclick="togglePassword('regConfirm', 'eyeIconConfirm')"
+                                class="btn btn-ghost btn-xs btn-circle text-base-content/40 hover:text-base-content"
+                                tabindex="-1" aria-label="Mostrar/ocultar contraseña">
+                            <i id="eyeIconConfirm" class="fa-solid fa-eye"></i>
+                        </button>
+                    </label>
+                    <span asp-validation-for="Input.ConfirmPassword" class="text-error text-xs"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-full mt-2">
+                    <i class="fa-solid fa-user-plus mr-2"></i>
+                    Crear cuenta
+                </button>
+            </form>
+
+            <div class="divider text-base-content/40 text-sm">o</div>
+
+            <p class="text-center text-sm text-base-content/60">
+                ¿Ya tienes cuenta?
+                <a asp-page="/Login" class="link link-primary font-semibold">Inicia sesión</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.replace("fa-eye", "fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.replace("fa-eye-slash", "fa-eye");
+            }
+        }
+    </script>
+}

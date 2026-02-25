@@ -6,28 +6,7 @@
 }
 
 <div class="min-h-[calc(100vh-200px)] flex items-center justify-center p-6">
-    <!-- Mensajes de error/éxito -->
-    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
-    {
-        <div class="toast toast-top toast-center z-50">
-            <div class="alert alert-error shadow-lg">
-                <i class="fa-solid fa-circle-exclamation"></i>
-                <span>@Model.ErrorMessage</span>
-            </div>
-        </div>
-    }
-    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
-    {
-        <div class="toast toast-top toast-center z-50">
-            <div class="alert alert-success shadow-lg">
-                <i class="fa-solid fa-circle-check"></i>
-                <span>@Model.SuccessMessage</span>
-            </div>
-        </div>
-    }
-
-    <!-- Card Login -->
-    <div id="cardLogin" class="card w-full max-w-md bg-base-100 shadow-xl border border-base-300 @(Model.ShowRegister ? "hidden" : "")">
+    <div class="card w-full max-w-md bg-base-100 shadow-xl border border-base-300">
         <div class="card-body gap-6">
             <div class="flex flex-col items-center gap-3 text-center">
                 <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
@@ -39,34 +18,44 @@
                 </div>
             </div>
 
-            <form method="post" asp-page-handler="Login" class="flex flex-col gap-4">
-                <!-- Email -->
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert alert-error shadow-lg">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span>@Model.ErrorMessage</span>
+                </div>
+            }
+
+            <form method="post" class="flex flex-col gap-4">
+                @Html.AntiForgeryToken()
+
                 <div class="form-control gap-2">
                     <label class="label py-0" for="loginEmail">
                         <span class="label-text font-medium">Correo electrónico</span>
                     </label>
                     <label class="input input-bordered flex items-center gap-3 focus-within:input-primary">
                         <i class="fa-solid fa-envelope text-base-content/40"></i>
-                        <input asp-for="LoginInput.Email" id="loginEmail" type="email" class="grow" placeholder="tu@correo.com" autocomplete="email" />
+                        <input asp-for="Input.Email" id="loginEmail" type="email" class="grow"
+                               placeholder="tu@correo.com" autocomplete="email" required autofocus />
                     </label>
-                    <span asp-validation-for="LoginInput.Email" class="text-error text-xs"></span>
+                    <span asp-validation-for="Input.Email" class="text-error text-xs"></span>
                 </div>
 
-                <!-- Contraseña -->
                 <div class="form-control gap-2">
                     <label class="label py-0" for="loginPassword">
                         <span class="label-text font-medium">Contraseña</span>
                     </label>
                     <label class="input input-bordered flex items-center gap-3 focus-within:input-primary">
                         <i class="fa-solid fa-lock text-base-content/40"></i>
-                        <input asp-for="LoginInput.Password" id="loginPassword" type="password" class="grow" placeholder="••••••••" autocomplete="current-password" />
+                        <input asp-for="Input.Password" id="loginPassword" type="password" class="grow"
+                               placeholder="••••••••" autocomplete="current-password" required />
                         <button type="button" onclick="togglePassword('loginPassword', 'eyeIconLogin')"
-                            class="btn btn-ghost btn-xs btn-circle text-base-content/40 hover:text-base-content"
-                            tabindex="-1" aria-label="Mostrar/ocultar contraseña">
+                                class="btn btn-ghost btn-xs btn-circle text-base-content/40 hover:text-base-content"
+                                tabindex="-1" aria-label="Mostrar/ocultar contraseña">
                             <i id="eyeIconLogin" class="fa-solid fa-eye"></i>
                         </button>
                     </label>
-                    <span asp-validation-for="LoginInput.Password" class="text-error text-xs"></span>
+                    <span asp-validation-for="Input.Password" class="text-error text-xs"></span>
                 </div>
 
                 <button type="submit" class="btn btn-primary w-full mt-2">
@@ -79,106 +68,7 @@
 
             <p class="text-center text-sm text-base-content/60">
                 ¿No tienes cuenta?
-                <button onclick="switchCard('registro')" class="link link-primary font-semibold">
-                    Regístrate gratis
-                </button>
-            </p>
-        </div>
-    </div>
-
-    <!-- Card Registro -->
-    <div id="cardRegistro" class="card w-full max-w-md bg-base-100 shadow-xl border border-base-300 @(Model.ShowRegister ? "" : "hidden")">
-        <div class="card-body gap-6">
-            <div class="flex flex-col items-center gap-3 text-center">
-                <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                    <i class="fa-solid fa-user-plus text-3xl text-primary"></i>
-                </div>
-                <div>
-                    <h1 class="text-2xl font-bold text-base-content">Crear cuenta</h1>
-                    <p class="text-sm text-base-content/60">Únete a PandaDaw</p>
-                </div>
-            </div>
-
-            <form method="post" asp-page-handler="Register" class="flex flex-col gap-4">
-                <!-- Nombre y Apellidos en una fila -->
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="form-control gap-2">
-                        <label class="label py-0" for="regNombre">
-                            <span class="label-text font-medium">Nombre</span>
-                        </label>
-                        <input asp-for="RegisterInput.Nombre" id="regNombre" type="text" 
-                               class="input input-bordered focus:input-primary" placeholder="Juan" autocomplete="name" />
-                        <span asp-validation-for="RegisterInput.Nombre" class="text-error text-xs"></span>
-                    </div>
-                    <div class="form-control gap-2">
-                        <label class="label py-0" for="regApellidos">
-                            <span class="label-text font-medium">Apellidos</span>
-                        </label>
-                        <input asp-for="RegisterInput.Apellidos" id="regApellidos" type="text" 
-                               class="input input-bordered focus:input-primary" placeholder="García" autocomplete="family-name" />
-                        <span asp-validation-for="RegisterInput.Apellidos" class="text-error text-xs"></span>
-                    </div>
-                </div>
-
-                <!-- Email -->
-                <div class="form-control gap-2">
-                    <label class="label py-0" for="regEmail">
-                        <span class="label-text font-medium">Correo electrónico</span>
-                    </label>
-                    <label class="input input-bordered flex items-center gap-3 focus-within:input-primary">
-                        <i class="fa-solid fa-envelope text-base-content/40"></i>
-                        <input asp-for="RegisterInput.Email" id="regEmail" type="email" class="grow" placeholder="tu@correo.com" autocomplete="email" />
-                    </label>
-                    <span asp-validation-for="RegisterInput.Email" class="text-error text-xs"></span>
-                </div>
-
-                <!-- Contraseña -->
-                <div class="form-control gap-2">
-                    <label class="label py-0" for="regPassword">
-                        <span class="label-text font-medium">Contraseña</span>
-                    </label>
-                    <label class="input input-bordered flex items-center gap-3 focus-within:input-primary">
-                        <i class="fa-solid fa-lock text-base-content/40"></i>
-                        <input asp-for="RegisterInput.Password" id="regPassword" type="password" class="grow" placeholder="••••••••" autocomplete="new-password" />
-                        <button type="button" onclick="togglePassword('regPassword', 'eyeIconReg')"
-                            class="btn btn-ghost btn-xs btn-circle text-base-content/40 hover:text-base-content"
-                            tabindex="-1" aria-label="Mostrar/ocultar contraseña">
-                            <i id="eyeIconReg" class="fa-solid fa-eye"></i>
-                        </button>
-                    </label>
-                    <span asp-validation-for="RegisterInput.Password" class="text-error text-xs"></span>
-                </div>
-
-                <!-- Confirmar contraseña -->
-                <div class="form-control gap-2">
-                    <label class="label py-0" for="regConfirm">
-                        <span class="label-text font-medium">Confirmar contraseña</span>
-                    </label>
-                    <label class="input input-bordered flex items-center gap-3 focus-within:input-primary">
-                        <i class="fa-solid fa-lock text-base-content/40"></i>
-                        <input asp-for="RegisterInput.ConfirmPassword" id="regConfirm" type="password" class="grow" placeholder="••••••••" autocomplete="new-password" />
-                        <button type="button" onclick="togglePassword('regConfirm', 'eyeIconConfirm')"
-                            class="btn btn-ghost btn-xs btn-circle text-base-content/40 hover:text-base-content"
-                            tabindex="-1" aria-label="Mostrar/ocultar contraseña">
-                            <i id="eyeIconConfirm" class="fa-solid fa-eye"></i>
-                        </button>
-                    </label>
-                    <span asp-validation-for="RegisterInput.ConfirmPassword" class="text-error text-xs"></span>
-                </div>
-
-                <button type="submit" class="btn btn-primary w-full mt-2">
-                    <i class="fa-solid fa-user-plus mr-2"></i>
-                    Crear cuenta
-                </button>
-            </form>
-
-            <div class="divider text-base-content/40 text-sm">o</div>
-
-            <p class="text-center text-sm text-base-content/60">
-                ¿Ya tienes cuenta?
-                <button onclick="switchCard('login')" class="link link-primary font-semibold">
-                    Inicia sesión
-                </button>
+                <a asp-page="/Register" class="link link-primary font-semibold">Regístrate gratis</a>
             </p>
         </div>
     </div>
@@ -186,18 +76,6 @@
 
 @section Scripts {
     <script>
-        function switchCard(to) {
-            const login = document.getElementById("cardLogin");
-            const registro = document.getElementById("cardRegistro");
-            if (to === "registro") {
-                login.classList.add("hidden");
-                registro.classList.remove("hidden");
-            } else {
-                registro.classList.add("hidden");
-                login.classList.remove("hidden");
-            }
-        }
-
         function togglePassword(inputId, iconId) {
             const input = document.getElementById(inputId);
             const icon = document.getElementById(iconId);

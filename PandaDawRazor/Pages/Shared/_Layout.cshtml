@@ -42,7 +42,7 @@
             </a>
 
             <!-- Usuario -->
-            @if (Context.Session.GetString("Token") != null)
+            @if (User.Identity?.IsAuthenticated == true)
             {
                 <div class="dropdown dropdown-end">
                     <button tabindex="0" class="btn btn-ghost btn-circle avatar">
@@ -61,11 +61,9 @@
                         <li><a asp-page="/Pedidos"><i class="fa-solid fa-box mr-2"></i>Mis Pedidos</a></li>
                         <li><a asp-page="/Favoritos"><i class="fa-solid fa-heart mr-2"></i>Favoritos</a></li>
                         <li class="border-t border-base-300 mt-2 pt-2">
-                            <form method="post" asp-page="/Login" asp-page-handler="Logout">
-                                <button type="submit" class="w-full text-left text-error">
-                                    <i class="fa-solid fa-right-from-bracket mr-2"></i>Cerrar sesión
-                                </button>
-                            </form>
+                            <a asp-page="/Logout" class="text-error">
+                                <i class="fa-solid fa-right-from-bracket mr-2"></i>Cerrar sesión
+                            </a>
                         </li>
                     </ul>
                 </div>
