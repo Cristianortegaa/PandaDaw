@@ -73,8 +73,16 @@
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=pandadb;Username=panda;Password=panda_secret"
+      Jwt__Key: "EstaEsUnaClaveSuperSecretaYDebeSerLargaParaSeguridad2025"
+      Jwt__Issuer: "PandaBack"
+      Jwt__Audience: "PandaFront"
+      Jwt__ExpireInMinutes: "120"
     depends_on:
-      - pandaback
+      pandaback:
+        condition: service_started
+      postgres:
+        condition: service_healthy
 
 volumes:
   postgres_data:
