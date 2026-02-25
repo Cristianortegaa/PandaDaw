@@ -6,10 +6,19 @@ using PandaBack.Repositories;
 using PandaBack.Repositories.Auth;
 using PandaBack.Services;
 using PandaBack.Services.Auth;
+using PandaBack.Services.Email;
+using PandaBack.Services.Factura;
+using PandaBack.Services.Stripe;
 using PandaBack.Repository;
 using PandaDawRazor.Filters;
+using QuestPDF.Infrastructure;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Cargar variables de entorno desde .env (el archivo queda fuera del repo)
+PandaBack.config.DotEnvLoader.Load(Path.Combine(Directory.GetCurrentDirectory(), "..", ".env"));
+builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddRazorPages(options =>
 {
@@ -72,7 +81,18 @@ builder.Services.AddScoped<IFavoritoService, FavoritoService>();
 builder.Services.AddScoped<IVentaService, VentaService>();
 builder.Services.AddScoped<IValoracionService, ValoracionService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<PandaBack.Services.Auth.TokenService>();
+
+// Stripe
+StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
+builder.Services.AddScoped<IStripeService, StripeService>();
+
+// QuestPDF (Community license para uso gratuito)
+QuestPDF.Settings.License = LicenseType.Community;
+builder.Services.AddScoped<IFacturaService, FacturaService>();
+
+// Email (MailKit)
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 var app = builder.Build();
 

@@ -1,0 +1,113 @@
+@page
+@model PandaDawRazor.Pages.PagoExitosoModel
+@{
+    ViewData["Title"] = "Pago Completado";
+    Layout = "_Layout";
+}
+
+<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Steps -->
+    <div class="flex items-center justify-center gap-2 mb-10">
+        <div class="flex items-center gap-2">
+            <span class="w-7 h-7 rounded-full bg-primary/15 text-primary text-xs font-bold flex items-center justify-center">1</span>
+            <span class="text-xs font-bold text-primary/60">Carrito</span>
+        </div>
+        <div class="w-10 h-px bg-primary/20"></div>
+        <div class="flex items-center gap-2">
+            <span class="w-7 h-7 rounded-full bg-primary/15 text-primary text-xs font-bold flex items-center justify-center">2</span>
+            <span class="text-xs font-bold text-primary/60">Pago</span>
+        </div>
+        <div class="w-10 h-px bg-primary/20"></div>
+        <div class="flex items-center gap-2">
+            <span class="w-7 h-7 rounded-full bg-primary text-base-100 text-xs font-bold flex items-center justify-center">3</span>
+            <span class="text-xs font-bold text-base-content/60">Listo</span>
+        </div>
+    </div>
+
+    @if (Model.PagoExitoso && Model.VentaCreada != null)
+    {
+        <!-- Confirmación -->
+        <div class="max-w-md mx-auto text-center">
+            <div class="w-20 h-20 rounded-3xl bg-success/10 flex items-center justify-center mx-auto mb-6 animate-float">
+                <i class="fa-solid fa-check text-4xl text-success"></i>
+            </div>
+            <h2 class="text-2xl font-black tracking-tight mb-2">¡Pago realizado!</h2>
+            <p class="text-sm text-base-content/30 font-medium mb-2">
+                Pedido <span class="text-primary font-bold">#@Model.VentaCreada.Id</span> confirmado
+            </p>
+            <p class="text-xs text-base-content/25 mb-8">
+                <i class="fa-solid fa-envelope text-primary/40 mr-1"></i>
+                Hemos enviado la factura a tu email
+            </p>
+
+            <div class="bg-base-300/5 rounded-2xl p-5 border border-base-300/8 text-left mb-6">
+                <p class="text-[10px] font-bold uppercase tracking-widest text-base-content/25 mb-3">Resumen</p>
+                <div class="space-y-2">
+                    @foreach (var linea in Model.VentaCreada.Lineas)
+                    {
+                        <div class="flex justify-between text-sm">
+                            <span class="text-base-content/40 font-medium truncate mr-3">@linea.ProductoNombre ×@linea.Cantidad</span>
+                            <span class="font-bold price-display shrink-0">@((linea.PrecioUnitario * linea.Cantidad).ToString("C", new System.Globalization.CultureInfo("es-ES")))</span>
+                        </div>
+                    }
+                    @{
+                        var subtotal = Model.VentaCreada.Lineas.Sum(l => l.PrecioUnitario * l.Cantidad);
+                        var iva = subtotal * 0.21m;
+                        var totalConIva = subtotal + iva;
+                    }
+                    <div class="h-px bg-base-300/10 my-2"></div>
+                    <div class="flex justify-between text-xs text-base-content/30">
+                        <span>Subtotal</span>
+                        <span>@subtotal.ToString("C", new System.Globalization.CultureInfo("es-ES"))</span>
+                    </div>
+                    <div class="flex justify-between text-xs text-base-content/30">
+                        <span>IVA (21%)</span>
+                        <span>@iva.ToString("C", new System.Globalization.CultureInfo("es-ES"))</span>
+                    </div>
+                    <div class="h-px bg-base-300/10 my-2"></div>
+                    <div class="flex justify-between font-black">
+                        <span>Total</span>
+                        <span class="text-primary price-display">@totalConIva.ToString("C", new System.Globalization.CultureInfo("es-ES"))</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-[#635BFF]/5 rounded-xl p-3 border border-[#635BFF]/10 mb-6">
+                <p class="text-xs text-[#635BFF] font-medium flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-shield-halved text-[10px]"></i>
+                    Pago procesado de forma segura por Stripe
+                </p>
+            </div>
+
+            <div class="flex gap-3">
+                <a asp-page="/Pedidos" class="btn btn-ghost flex-1 rounded-xl font-bold text-sm border border-base-300/15 h-11 min-h-0">
+                    <i class="fa-solid fa-box text-xs mr-1"></i> Mis pedidos
+                </a>
+                <a asp-page="/Index" class="btn btn-primary flex-1 rounded-xl font-bold text-sm h-11 min-h-0">
+                    <i class="fa-solid fa-home text-xs mr-1"></i> Inicio
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Error -->
+        <div class="max-w-md mx-auto text-center">
+            <div class="w-20 h-20 rounded-3xl bg-error/10 flex items-center justify-center mx-auto mb-6">
+                <i class="fa-solid fa-xmark text-4xl text-error"></i>
+            </div>
+            <h2 class="text-2xl font-black tracking-tight mb-2">Error en el pago</h2>
+            <p class="text-sm text-base-content/30 font-medium mb-8">
+                @(Model.ErrorMessage ?? "No se pudo completar el pago. Por favor, inténtalo de nuevo.")
+            </p>
+            <div class="flex gap-3">
+                <a asp-page="/Carrito" class="btn btn-ghost flex-1 rounded-xl font-bold text-sm border border-base-300/15 h-11 min-h-0">
+                    <i class="fa-solid fa-cart-shopping text-xs mr-1"></i> Volver al carrito
+                </a>
+                <a asp-page="/Index" class="btn btn-primary flex-1 rounded-xl font-bold text-sm h-11 min-h-0">
+                    <i class="fa-solid fa-home text-xs mr-1"></i> Inicio
+                </a>
+            </div>
+        </div>
+    }
+</div>

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using PandaBack.Dtos.Carrito;
 using PandaBack.Dtos.Ventas;
 using PandaBack.Services;
+using PandaBack.Services.Stripe;
 
 namespace PandaDawRazor.Pages;
 
@@ -10,11 +11,13 @@ public class PagoModel : PageModel
 {
     private readonly ICarritoService _carritoService;
     private readonly IVentaService _ventaService;
+    private readonly IStripeService _stripeService;
 
-    public PagoModel(ICarritoService carritoService, IVentaService ventaService)
+    public PagoModel(ICarritoService carritoService, IVentaService ventaService, IStripeService stripeService)
     {
         _carritoService = carritoService;
         _ventaService = ventaService;
+        _stripeService = stripeService;
     }
 
     public CarritoDto? Carrito { get; set; }
@@ -55,24 +58,27 @@ public class PagoModel : PageModel
             return RedirectToPage("/Login");
         }
 
-        var ventaResult = await _ventaService.CreateVentaFromCarritoAsync(UserId);
-        
-        if (ventaResult.IsSuccess)
+        // Construir las URLs de éxito y cancelación para Stripe
+        var baseUrl = $"{Request.Scheme}://{Request.Host}";
+        var successUrl = $"{baseUrl}/PagoExitoso";
+        var cancelUrl = $"{baseUrl}/Pago";
+
+        var stripeResult = await _stripeService.CreateCheckoutSessionAsync(UserId, successUrl, cancelUrl);
+
+        if (stripeResult.IsSuccess)
         {
-            PagoExitoso = true;
-            VentaCreada = ventaResult.Value;
-            Carrito = new CarritoDto();
+            // Redirigir al checkout de Stripe
+            return Redirect(stripeResult.Value);
         }
         else
         {
-            ErrorMessage = ventaResult.Error.Message;
+            ErrorMessage = stripeResult.Error.Message;
             var carritoResult = await _carritoService.GetCarritoByUserIdAsync(UserId);
             if (carritoResult.IsSuccess)
             {
                 Carrito = carritoResult.Value;
             }
+            return Page();
         }
-
-        return Page();
     }
 }
