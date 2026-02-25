@@ -230,6 +230,43 @@ namespace Tests.Services
         }
 
         [Test]
+        public async Task UpdateCantidad_SiCantidadNegativa_DebeDarError()
+        {
+            // PREPARAR & ACTUAR
+            var resultado = await _service.UpdateLineaCantidadAsync(TestUserId, 5, -3);
+
+            // COMPROBAR
+            Assert.That(resultado.IsFailure, Is.True);
+            Assert.That(resultado.Error, Is.InstanceOf<BadRequestError>());
+        }
+
+        [Test]
+        public async Task UpdateCantidad_SiProductoYaNoExisteEnBd_DebeDarErrorNotFound()
+        {
+            // PREPARAR
+            var producto = new Producto { Id = 5, Nombre = "Auriculares", Precio = 50, Stock = 10 };
+            var carritoExistente = new Carrito
+            {
+                Id = 10,
+                UserId = TestUserId,
+                LineasCarrito = new List<LineaCarrito>
+                {
+                    new LineaCarrito { ProductoId = 5, Cantidad = 1, Producto = producto }
+                }
+            };
+
+            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync(carritoExistente);
+            _repoProductosFalso.Setup(r => r.GetByIdAsync(5)).ReturnsAsync((Producto)null);
+
+            // ACTUAR
+            var resultado = await _service.UpdateLineaCantidadAsync(TestUserId, 5, 2);
+
+            // COMPROBAR
+            Assert.That(resultado.IsFailure, Is.True);
+            Assert.That(resultado.Error, Is.InstanceOf<NotFoundError>());
+        }
+
+        [Test]
         public async Task UpdateCantidad_SiStockInsuficiente_DebeDarError()
         {
             // PREPARAR
@@ -279,6 +316,7 @@ namespace Tests.Services
             // COMPROBAR
             Assert.That(resultado.IsSuccess, Is.True);
             Assert.That(carritoExistente.LineasCarrito.First().Cantidad, Is.EqualTo(5));
+            _repoCarritoFalso.Verify(r => r.UpdateAsync(carritoExistente), Times.Once);
         }
 
         // ==========================================
