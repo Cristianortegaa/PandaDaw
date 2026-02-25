@@ -1,4 +1,4 @@
-name: Build
+﻿name: Build
 
 on:
   push:
@@ -15,4 +15,16 @@ jobs:
         dotnet-version: '10.0'
     - run: dotnet build PandaDaw.sln
     - run: dotnet publish PandaBack/PandaBack.csproj -c Release -o ./publish
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0'
+    - run: dotnet test Tests/Tests.csproj --verbosity normal
+
 

@@ -160,7 +160,7 @@ namespace Tests.Services
             // PREPARAR
             var dto = new LoginDto { Email = "noexiste@test.com", Password = "Password123" };
 
-            _repoAuthFalso.Setup(r => r.FindByEmailAsync(dto.Email)).ReturnsAsync((User)null);
+            _repoAuthFalso.Setup(r => r.FindByEmailAsync(dto.Email)).ReturnsAsync((User)null!);
 
             // ACTUAR
             var resultado = await _service.LoginAsync(dto);

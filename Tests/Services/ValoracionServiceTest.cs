@@ -1,4 +1,4 @@
-﻿using Moq;
+﻿﻿using Moq;
 using PandaBack.Services;
 using PandaBack.Models;
 using PandaBack.Repositories;
@@ -32,7 +32,7 @@ namespace Tests.Services
         public async Task ObtenerPorProducto_SiProductoNoExiste_DebeDarErrorNotFound()
         {
             // PREPARAR
-            _repoProductosFalso.Setup(r => r.GetByIdAsync(99)).ReturnsAsync((Producto)null);
+            _repoProductosFalso.Setup(r => r.GetByIdAsync(99)).ReturnsAsync((Producto)null!);
 
             // ACTUAR
             var resultado = await _service.GetValoracionesByProductoAsync(99);
@@ -97,7 +97,7 @@ namespace Tests.Services
         {
             // PREPARAR
             var dto = new CreateValoracionDto { ProductoId = 99, Estrellas = 5, Resena = "Genial" };
-            _repoProductosFalso.Setup(r => r.GetByIdAsync(dto.ProductoId)).ReturnsAsync((Producto)null);
+            _repoProductosFalso.Setup(r => r.GetByIdAsync(dto.ProductoId)).ReturnsAsync((Producto)null!);
 
             // ACTUAR
             var resultado = await _service.CreateValoracionAsync(TestUserId, dto);
@@ -134,7 +134,7 @@ namespace Tests.Services
             var producto = new Producto { Id = 5, Nombre = "Auriculares" };
 
             _repoProductosFalso.Setup(r => r.GetByIdAsync(dto.ProductoId)).ReturnsAsync(producto);
-            _repoValoracionesFalso.Setup(r => r.GetByProductoAndUserAsync(dto.ProductoId, TestUserId)).ReturnsAsync((Valoracion)null);
+            _repoValoracionesFalso.Setup(r => r.GetByProductoAndUserAsync(dto.ProductoId, TestUserId)).ReturnsAsync((Valoracion)null!);
 
             // ACTUAR
             var resultado = await _service.CreateValoracionAsync(TestUserId, dto);
@@ -154,7 +154,7 @@ namespace Tests.Services
         {
             // PREPARAR
             var dto = new CreateValoracionDto { ProductoId = 5, Estrellas = 3, Resena = "Regular" };
-            _repoValoracionesFalso.Setup(r => r.GetByIdAsync(99)).ReturnsAsync((Valoracion)null);
+            _repoValoracionesFalso.Setup(r => r.GetByIdAsync(99)).ReturnsAsync((Valoracion)null!);
 
             // ACTUAR
             var resultado = await _service.UpdateValoracionAsync(99, TestUserId, dto);
