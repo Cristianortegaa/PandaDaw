@@ -8,6 +8,8 @@ using PandaBack.Data;
 using PandaBack.Middleware;
 using PandaBack.Models;
 using PandaBack.Repositories;
+using PandaBack.Repositories.Auth;
+using PandaBack.Repository;
 using PandaBack.Services;
 using PandaBack.Services.Auth;
 
@@ -22,6 +24,21 @@ builder.Services.AddDbContext<PandaDbContext>(options =>
 
 builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
 builder.Services.AddScoped<IProductoService, ProductoService>();
+
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+
+builder.Services.AddScoped<ICarritoRepository, CarritoRepository>();
+builder.Services.AddScoped<ICarritoService, CarritoService>();
+
+builder.Services.AddScoped<IFavoritoRepository, FavoritoRepository>();
+builder.Services.AddScoped<IFavoritoService, FavoritoService>();
+
+builder.Services.AddScoped<IValoracionRepository, ValoracionRepository>();
+builder.Services.AddScoped<IValoracionService, ValoracionService>();
+
+builder.Services.AddScoped<IVentaRepository, VentaRepository>();
+builder.Services.AddScoped<IVentaService, VentaService>();
 
 builder.Services.AddIdentity<User, IdentityRole>(options => 
     {

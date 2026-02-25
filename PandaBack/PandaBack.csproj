@@ -46,6 +46,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Folder Include="RestController\" />
         <Folder Include="Validators\" />
         <Folder Include="mappers\" />
       <Folder Include="Errors\" />
