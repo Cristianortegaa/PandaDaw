@@ -1,32 +1,18 @@
-name: .NET CI/CD
+name: Build
 
 on:
   push:
-    branches: [ main, develop, features ]
-  pull_request:
-    branches: [ main, develop ]
-
-env:
-  DOTNET_VERSION: '8.0.x'
+    branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    
     steps:
     - uses: actions/checkout@v4
-    
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+    - uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-    
-    - name: Restore dependencies
-      run: dotnet restore
-    
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
-    
-    - name: Run tests
-      run: dotnet test --configuration Release --verbosity minimal --no-build
+        dotnet-version: '8.0'
+    - run: dotnet build PandaDaw.sln
+    - run: dotnet test PandaDaw.sln
+    - run: dotnet publish -c Release -o ./publish
 
