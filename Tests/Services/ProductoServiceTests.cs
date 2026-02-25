@@ -94,7 +94,7 @@ namespace Tests.Services
             long idQueNoExiste = 99;
             var datosNuevos = new Producto { Nombre = "Monedero digital", Precio = 10 };
             
-            _repoFalso.Setup(repo => repo.GetByIdAsync(idQueNoExiste)).ReturnsAsync((Producto)null);
+            _repoFalso.Setup(repo => repo.GetByIdAsync(idQueNoExiste)).ReturnsAsync((Producto)null!);
 
             var resultado = await _service.UpdateProductoAsync(idQueNoExiste, datosNuevos);
 

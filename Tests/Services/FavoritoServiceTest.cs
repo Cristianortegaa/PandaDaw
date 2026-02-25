@@ -75,7 +75,7 @@ namespace Tests.Services
             var productoReal = new Producto { Id = 5 };
 
             _repoProductosFalso.Setup(r => r.GetByIdAsync(dto.ProductoId)).ReturnsAsync(productoReal);
-            _repoFavoritosFalso.Setup(r => r.GetByProductAndUserAsync(dto.ProductoId, userId)).ReturnsAsync((Favorito)null);
+            _repoFavoritosFalso.Setup(r => r.GetByProductAndUserAsync(dto.ProductoId, userId)).ReturnsAsync((Favorito)null!);
 
             var resultado = await _service.AddToFavoritosAsync(userId, dto);
 
@@ -87,7 +87,7 @@ namespace Tests.Services
         {
             long favoritoId = 99; 
             string userId = "test-user-id";
-            _repoFavoritosFalso.Setup(r => r.GetByIdAsync(favoritoId)).ReturnsAsync((Favorito)null);
+            _repoFavoritosFalso.Setup(r => r.GetByIdAsync(favoritoId)).ReturnsAsync((Favorito)null!);
 
             var resultado = await _service.RemoveFromFavoritosAsync(favoritoId, userId);
 

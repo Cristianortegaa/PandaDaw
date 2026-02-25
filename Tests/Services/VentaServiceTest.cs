@@ -240,7 +240,7 @@ namespace Tests.Services
         public async Task ActualizarEstado_SiVentaNoExiste_DebeDarErrorNotFound()
         {
             // PREPARAR
-            _repoVentasFalso.Setup(r => r.GetByIdAsync(99)).ReturnsAsync((Venta)null);
+            _repoVentasFalso.Setup(r => r.GetByIdAsync(99)).ReturnsAsync((Venta)null!);
 
             // ACTUAR
             var resultado = await _service.UpdateEstadoVentaAsync(99, EstadoPedido.Enviado);
