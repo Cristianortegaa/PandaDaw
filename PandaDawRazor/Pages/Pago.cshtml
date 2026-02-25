@@ -10,8 +10,8 @@
 
 <div class="bg-base-200 min-h-screen">
     <!-- Pasos -->
-    <div class="max-w-4xl mx-auto px-6 pt-6">
-        <ul class="steps w-full text-sm">
+    <div class="max-w-4xl mx-auto px-6 pt-8">
+        <ul class="steps w-full text-sm font-medium">
             <li class="step step-primary">Carrito</li>
             <li class="step @(Model.PagoExitoso ? "step-primary" : "step-primary")">Pago</li>
             <li class="step @(Model.PagoExitoso ? "step-primary" : "")">Confirmación</li>
@@ -22,13 +22,13 @@
     {
         <!-- Confirmación de pago exitoso -->
         <div class="max-w-2xl mx-auto p-6">
-            <div class="card bg-base-100 shadow-xl">
-                <div class="card-body items-center text-center gap-4">
-                    <div class="w-20 h-20 rounded-full bg-success/20 flex items-center justify-center">
+            <div class="card bg-white shadow-xl rounded-2xl border border-base-300/50">
+                <div class="card-body items-center text-center gap-4 p-8">
+                    <div class="w-20 h-20 rounded-2xl bg-success/10 flex items-center justify-center">
                         <i class="fa-solid fa-check text-4xl text-success"></i>
                     </div>
-                    <h2 class="text-2xl font-bold text-base-content">¡Pago realizado con éxito!</h2>
-                    <p class="text-base-content/60">
+                    <h2 class="text-2xl font-extrabold text-base-content tracking-tight">¡Pago realizado con éxito!</h2>
+                    <p class="text-base-content/50">
                         Tu pedido #@Model.VentaCreada.Id ha sido procesado correctamente.
                     </p>
                     
@@ -53,11 +53,11 @@
                     </div>
                     
                     <div class="flex gap-3 mt-4 w-full">
-                        <a asp-page="/Pedidos" class="btn btn-outline flex-1">
+                        <a asp-page="/Pedidos" class="btn btn-outline flex-1 rounded-xl">
                             <i class="fa-solid fa-box mr-2"></i>
                             Ver mis pedidos
                         </a>
-                        <a asp-page="/Index" class="btn btn-primary flex-1">
+                        <a asp-page="/Index" class="btn btn-primary flex-1 rounded-xl">
                             <i class="fa-solid fa-home mr-2"></i>
                             Ir al inicio
                         </a>
@@ -70,12 +70,12 @@
     {
         <!-- Carrito vacío -->
         <div class="max-w-2xl mx-auto p-6">
-            <div class="card bg-base-100 shadow-xl">
-                <div class="card-body items-center text-center gap-4">
-                    <i class="fa-solid fa-cart-shopping text-6xl text-base-content/30"></i>
+            <div class="card bg-white shadow-xl rounded-2xl border border-base-300/50">
+                <div class="card-body items-center text-center gap-4 p-8">
+                    <i class="fa-solid fa-cart-shopping text-6xl text-base-content/20"></i>
                     <h2 class="text-xl font-bold">No hay productos para pagar</h2>
-                    <p class="text-base-content/60">Tu carrito está vacío. Añade productos antes de continuar.</p>
-                    <a asp-page="/Index" class="btn btn-primary">
+                    <p class="text-base-content/50">Tu carrito está vacío. Añade productos antes de continuar.</p>
+                    <a asp-page="/Index" class="btn btn-primary rounded-xl font-semibold">
                         <i class="fa-solid fa-shopping-bag mr-2"></i>
                         Explorar productos
                     </a>
@@ -89,10 +89,10 @@
         <div class="max-w-4xl mx-auto p-6 flex flex-col lg:flex-row gap-6">
             <form method="post" asp-page-handler="ConfirmarPago" class="flex flex-col gap-4 flex-1">
                 <!-- Datos personales -->
-                <div class="card bg-base-100 shadow-xl">
-                    <div class="card-body gap-4">
+                <div class="card bg-white shadow-md rounded-2xl border border-base-300/50">
+                    <div class="card-body gap-4 p-6">
                         <h2 class="font-bold text-base-content text-lg flex items-center gap-2">
-                            <i class="fa-solid fa-user text-primary"></i>
+                            <i class="fa-solid fa-user text-primary text-sm"></i>
                             Datos de facturación
                         </h2>
 
@@ -146,10 +146,10 @@
                 </div>
 
                 <!-- Método de pago -->
-                <div class="card bg-base-100 shadow-xl">
-                    <div class="card-body gap-4">
+                <div class="card bg-white shadow-md rounded-2xl border border-base-300/50">
+                    <div class="card-body gap-4 p-6">
                         <h2 class="font-bold text-base-content text-lg flex items-center gap-2">
-                            <i class="fa-solid fa-credit-card text-primary"></i>
+                            <i class="fa-solid fa-credit-card text-primary text-sm"></i>
                             Método de pago
                         </h2>
 
@@ -225,7 +225,7 @@
                 </div>
 
                 <!-- Botón submit móvil -->
-                <button type="submit" class="btn btn-primary w-full lg:hidden">
+                <button type="submit" class="btn btn-primary w-full lg:hidden rounded-xl font-semibold">
                     <i class="fa-solid fa-lock mr-1"></i>
                     Pagar @total.ToString("C", new System.Globalization.CultureInfo("es-ES"))
                 </button>
@@ -233,8 +233,8 @@
 
             <!-- Resumen -->
             <div class="lg:w-80">
-                <div class="card bg-base-100 shadow-xl sticky top-6">
-                    <div class="card-body gap-4">
+                <div class="card bg-white shadow-xl sticky top-6 rounded-2xl border border-base-300/50">
+                    <div class="card-body gap-4 p-6">
                         <h2 class="text-lg font-bold text-base-content">Resumen</h2>
 
                         <div class="flex flex-col gap-2 text-sm max-h-48 overflow-y-auto">

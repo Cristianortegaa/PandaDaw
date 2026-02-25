@@ -6,33 +6,40 @@
   default: true;
   prefersdark: false;
   color-scheme: "light";
-  /* Base - Fondo blanco/verde muy claro */
-  --color-base-100: oklch(99.5% 0.002 160);
-  --color-base-200: oklch(97% 0.005 160);
-  --color-base-300: oklch(92% 0.01 160);
-  --color-base-content: oklch(18% 0.015 160);
-  /* Primary - Verde fresco y moderno */
-  --color-primary: oklch(55% 0.22 155);
+
+  /* ── Base: blancos cálidos con un suspiro de verde ── */
+  --color-base-100: oklch(99.2% 0.002 106);
+  --color-base-200: oklch(96.8% 0.006 150);
+  --color-base-300: oklch(92.5% 0.01 150);
+  --color-base-content: oklch(18% 0.012 160);
+
+  /* ── Primary: esmeralda profundo, confiable y lujoso ── */
+  --color-primary: oklch(47% 0.155 162);
   --color-primary-content: oklch(100% 0 0);
-  /* Secondary - Verde claro suave */
-  --color-secondary: oklch(72% 0.12 150);
-  --color-secondary-content: oklch(15% 0.01 160);
-  /* Accent - Verde esmeralda elegante */
-  --color-accent: oklch(60% 0.18 160);
-  --color-accent-content: oklch(100% 0 0);
-  /* Neutral - Gris oscuro */
-  --color-neutral: oklch(24% 0.02 160);
-  --color-neutral-content: oklch(98% 0 0);
-  /* Estados */
-  --color-info: oklch(62% 0.2 240);
+
+  /* ── Secondary: salvia suave, sofisticado ── */
+  --color-secondary: oklch(66% 0.09 152);
+  --color-secondary-content: oklch(16% 0.01 160);
+
+  /* ── Accent: champagne dorado, toque premium ── */
+  --color-accent: oklch(78% 0.115 85);
+  --color-accent-content: oklch(22% 0.03 80);
+
+  /* ── Neutral: carbón profundo con matiz verde ── */
+  --color-neutral: oklch(22% 0.016 160);
+  --color-neutral-content: oklch(97% 0 0);
+
+  /* ── Estados ── */
+  --color-info: oklch(58% 0.17 245);
   --color-info-content: oklch(100% 0 0);
-  --color-success: oklch(70% 0.2 160);
+  --color-success: oklch(65% 0.18 155);
   --color-success-content: oklch(100% 0 0);
-  --color-warning: oklch(82% 0.16 80);
-  --color-warning-content: oklch(20% 0.03 80);
-  --color-error: oklch(58% 0.24 25);
+  --color-warning: oklch(80% 0.15 80);
+  --color-warning-content: oklch(22% 0.04 80);
+  --color-error: oklch(55% 0.22 27);
   --color-error-content: oklch(100% 0 0);
-  /* Bordes redondeados elegantes */
+
+  /* ── Geometría refinada ── */
   --radius-selector: 0.75rem;
   --radius-field: 0.625rem;
   --radius-box: 1rem;
@@ -43,106 +50,270 @@
   --noise: 0;
 }
 
-/* Estilos personalizados adicionales */
+/* ═══════════════════════════════════════════════════
+   ESTILOS PREMIUM – Emerald-Luxe  
+   ═══════════════════════════════════════════════════ */
+
+/* ── Tipografía global ── */
+body {
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Cards ── */
 .card {
-  transition: all 0.3s ease;
-  background: linear-gradient(135deg, oklch(99.5% 0.002 160), oklch(97% 0.005 160));
-  border: 1px solid oklch(90% 0.01 160);
+  transition:
+    transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1),
+    box-shadow 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+  background: oklch(99.2% 0.002 106);
+  border: 1px solid oklch(92% 0.008 150);
 }
 
 .card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(34, 197, 94, 0.15);
+  transform: translateY(-6px);
+  box-shadow:
+    0 20px 40px -12px rgba(16, 85, 60, 0.12),
+    0 8px 16px -8px rgba(16, 85, 60, 0.08);
 }
 
-/* Mejoras para cards de productos */
 .card-body {
-  background: linear-gradient(180deg, oklch(99.5% 0.002 160) 0%, oklch(98% 0.003 160) 100%);
+  background: transparent;
 }
 
 .card-body p {
-  color: oklch(35% 0.01 160);
+  color: oklch(38% 0.01 160);
 }
 
+/* ── Botones primarios ── */
 .btn-primary {
-  background: linear-gradient(135deg, oklch(55% 0.22 155), oklch(52% 0.2 160)) !important;
-  border: none;
-  box-shadow: 0 4px 8px rgba(34, 197, 94, 0.2);
+  background: linear-gradient(
+    135deg,
+    oklch(47% 0.155 162),
+    oklch(42% 0.14 168)
+  ) !important;
+  border: none !important;
+  box-shadow: 0 4px 14px -2px rgba(16, 85, 60, 0.35);
+  letter-spacing: 0.02em;
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, oklch(52% 0.22 155), oklch(48% 0.2 160)) !important;
-  box-shadow: 0 8px 16px rgba(34, 197, 94, 0.25);
+  background: linear-gradient(
+    135deg,
+    oklch(44% 0.155 162),
+    oklch(39% 0.14 168)
+  ) !important;
+  box-shadow: 0 8px 22px -4px rgba(16, 85, 60, 0.4);
+  transform: translateY(-1px);
 }
 
 .btn-primary:active {
-  background: linear-gradient(135deg, oklch(48% 0.22 155), oklch(45% 0.2 160)) !important;
+  background: linear-gradient(
+    135deg,
+    oklch(40% 0.15 162),
+    oklch(36% 0.13 168)
+  ) !important;
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(16, 85, 60, 0.25);
 }
 
+/* ── Botones ghost elegantes ── */
 .btn-ghost {
-  color: oklch(55% 0.22 155);
+  color: oklch(40% 0.12 160);
+  transition: all 0.25s ease;
 }
 
 .btn-ghost:hover {
-  background: oklch(92% 0.01 160);
-  color: oklch(52% 0.22 155);
+  background: oklch(95% 0.012 155);
+  color: oklch(35% 0.14 160);
 }
 
-/* Estilos para botones de categoría */
-.btn-sm {
-  font-weight: 600;
-  letter-spacing: 0.5px;
+/* ── Botones outline ── */
+.btn-outline {
+  border-color: oklch(85% 0.02 155);
+  color: oklch(40% 0.12 160);
 }
 
-/* Enfasis en links */
+.btn-outline:hover {
+  background: oklch(47% 0.155 162);
+  border-color: oklch(47% 0.155 162);
+  color: white;
+}
+
+/* ── Links ── */
 a {
-  color: oklch(55% 0.22 155);
+  color: oklch(42% 0.13 162);
+  transition: color 0.2s ease;
 }
 
 a:hover {
-  color: oklch(52% 0.22 155);
+  color: oklch(36% 0.14 162);
 }
 
-/* Sombras suaves verdes */
+/* ── Shadows sistem ── */
 .shadow-sm {
-  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.1);
+  box-shadow:
+    0 1px 3px rgba(16, 85, 60, 0.06),
+    0 1px 2px rgba(16, 85, 60, 0.04);
 }
 
 .shadow {
-  box-shadow: 0 8px 16px rgba(34, 197, 94, 0.12);
+  box-shadow:
+    0 4px 6px -1px rgba(16, 85, 60, 0.07),
+    0 2px 4px -2px rgba(16, 85, 60, 0.05);
 }
 
-/* Badges y etiquetas */
+.shadow-md {
+  box-shadow:
+    0 6px 16px -4px rgba(16, 85, 60, 0.1),
+    0 2px 6px -2px rgba(16, 85, 60, 0.06);
+}
+
+.shadow-lg {
+  box-shadow:
+    0 12px 28px -8px rgba(16, 85, 60, 0.12),
+    0 4px 10px -4px rgba(16, 85, 60, 0.06);
+}
+
+.shadow-xl {
+  box-shadow:
+    0 20px 40px -12px rgba(16, 85, 60, 0.15),
+    0 8px 16px -8px rgba(16, 85, 60, 0.08);
+}
+
+/* ── Badges premium ── */
 .badge {
-  background: linear-gradient(135deg, oklch(72% 0.12 150), oklch(70% 0.1 155));
-  border: none;
+  font-weight: 600;
+  letter-spacing: 0.03em;
 }
 
 .badge-primary {
-  background: linear-gradient(135deg, oklch(55% 0.22 155), oklch(52% 0.2 160)) !important;
+  background: linear-gradient(
+    135deg,
+    oklch(47% 0.155 162),
+    oklch(42% 0.14 168)
+  ) !important;
+  border: none !important;
 }
 
-/* Inputs y campos de formulario */
-input, textarea, select {
-  border-color: oklch(90% 0.01 160);
+/* ── Inputs ── */
+input,
+textarea,
+select {
+  border-color: oklch(90% 0.01 150) !important;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-input:focus, textarea:focus, select:focus {
-  border-color: oklch(55% 0.22 155);
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: oklch(47% 0.155 162) !important;
+  box-shadow: 0 0 0 3px rgba(16, 85, 60, 0.1);
 }
 
-/* Tipografía mejorada */
-.text-primary {
-  color: oklch(55% 0.22 155) !important;
-  font-weight: 600;
+/* ── Navbar glass ── */
+.navbar-glass {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
 }
 
+/* ── Footer premium ── */
+.footer-premium {
+  background: linear-gradient(
+    180deg,
+    oklch(99.2% 0.002 106) 0%,
+    oklch(96% 0.008 155) 100%
+  );
+}
+
+/* ── Dividers ── */
+.divider::before,
+.divider::after {
+  background: oklch(92% 0.008 150) !important;
+}
+
+/* ── Steps (checkout) ── */
+.step-primary + .step-primary::before,
+.step-primary::after {
+  background: oklch(47% 0.155 162) !important;
+}
+
+/* ── Stats ── */
+.stat-title {
+  color: oklch(50% 0.01 160) !important;
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+}
+
+/* ── Table zebra ── */
+.table-zebra tbody tr:nth-child(even) {
+  background: oklch(97.5% 0.004 150);
+}
+
+/* ── Modal overlay ── */
+.modal-backdrop {
+  background: rgba(10, 40, 30, 0.4);
+  backdrop-filter: blur(4px);
+}
+
+/* ── Scrollbar sutil ── */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: oklch(96% 0.004 150);
+}
+::-webkit-scrollbar-thumb {
+  background: oklch(80% 0.02 155);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: oklch(65% 0.04 155);
+}
+
+/* ── Selección de texto ── */
+::selection {
+  background: oklch(85% 0.08 155);
+  color: oklch(20% 0.02 160);
+}
+
+/* ── Animación de aparición para cards ── */
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card {
+  animation: fadeSlideUp 0.5s ease forwards;
+}
+
+/* ── Line clamp ── */
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  color: oklch(25% 0.01 160);
+  color: oklch(28% 0.01 160);
 }
 
+/* ── Alert refinado ── */
+.alert {
+  border: none;
+  font-weight: 500;
+}
+
+/* ── Rating stars ── */
+.rating .mask-star-2 {
+  --tw-bg-opacity: 1;
+}

@@ -5,33 +5,34 @@
     Layout = "_Layout";
 }
 
-<div class="max-w-7xl mx-auto px-4 py-12">
-    <!-- Header con título y filtros -->
-    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 mb-12">
-        <div class="space-y-3">
-            <h1 class="text-5xl font-bold text-primary">🐼 Catálogo</h1>
-            <p class="text-lg text-base-content/70 font-medium">@Model.Productos.Count productos disponibles</p>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <!-- Hero header -->
+    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
+        <div class="space-y-2">
+            <p class="text-xs font-semibold uppercase tracking-widest text-primary/70">Explora nuestra colección</p>
+            <h1 class="text-4xl lg:text-5xl font-extrabold tracking-tight text-base-content">Catálogo</h1>
+            <p class="text-base text-base-content/50 font-medium">@Model.Productos.Count productos disponibles</p>
         </div>
         
         <!-- Filtros por categoría -->
-        <div class="flex flex-wrap gap-3 justify-lg">
-            <a asp-page="/Index" class="btn @(Model.Categoria == null ? "btn-primary" : "btn-ghost") btn-sm font-semibold text-base transition-all duration-300">
-                <i class="fa-solid fa-border-all"></i> Todos
+        <div class="flex flex-wrap gap-2">
+            <a asp-page="/Index" class="btn @(Model.Categoria == null ? "btn-primary" : "btn-ghost border border-base-300/60") btn-sm rounded-xl font-medium text-sm transition-all duration-300">
+                <i class="fa-solid fa-border-all text-xs"></i> Todos
             </a>
-            <a asp-page="/Index" asp-route-categoria="Smartphones" class="btn @(Model.Categoria == "Smartphones" ? "btn-primary" : "btn-ghost") btn-sm font-semibold text-base transition-all duration-300">
-                <i class="fa-solid fa-mobile"></i> Smartphones
+            <a asp-page="/Index" asp-route-categoria="Smartphones" class="btn @(Model.Categoria == "Smartphones" ? "btn-primary" : "btn-ghost border border-base-300/60") btn-sm rounded-xl font-medium text-sm transition-all duration-300">
+                <i class="fa-solid fa-mobile text-xs"></i> Smartphones
             </a>
-            <a asp-page="/Index" asp-route-categoria="Audio" class="btn @(Model.Categoria == "Audio" ? "btn-primary" : "btn-ghost") btn-sm font-semibold text-base transition-all duration-300">
-                <i class="fa-solid fa-headphones"></i> Audio
+            <a asp-page="/Index" asp-route-categoria="Audio" class="btn @(Model.Categoria == "Audio" ? "btn-primary" : "btn-ghost border border-base-300/60") btn-sm rounded-xl font-medium text-sm transition-all duration-300">
+                <i class="fa-solid fa-headphones text-xs"></i> Audio
             </a>
-            <a asp-page="/Index" asp-route-categoria="Laptops" class="btn @(Model.Categoria == "Laptops" ? "btn-primary" : "btn-ghost") btn-sm font-semibold text-base transition-all duration-300">
-                <i class="fa-solid fa-laptop"></i> Laptops
+            <a asp-page="/Index" asp-route-categoria="Laptops" class="btn @(Model.Categoria == "Laptops" ? "btn-primary" : "btn-ghost border border-base-300/60") btn-sm rounded-xl font-medium text-sm transition-all duration-300">
+                <i class="fa-solid fa-laptop text-xs"></i> Laptops
             </a>
-            <a asp-page="/Index" asp-route-categoria="Gaming" class="btn @(Model.Categoria == "Gaming" ? "btn-primary" : "btn-ghost") btn-sm font-semibold text-base transition-all duration-300">
-                <i class="fa-solid fa-gamepad"></i> Gaming
+            <a asp-page="/Index" asp-route-categoria="Gaming" class="btn @(Model.Categoria == "Gaming" ? "btn-primary" : "btn-ghost border border-base-300/60") btn-sm rounded-xl font-medium text-sm transition-all duration-300">
+                <i class="fa-solid fa-gamepad text-xs"></i> Gaming
             </a>
-            <a asp-page="/Index" asp-route-categoria="Imagen" class="btn @(Model.Categoria == "Imagen" ? "btn-primary" : "btn-ghost") btn-sm font-semibold text-base transition-all duration-300">
-                <i class="fa-solid fa-camera"></i> Imagen
+            <a asp-page="/Index" asp-route-categoria="Imagen" class="btn @(Model.Categoria == "Imagen" ? "btn-primary" : "btn-ghost border border-base-300/60") btn-sm rounded-xl font-medium text-sm transition-all duration-300">
+                <i class="fa-solid fa-camera text-xs"></i> Imagen
             </a>
         </div>
     </div>
@@ -39,81 +40,81 @@
     <!-- Grid de productos -->
     @if (Model.Productos.Any())
     {
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             @foreach (var producto in Model.Productos)
             {
                 var esFavorito = Model.FavoritosMap.ContainsKey(producto.Id);
                 var favoritoId = esFavorito ? Model.FavoritosMap[producto.Id] : 0;
                 
-                <div class="card bg-base-100 shadow-lg hover:shadow-2xl transition-all duration-300 border border-base-300 overflow-hidden group h-full flex flex-col">
+                <div class="card bg-white shadow-md hover:shadow-xl transition-all duration-400 border border-base-300/50 overflow-hidden group h-full flex flex-col rounded-2xl">
                     <!-- Imagen del producto -->
-                    <figure class="relative aspect-square bg-gradient-to-br from-base-200 to-base-300 overflow-hidden">
+                    <figure class="relative aspect-square bg-base-200 overflow-hidden">
                         @if (!string.IsNullOrEmpty(producto.Imagen))
                         {
                             <img src="@producto.Imagen" alt="@producto.Nombre" 
-                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" />
                         }
                         else
                         {
-                            <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-secondary/20">
-                                <i class="fa-solid fa-box text-6xl text-primary/40"></i>
+                            <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/8 to-secondary/8">
+                                <i class="fa-solid fa-box text-5xl text-primary/25"></i>
                             </div>
                         }
                         
                         <!-- Badge categoría -->
-                        <span class="badge badge-primary badge-md absolute top-4 left-4 shadow-lg font-bold text-white">
+                        <span class="badge badge-primary badge-sm absolute top-3 left-3 shadow-md font-semibold text-white rounded-lg">
                             @producto.Category
                         </span>
                         
                         <!-- Botón favorito -->
-                        <form method="post" asp-page-handler="ToggleFavorito" class="absolute top-4 right-4">
+                        <form method="post" asp-page-handler="ToggleFavorito" class="absolute top-3 right-3">
                             <input type="hidden" name="productoId" value="@producto.Id" />
                             @if (esFavorito)
                             {
                                 <input type="hidden" name="favoritoId" value="@favoritoId" />
                             }
-                            <button type="submit" class="btn btn-circle btn-md shadow-lg bg-white border-2 border-base-300 hover:bg-error hover:border-error transition-all duration-200">
-                                <i class="fa-@(esFavorito ? "solid" : "regular") fa-heart text-2xl @(esFavorito ? "text-error" : "text-error/40")"></i>
+                            <button type="submit" class="btn btn-circle btn-sm shadow-md bg-white/90 backdrop-blur-sm border border-base-300/40 hover:bg-error hover:border-error transition-all duration-200">
+                                <i class="fa-@(esFavorito ? "solid" : "regular") fa-heart text-base @(esFavorito ? "text-error" : "text-base-content/30")"></i>
                             </button>
                         </form>
                     </figure>
                     
-                    <div class="card-body p-5 flex-grow flex flex-col">
+                    <div class="card-body p-5 flex-grow flex flex-col gap-0">
                         <!-- Nombre -->
                         <a asp-page="/Detalle" asp-route-id="@producto.Id" 
-                           class="font-bold text-lg text-primary hover:text-secondary transition-colors line-clamp-2 min-h-14 leading-tight">
+                           class="font-semibold text-base text-base-content hover:text-primary transition-colors line-clamp-2 min-h-12 leading-snug">
                             @producto.Nombre
                         </a>
                         
                         <!-- Descripción breve -->
-                        <p class="text-sm text-base-content/70 line-clamp-2 mt-2 flex-grow">
+                        <p class="text-xs text-base-content/45 line-clamp-2 mt-1.5 flex-grow">
                             Producto de calidad premium
                         </p>
                         
                         <!-- Precio y stock -->
-                        <div class="flex items-center justify-between mt-4 pt-3 border-t border-base-200">
-                            <span class="text-2xl font-bold text-primary">
+                        <div class="flex items-center justify-between mt-4 pt-3 border-t border-base-300/40">
+                            <span class="text-xl font-bold text-primary">
                                 @producto.Precio.ToString("C", new System.Globalization.CultureInfo("es-ES"))
                             </span>
                             @if (producto.Stock > 0)
                             {
-                                <span class="badge badge-success badge-lg gap-1.5 font-semibold text-white">
-                                    <i class="fa-solid fa-check text-sm"></i> Stock
+                                <span class="badge badge-success badge-sm gap-1 font-semibold text-white rounded-lg">
+                                    <i class="fa-solid fa-check text-[10px]"></i> Stock
                                 </span>
                             }
                             else
                             {
-                                <span class="badge badge-error badge-lg font-semibold text-white">Agotado</span>
+                                <span class="badge badge-error badge-sm font-semibold text-white rounded-lg">Agotado</span>
                             }
                         </div>
                         
                         <!-- Botón añadir al carrito -->
-                        <form method="post" asp-page-handler="AddToCart" class="mt-5">
+                        <form method="post" asp-page-handler="AddToCart" class="mt-4">
                             <input type="hidden" name="productoId" value="@producto.Id" />
                             <button type="submit" 
-                                    class="btn btn-primary btn-md w-full font-bold text-lg transition-all duration-200 hover:shadow-lg" 
+                                    class="btn btn-primary btn-sm w-full font-semibold rounded-xl transition-all duration-200" 
                                     @(producto.Stock <= 0 ? "disabled" : "")>
-                                <i class="fa-solid fa-cart-plus text-lg"></i>
+                                <i class="fa-solid fa-cart-plus text-sm"></i>
                                 Añadir al carrito
                             </button>
                         </form>
@@ -125,17 +126,17 @@
     else
     {
         <!-- Estado vacío -->
-        <div class="card bg-base-100 shadow-lg border-2 border-primary/20">
+        <div class="card bg-white shadow-lg border border-primary/15 rounded-2xl">
             <div class="card-body items-center text-center py-20 px-8">
-                <div class="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mb-6">
-                    <i class="fa-solid fa-box-open text-5xl text-primary"></i>
+                <div class="w-20 h-20 rounded-2xl bg-primary/8 flex items-center justify-center mb-5">
+                    <i class="fa-solid fa-box-open text-4xl text-primary/50"></i>
                 </div>
-                <h2 class="text-3xl font-bold text-primary mb-3">No se encontraron productos</h2>
-                <p class="text-lg text-base-content/70 max-w-md mb-6">
+                <h2 class="text-2xl font-bold text-base-content mb-2">No se encontraron productos</h2>
+                <p class="text-base text-base-content/50 max-w-md mb-6">
                     No hay productos que coincidan con tu búsqueda. Intenta con otros filtros o vuelve al catálogo completo.
                 </p>
-                <a asp-page="/Index" class="btn btn-primary btn-lg font-bold gap-2">
-                    <i class="fa-solid fa-arrows-rotate text-lg"></i>
+                <a asp-page="/Index" class="btn btn-primary rounded-xl font-semibold gap-2">
+                    <i class="fa-solid fa-arrows-rotate text-sm"></i>
                     Ver todos los productos
                 </a>
             </div>

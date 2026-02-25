@@ -5,25 +5,26 @@
     Layout = "_Layout";
 }
 
-<div class="max-w-6xl mx-auto px-4 py-8">
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- Título -->
     <div class="flex items-center justify-between mb-8">
         <div>
-            <h1 class="text-3xl font-bold text-base-content flex items-center gap-3">
-                <i class="fa-solid fa-shopping-cart text-primary"></i>
+            <p class="text-xs font-semibold uppercase tracking-widest text-primary/70 mb-1">Resumen</p>
+            <h1 class="text-2xl font-extrabold text-base-content tracking-tight flex items-center gap-3">
+                <i class="fa-solid fa-shopping-bag text-primary"></i>
                 Mi carrito
             </h1>
             @if (Model.Carrito?.TotalItems > 0)
             {
-                <p class="text-base-content/60 mt-1">@Model.Carrito.TotalItems productos en tu carrito</p>
+                <p class="text-base-content/50 mt-1 text-sm">@Model.Carrito.TotalItems productos en tu carrito</p>
             }
         </div>
         
         @if (Model.Carrito?.Lineas.Any() == true)
         {
             <form method="post" asp-page-handler="Vaciar">
-                <button type="submit" class="btn btn-ghost btn-sm text-error hover:bg-error/10">
-                    <i class="fa-solid fa-trash mr-2"></i>
+                <button type="submit" class="btn btn-ghost btn-sm text-error hover:bg-error/8 rounded-xl">
+                    <i class="fa-solid fa-trash mr-2 text-xs"></i>
                     Vaciar carrito
                 </button>
             </form>
@@ -37,7 +38,7 @@
             <div class="flex flex-col gap-4 flex-1">
                 @foreach (var linea in Model.Carrito.Lineas)
                 {
-                    <div class="card bg-base-100 shadow-md border border-base-300">
+                    <div class="card bg-white shadow-sm border border-base-300/50 rounded-2xl">
                         <div class="card-body flex-row items-center gap-4 p-4">
                             <!-- Imagen -->
                             <div class="w-16 h-16 rounded-lg bg-base-300 flex items-center justify-center shrink-0 overflow-hidden">
@@ -95,8 +96,8 @@
 
             <!-- Resumen del pedido -->
             <div class="lg:w-96">
-                <div class="card bg-base-100 shadow-md border border-base-300 sticky top-24">
-                    <div class="card-body gap-4">
+                <div class="card bg-white shadow-md border border-base-300/50 sticky top-24 rounded-2xl">
+                    <div class="card-body gap-4 p-6">
                         <h2 class="text-lg font-bold text-base-content">Resumen del pedido</h2>
 
                         <div class="flex flex-col gap-3">
@@ -120,11 +121,11 @@
                             </div>
                         </div>
 
-                        <a asp-page="/Pago" class="btn btn-primary w-full mt-2">
+                        <a asp-page="/Pago" class="btn btn-primary w-full mt-2 rounded-xl font-semibold">
                             <i class="fa-solid fa-lock mr-2"></i>
                             Finalizar compra
                         </a>
-                        <a asp-page="/Index" class="btn btn-ghost btn-sm w-full">
+                        <a asp-page="/Index" class="btn btn-ghost btn-sm w-full rounded-xl">
                             <i class="fa-solid fa-arrow-left mr-2"></i>
                             Seguir comprando
                         </a>
@@ -136,14 +137,14 @@
     else
     {
         <!-- Carrito vacío -->
-        <div class="card bg-base-100 shadow-md border border-base-300">
+        <div class="card bg-white shadow-md border border-base-300/50 rounded-2xl">
             <div class="card-body items-center text-center py-16">
-                <div class="w-20 h-20 rounded-full bg-base-200 flex items-center justify-center mb-4">
-                    <i class="fa-solid fa-cart-shopping text-4xl text-base-content/30"></i>
+                <div class="w-20 h-20 rounded-2xl bg-primary/8 flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-cart-shopping text-4xl text-primary/40"></i>
                 </div>
                 <h2 class="text-xl font-bold text-base-content">Tu carrito está vacío</h2>
-                <p class="text-base-content/60 max-w-md">Añade productos para comenzar tu compra.</p>
-                <a asp-page="/Index" class="btn btn-primary mt-4">
+                <p class="text-base-content/50 max-w-md text-sm">Añade productos para comenzar tu compra.</p>
+                <a asp-page="/Index" class="btn btn-primary mt-4 rounded-xl font-semibold">
                     <i class="fa-solid fa-shopping-bag mr-2"></i>
                     Explorar productos
                 </a>

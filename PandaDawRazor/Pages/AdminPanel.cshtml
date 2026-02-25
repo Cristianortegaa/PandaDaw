@@ -5,19 +5,20 @@
     Layout = "_Layout";
 }
 
-<div class="max-w-7xl mx-auto px-4 py-8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- Header -->
     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-8">
         <div>
-            <h1 class="text-3xl font-bold text-base-content flex items-center gap-3">
+            <p class="text-xs font-semibold uppercase tracking-widest text-primary/70 mb-1">Administración</p>
+            <h1 class="text-2xl font-extrabold text-base-content tracking-tight flex items-center gap-3">
                 <i class="fa-solid fa-gear text-primary"></i>
                 Panel de Administración
             </h1>
-            <p class="text-base-content/60 mt-1">Gestiona los productos de la tienda</p>
+            <p class="text-base-content/50 mt-1 text-sm">Gestiona los productos de la tienda</p>
         </div>
         
         <!-- Botón crear producto -->
-        <button onclick="modal_crear.showModal()" class="btn btn-primary gap-2">
+        <button onclick="modal_crear.showModal()" class="btn btn-primary gap-2 rounded-xl font-semibold">
             <i class="fa-solid fa-plus"></i>
             Nuevo Producto
         </button>
@@ -40,23 +41,23 @@
     }
 
     <!-- Filtros -->
-    <div class="card bg-base-100 shadow-md mb-6">
+    <div class="card bg-white shadow-sm mb-6 rounded-2xl border border-base-300/50">
         <div class="card-body p-4">
             <form method="get" class="flex flex-col sm:flex-row gap-4 items-center">
                 <div class="form-control flex-1 w-full">
                     <div class="relative">
                         <input type="text" name="filtro" value="@Model.Filtro" placeholder="Buscar productos..." 
-                               class="input input-bordered w-full pl-10" />
-                        <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-base-content/40"></i>
+                               class="input input-bordered w-full pl-10 rounded-xl" />
+                        <i class="fa-solid fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-base-content/35 text-sm"></i>
                     </div>
                 </div>
                 <label class="label cursor-pointer gap-2">
                     <input type="checkbox" name="mostrarEliminados" value="true" @(Model.MostrarEliminados ? "checked" : "") 
                            class="checkbox checkbox-primary checkbox-sm" />
-                    <span class="label-text">Mostrar eliminados</span>
+                    <span class="label-text text-sm">Mostrar eliminados</span>
                 </label>
-                <button type="submit" class="btn btn-primary btn-sm">
-                    <i class="fa-solid fa-filter"></i>
+                <button type="submit" class="btn btn-primary btn-sm rounded-xl font-medium">
+                    <i class="fa-solid fa-filter text-xs"></i>
                     Filtrar
                 </button>
             </form>
@@ -65,30 +66,30 @@
 
     <!-- Estadísticas rápidas -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div class="stat bg-base-100 rounded-box shadow-md">
+        <div class="stat bg-white rounded-2xl shadow-sm border border-base-300/50">
             <div class="stat-figure text-primary">
-                <i class="fa-solid fa-box text-3xl"></i>
+                <i class="fa-solid fa-box text-2xl"></i>
             </div>
             <div class="stat-title">Total Productos</div>
             <div class="stat-value text-primary">@Model.Productos.Count</div>
         </div>
-        <div class="stat bg-base-100 rounded-box shadow-md">
+        <div class="stat bg-white rounded-2xl shadow-sm border border-base-300/50">
             <div class="stat-figure text-success">
-                <i class="fa-solid fa-check-circle text-3xl"></i>
+                <i class="fa-solid fa-check-circle text-2xl"></i>
             </div>
             <div class="stat-title">Activos</div>
             <div class="stat-value text-success">@Model.Productos.Count(p => !p.IsDeleted)</div>
         </div>
-        <div class="stat bg-base-100 rounded-box shadow-md">
+        <div class="stat bg-white rounded-2xl shadow-sm border border-base-300/50">
             <div class="stat-figure text-error">
-                <i class="fa-solid fa-trash text-3xl"></i>
+                <i class="fa-solid fa-trash text-2xl"></i>
             </div>
             <div class="stat-title">Eliminados</div>
             <div class="stat-value text-error">@Model.Productos.Count(p => p.IsDeleted)</div>
         </div>
-        <div class="stat bg-base-100 rounded-box shadow-md">
+        <div class="stat bg-white rounded-2xl shadow-sm border border-base-300/50">
             <div class="stat-figure text-warning">
-                <i class="fa-solid fa-exclamation-triangle text-3xl"></i>
+                <i class="fa-solid fa-exclamation-triangle text-2xl"></i>
             </div>
             <div class="stat-title">Sin Stock</div>
             <div class="stat-value text-warning">@Model.Productos.Count(p => p.Stock == 0 && !p.IsDeleted)</div>
@@ -96,7 +97,7 @@
     </div>
 
     <!-- Tabla de productos -->
-    <div class="card bg-base-100 shadow-md overflow-hidden">
+    <div class="card bg-white shadow-md overflow-hidden rounded-2xl border border-base-300/50">
         <div class="overflow-x-auto">
             <table class="table table-zebra">
                 <thead class="bg-base-200">
@@ -224,12 +225,12 @@
 
 <!-- Modal Crear Producto -->
 <dialog id="modal_crear" class="modal">
-    <div class="modal-box w-11/12 max-w-2xl">
+    <div class="modal-box w-11/12 max-w-2xl rounded-2xl">
         <form method="dialog">
-            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-3 top-3">✕</button>
         </form>
-        <h3 class="font-bold text-xl mb-6 flex items-center gap-2">
-            <i class="fa-solid fa-plus text-primary"></i>
+        <h3 class="font-extrabold text-xl mb-6 flex items-center gap-2 tracking-tight">
+            <i class="fa-solid fa-plus text-primary text-sm"></i>
             Crear Nuevo Producto
         </h3>
         
@@ -291,8 +292,8 @@
             </div>
             
             <div class="modal-action">
-                <button type="button" onclick="modal_crear.close()" class="btn btn-ghost">Cancelar</button>
-                <button type="submit" class="btn btn-primary gap-2">
+                <button type="button" onclick="modal_crear.close()" class="btn btn-ghost rounded-xl">Cancelar</button>
+                <button type="submit" class="btn btn-primary gap-2 rounded-xl font-semibold">
                     <i class="fa-solid fa-save"></i>
                     Crear Producto
                 </button>
@@ -306,12 +307,12 @@
 
 <!-- Modal Editar Producto -->
 <dialog id="modal_editar" class="modal">
-    <div class="modal-box w-11/12 max-w-2xl">
+    <div class="modal-box w-11/12 max-w-2xl rounded-2xl">
         <form method="dialog">
-            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-3 top-3">✕</button>
         </form>
-        <h3 class="font-bold text-xl mb-6 flex items-center gap-2">
-            <i class="fa-solid fa-edit text-info"></i>
+        <h3 class="font-extrabold text-xl mb-6 flex items-center gap-2 tracking-tight">
+            <i class="fa-solid fa-edit text-info text-sm"></i>
             Editar Producto
         </h3>
         
@@ -374,8 +375,8 @@
             </div>
             
             <div class="modal-action">
-                <button type="button" onclick="modal_editar.close()" class="btn btn-ghost">Cancelar</button>
-                <button type="submit" class="btn btn-info gap-2">
+                <button type="button" onclick="modal_editar.close()" class="btn btn-ghost rounded-xl">Cancelar</button>
+                <button type="submit" class="btn btn-info gap-2 rounded-xl font-semibold">
                     <i class="fa-solid fa-save"></i>
                     Guardar Cambios
                 </button>

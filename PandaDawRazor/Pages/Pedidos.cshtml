@@ -9,11 +9,12 @@
     <div class="max-w-4xl mx-auto p-6">
         <!-- Header -->
         <div class="mb-6">
-            <h1 class="text-2xl font-bold flex items-center gap-2">
+            <p class="text-xs font-semibold uppercase tracking-widest text-primary/70 mb-1">Historial</p>
+            <h1 class="text-2xl font-extrabold tracking-tight flex items-center gap-2">
                 <i class="fa-solid fa-box text-primary"></i>
                 Mis Pedidos
             </h1>
-            <p class="text-base-content/60 text-sm mt-1">
+            <p class="text-base-content/50 text-sm mt-1">
                 Historial de todas tus compras
             </p>
         </div>
@@ -21,14 +22,16 @@
         @if (!Model.Pedidos.Any())
         {
             <!-- Sin pedidos -->
-            <div class="card bg-base-100 shadow-xl">
+            <div class="card bg-white shadow-xl rounded-2xl border border-base-300/50">
                 <div class="card-body items-center text-center py-16">
-                    <i class="fa-solid fa-shopping-bag text-8xl text-base-content/20 mb-4"></i>
+                    <div class="w-20 h-20 rounded-2xl bg-primary/8 flex items-center justify-center mb-4">
+                        <i class="fa-solid fa-shopping-bag text-4xl text-primary/40"></i>
+                    </div>
                     <h2 class="text-xl font-bold">No tienes pedidos</h2>
-                    <p class="text-base-content/60 max-w-md">
+                    <p class="text-base-content/50 max-w-md text-sm">
                         Aún no has realizado ninguna compra. ¡Explora nuestro catálogo y encuentra lo que necesitas!
                     </p>
-                    <a asp-page="/Index" class="btn btn-primary mt-4">
+                    <a asp-page="/Index" class="btn btn-primary mt-4 rounded-xl font-semibold">
                         <i class="fa-solid fa-shopping-cart mr-2"></i>
                         Ir a comprar
                     </a>
@@ -41,10 +44,10 @@
             <div class="flex flex-col gap-4">
                 @foreach (var pedido in Model.Pedidos.OrderByDescending(p => p.FechaCompra))
                 {
-                    <div class="card bg-base-100 shadow-xl">
-                        <div class="card-body">
+                    <div class="card bg-white shadow-lg rounded-2xl border border-base-300/50">
+                        <div class="card-body p-6">
                             <!-- Header del pedido -->
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-base-300">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-base-300/50">
                                 <div class="flex items-center gap-4">
                                     <div>
                                         <p class="text-sm text-base-content/60">Pedido</p>
@@ -93,7 +96,7 @@
                                 <div class="flex flex-col gap-2">
                                     @foreach (var linea in pedido.Lineas)
                                     {
-                                        <div class="flex items-center gap-3 bg-base-200 rounded-lg p-2">
+                                        <div class="flex items-center gap-3 bg-base-200/60 rounded-xl p-2.5">
                                             @if (!string.IsNullOrEmpty(linea.ProductoImagen))
                                             {
                                                 <img src="@linea.ProductoImagen" alt="@linea.ProductoNombre" 
@@ -123,7 +126,7 @@
                             </div>
 
                             <!-- Resumen -->
-                            <div class="flex justify-end pt-3 border-t border-base-300 mt-3">
+                            <div class="flex justify-end pt-3 border-t border-base-300/50 mt-3">
                                 <div class="text-right">
                                     <p class="text-sm text-base-content/60">
                                         Subtotal: @((pedido.Total / 1.21m).ToString("C", new System.Globalization.CultureInfo("es-ES")))
@@ -142,9 +145,9 @@
             </div>
 
             <!-- Resumen general -->
-            <div class="card bg-base-100 shadow mt-6">
+            <div class="card bg-white shadow-md mt-6 rounded-2xl border border-base-300/50">
                 <div class="card-body py-4">
-                    <div class="stats stats-vertical sm:stats-horizontal w-full">
+                    <div class="stats stats-vertical sm:stats-horizontal w-full bg-transparent">
                         <div class="stat">
                             <div class="stat-figure text-primary">
                                 <i class="fa-solid fa-receipt text-2xl"></i>
