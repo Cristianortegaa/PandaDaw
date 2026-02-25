@@ -18,8 +18,7 @@ public class DataSeeder
                         "Cuerpo de titanio aerospacial, chip A17 Pro y el sistema de cámaras más avanzado de Apple.",
                     Precio = 1469.00m,
                     Stock = 20,
-                    Imagen =
-                        "https://acdn.mitiendanube.com/stores/001/174/820/products/iphone-15-pro-max-titanio-natural1-7ab3fc0db0c9c7b50816952994406248-640-0.jpg",
+                    Imagen = "/img/iphone 15 pro MAX.jpg",
                     FechaAlta = DateTime.UtcNow,
                     IsDeleted = false,
                     Category = Categoria.Smartphones
@@ -43,7 +42,7 @@ public class DataSeeder
                         "El smartphone de Google con la mejor cámara computacional y Android puro con 7 años de actualizaciones.",
                     Precio = 1099.00m,
                     Stock = 18,
-                    Imagen = "https://m.media-amazon.com/images/I/71R2hE9ZqUL._AC_SL1500_.jpg",
+                    Imagen = "/img/Google pixel 8 pro.jpg",
                     FechaAlta = DateTime.UtcNow,
                     IsDeleted = false,
                     Category = Categoria.Smartphones
@@ -55,7 +54,7 @@ public class DataSeeder
                         "Cámaras co-desarrolladas con Leica, carga ultrarrápida de 120W y pantalla AMOLED ultrabrillante.",
                     Precio = 999.00m,
                     Stock = 25,
-                    Imagen = "https://m.media-amazon.com/images/I/61NlU2+Z2uL._AC_SL1500_.jpg",
+                    Imagen = "/img/xiaomi 14 pro.jpg",
                     FechaAlta = DateTime.UtcNow,
                     IsDeleted = false,
                     Category = Categoria.Smartphones
@@ -92,7 +91,7 @@ public class DataSeeder
                         "Audio inmersivo revolucionario, diseño premium y una cancelación de ruido legendaria.",
                     Precio = 499.00m,
                     Stock = 15,
-                    Imagen = "https://m.media-amazon.com/images/I/51wXwN3tW-L._AC_SL1500_.jpg",
+                    Imagen = "/img/bose quiet confort.jpg",
                     FechaAlta = DateTime.UtcNow,
                     IsDeleted = false,
                     Category = Categoria.Audio
@@ -104,7 +103,7 @@ public class DataSeeder
                         "Altavoz Bluetooth portátil, resistente al agua y al polvo, con hasta 12 horas de reproducción continua.",
                     Precio = 129.00m,
                     Stock = 40,
-                    Imagen = "https://m.media-amazon.com/images/I/61bX2AoGjIG._AC_SL1500_.jpg",
+                    Imagen = "/img/jbl.jpg",
                     FechaAlta = DateTime.UtcNow,
                     IsDeleted = false,
                     Category = Categoria.Audio
@@ -129,7 +128,7 @@ public class DataSeeder
                         "Portátil ultraligero para gaming con pantalla OLED a 120Hz, procesador AMD Ryzen 9 y RTX 4070.",
                     Precio = 1999.00m,
                     Stock = 8,
-                    Imagen = "https://m.media-amazon.com/images/I/71YtVq2R-JL._AC_SL1500_.jpg",
+                    Imagen = "/img/asus rog.jpg",
                     FechaAlta = DateTime.UtcNow,
                     IsDeleted = false,
                     Category = Categoria.Laptops
@@ -141,7 +140,7 @@ public class DataSeeder
                         "Pantalla InfinityEdge OLED 3.5K, procesador Intel Core i9 de 13ª generación y diseño de aluminio mecanizado.",
                     Precio = 2299.00m,
                     Stock = 10,
-                    Imagen = "https://m.media-amazon.com/images/I/61pBvlYFnwL._AC_SL1500_.jpg",
+                    Imagen = "/img/dell xps.jpg",
                     FechaAlta = DateTime.UtcNow,
                     IsDeleted = false,
                     Category = Categoria.Laptops
@@ -154,7 +153,7 @@ public class DataSeeder
                     Precio = 1599.00m,
                     Stock = 20,
                     Imagen =
-                        "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/mba15-midnight-select-202402?wid=904&hei=840&fmt=jpeg",
+                        "/img/macbook air.jpg",
                     FechaAlta = DateTime.UtcNow,
                     IsDeleted = false,
                     Category = Categoria.Laptops
@@ -166,7 +165,7 @@ public class DataSeeder
                         "Juego a 4K, memoria SSD ultrarrápida, gatillos adaptativos y audio 3D. La nueva generación.",
                     Precio = 549.99m,
                     Stock = 30,
-                    Imagen = "https://m.media-amazon.com/images/I/51rJb1J2gPL._AC_SL1200_.jpg",
+                    Imagen = "/img/play 5 slim.jpg",
                     FechaAlta = DateTime.UtcNow,
                     IsDeleted = false,
                     Category = Categoria.Gaming
@@ -202,7 +201,7 @@ public class DataSeeder
                         "Tu biblioteca de PC en tus manos. Pantalla HDR OLED brillante, mayor duración de batería y Wi-Fi 6E.",
                     Precio = 569.00m,
                     Stock = 12,
-                    Imagen = "https://m.media-amazon.com/images/I/51kP3jD-m5L._AC_SL1200_.jpg",
+                    Imagen = "/img/steam deck.jpg",
                     FechaAlta = DateTime.UtcNow,
                     IsDeleted = false,
                     Category = Categoria.Gaming
@@ -214,7 +213,7 @@ public class DataSeeder
                         "Sensor Full-Frame de 33 MP, grabación 4K 60p y el mejor enfoque automático en tiempo real.",
                     Precio = 2799.00m,
                     Stock = 4,
-                    Imagen = "https://m.media-amazon.com/images/I/71wE8kH++NL._AC_SL1500_.jpg",
+                    Imagen = "/img/sony alpha.jpg",
                     FechaAlta = DateTime.UtcNow,
                     IsDeleted = false,
                     Category = Categoria.Imagen
@@ -226,7 +225,7 @@ public class DataSeeder
                         "Televisor 4K con píxeles autoluminiscentes, procesador a9 Gen6 y optimizado para gaming a 120Hz.",
                     Precio = 1699.00m,
                     Stock = 12,
-                    Imagen = "https://m.media-amazon.com/images/I/81e5W4WbQjL._AC_SL1500_.jpg",
+                    Imagen = "/img/lg oled.jpg",
                     FechaAlta = DateTime.UtcNow,
                     IsDeleted = false,
                     Category = Categoria.Imagen
@@ -238,7 +237,7 @@ public class DataSeeder
                         "Dron ligero (menos de 250g) con detección de obstáculos omnidireccional y vídeo HDR en 4K/60 fps.",
                     Precio = 999.00m,
                     Stock = 8,
-                    Imagen = "https://m.media-amazon.com/images/I/61NlU2+Z2uL._AC_SL1500_.jpg",
+                    Imagen = "/img/dron dji.jpg",
                     FechaAlta = DateTime.UtcNow,
                     IsDeleted = false,
                     Category = Categoria.Imagen
@@ -250,7 +249,7 @@ public class DataSeeder
                         "Increíble calidad de imagen, estabilización de vídeo HyperSmooth 6.0 mejorada y autonomía excepcional.",
                     Precio = 449.00m,
                     Stock = 30,
-                    Imagen = "https://m.media-amazon.com/images/I/61fWqjL8w+L._AC_SL1500_.jpg",
+                    Imagen = "/img/gopro.jpg",
                     FechaAlta = DateTime.UtcNow,
                     IsDeleted = false,
                     Category = Categoria.Imagen
