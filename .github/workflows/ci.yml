@@ -33,7 +33,7 @@ jobs:
     needs: test
     steps:
       - uses: actions/checkout@v4
-      - run: npx @usebruno/cli run PandaDaw-BrunoTest
+      - run: cd PandaDaw-BrunoTest && npx @usebruno/cli run
 
   playwright:
     name: Playwright
