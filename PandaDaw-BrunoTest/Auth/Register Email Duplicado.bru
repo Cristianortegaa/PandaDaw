@@ -1,0 +1,25 @@
+meta {
+  name: Register Email Duplicado
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/Auth/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombre": "Admin",
+    "apellidos": "Admin",
+    "email": "admin@panda.com",
+    "password": "Test123!"
+  }
+}
+
+assert {
+  res.status: eq 400
+  res.body.message: isString
+}

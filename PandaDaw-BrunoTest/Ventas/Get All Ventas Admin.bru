@@ -1,0 +1,20 @@
+meta {
+  name: Get All Ventas (Admin)
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/Ventas
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+}

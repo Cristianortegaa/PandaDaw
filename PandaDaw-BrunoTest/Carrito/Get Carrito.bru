@@ -1,0 +1,24 @@
+meta {
+  name: Get Carrito
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/Carrito
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.id: isNumber
+  res.body.usuarioId: isString
+  res.body.lineas: isArray
+  res.body.total: isNumber
+  res.body.totalItems: isNumber
+}

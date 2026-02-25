@@ -1,0 +1,27 @@
+meta {
+  name: Create Valoracion Estrellas Invalidas
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{baseUrl}}/Valoraciones
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "productoId": 2,
+    "estrellas": 10,
+    "resena": "Estrellas fuera de rango"
+  }
+}
+
+assert {
+  res.status: eq 400
+}

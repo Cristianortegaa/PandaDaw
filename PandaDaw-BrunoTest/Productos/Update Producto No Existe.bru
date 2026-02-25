@@ -1,0 +1,27 @@
+meta {
+  name: Update Producto No Existe
+  type: http
+  seq: 9
+}
+
+put {
+  url: {{baseUrl}}/Productos/99999
+  body: multipartForm
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+body:multipart-form {
+  Nombre: Producto Fantasma
+  Precio: 10.00
+  Stock: 1
+  Categoria: Gaming
+}
+
+assert {
+  res.status: eq 404
+  res.body.message: isString
+}

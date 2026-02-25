@@ -1,0 +1,20 @@
+meta {
+  name: Remove Favorito No Existe
+  type: http
+  seq: 8
+}
+
+delete {
+  url: {{baseUrl}}/Favoritos/99999
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+assert {
+  res.status: eq 404
+  res.body.message: isString
+}

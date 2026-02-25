@@ -1,0 +1,21 @@
+meta {
+  name: Add Favorito Sin Auth
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/Favoritos
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "productoId": 1
+  }
+}
+
+assert {
+  res.status: eq 401
+}

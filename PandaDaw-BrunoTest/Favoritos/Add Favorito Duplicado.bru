@@ -1,0 +1,26 @@
+meta {
+  name: Add Favorito Duplicado
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/Favoritos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "productoId": 2
+  }
+}
+
+assert {
+  res.status: eq 400
+  res.body.message: isString
+}

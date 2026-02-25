@@ -1,0 +1,20 @@
+meta {
+  name: Get Venta No Existe
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/Ventas/99999
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+assert {
+  res.status: eq 404
+  res.body.message: isString
+}

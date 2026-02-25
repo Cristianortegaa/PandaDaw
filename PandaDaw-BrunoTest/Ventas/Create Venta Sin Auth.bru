@@ -1,0 +1,15 @@
+meta {
+  name: Create Venta Sin Auth
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{baseUrl}}/Ventas
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 401
+}

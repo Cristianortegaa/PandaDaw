@@ -1,0 +1,22 @@
+meta {
+  name: Create Producto Sin Auth
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/Productos
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  Nombre: Producto Sin Auth
+  Precio: 50.00
+  Stock: 5
+  Categoria: Gaming
+}
+
+assert {
+  res.status: eq 401
+}

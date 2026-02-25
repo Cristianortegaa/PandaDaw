@@ -1,0 +1,29 @@
+meta {
+  name: Create Venta Desde Carrito
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/Ventas
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+assert {
+  res.status: eq 201
+  res.body.id: isNumber
+  res.body.total: isNumber
+  res.body.estado: isString
+  res.body.lineas: isArray
+}
+
+script:post-response {
+  if (res.status === 201) {
+    bru.setVar("ventaId", res.body.id);
+  }
+}

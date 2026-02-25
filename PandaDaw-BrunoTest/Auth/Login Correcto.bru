@@ -1,0 +1,33 @@
+meta {
+  name: Login Correcto
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/Auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "admin@panda.com",
+    "password": "Admin123!"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.token: isString
+  res.body.email: eq admin@panda.com
+  res.body.nombre: isString
+  res.body.role: isString
+}
+
+script:post-response {
+  if (res.status === 200) {
+    bru.setEnvVar("adminToken", res.body.token);
+    bru.setEnvVar("token", res.body.token);
+  }
+}

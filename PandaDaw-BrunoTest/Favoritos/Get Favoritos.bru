@@ -1,0 +1,20 @@
+meta {
+  name: Get Favoritos
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/Favoritos
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+}

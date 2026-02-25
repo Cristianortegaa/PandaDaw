@@ -1,0 +1,19 @@
+meta {
+  name: Delete Valoracion
+  type: http
+  seq: 12
+}
+
+delete {
+  url: {{baseUrl}}/Valoraciones/1
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+assert {
+  res.status: eq 204
+}

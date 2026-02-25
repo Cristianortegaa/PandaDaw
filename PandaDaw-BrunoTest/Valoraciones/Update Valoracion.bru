@@ -1,0 +1,30 @@
+meta {
+  name: Update Valoracion
+  type: http
+  seq: 10
+}
+
+put {
+  url: {{baseUrl}}/Valoraciones/1
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "productoId": 1,
+    "estrellas": 4,
+    "resena": "Actualizo mi valoracion, sigue siendo muy bueno"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.id: isNumber
+  res.body.estrellas: eq 4
+  res.body.resena: isString
+}

@@ -1,0 +1,16 @@
+meta {
+  name: Get By Categoria Valida
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/Productos/categoria/Audio
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+}

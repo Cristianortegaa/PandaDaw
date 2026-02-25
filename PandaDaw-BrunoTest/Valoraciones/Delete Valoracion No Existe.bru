@@ -1,0 +1,20 @@
+meta {
+  name: Delete Valoracion No Existe
+  type: http
+  seq: 13
+}
+
+delete {
+  url: {{baseUrl}}/Valoraciones/99999
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+assert {
+  res.status: eq 404
+  res.body.message: isString
+}

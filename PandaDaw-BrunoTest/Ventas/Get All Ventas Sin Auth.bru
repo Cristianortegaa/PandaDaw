@@ -1,0 +1,15 @@
+meta {
+  name: Get All Ventas Sin Auth
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/Ventas
+  body: none
+  auth: none
+}
+
+assert {
+  res.status: eq 401
+}

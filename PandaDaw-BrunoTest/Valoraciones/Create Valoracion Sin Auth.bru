@@ -1,0 +1,23 @@
+meta {
+  name: Create Valoracion Sin Auth
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/Valoraciones
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "productoId": 1,
+    "estrellas": 3,
+    "resena": "Sin autenticacion"
+  }
+}
+
+assert {
+  res.status: eq 401
+}

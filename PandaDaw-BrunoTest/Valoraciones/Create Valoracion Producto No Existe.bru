@@ -1,0 +1,28 @@
+meta {
+  name: Create Valoracion Producto No Existe
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/Valoraciones
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "productoId": 99999,
+    "estrellas": 3,
+    "resena": "Este producto no existe"
+  }
+}
+
+assert {
+  res.status: eq 404
+  res.body.message: isString
+}
