@@ -13,5 +13,6 @@ jobs:
       with:
         dotnet-version: '10.0'
     - run: dotnet build PandaDaw.sln
+    - run: dotnet test PandaDaw.sln
     - run: dotnet publish PandaBack/PandaBack.csproj -c Release -o ./publish
 
