@@ -295,7 +295,7 @@ public static class DataSeeder
                 {
                     Nombre = "Dron DJI Mini 4 Pro",
                     Descripcion =
-                        "Dron ligero (menos de 250g) con detección de obstáculos omnidireccional y vídeo HDR en 4K/60 fps.",
+                        "Dron ligero (menos de 250g) con detección de obstáculos omnidireccional y vídeo HDR en 4K/60 fps y ya.",
                     Precio = 999.00m,
                     Stock = 8,
                     Imagen = "/img/dron dji.jpg",

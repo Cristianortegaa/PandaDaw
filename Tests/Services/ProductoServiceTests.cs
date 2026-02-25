@@ -1,4 +1,4 @@
-﻿using Moq;
+﻿﻿using Moq;
 using Microsoft.Extensions.Caching.Distributed;
 using PandaBack.Services;
 using PandaBack.Models;
@@ -78,9 +78,9 @@ namespace Tests.Services
             long idQueNoExiste = 99;
             
             _cacheFalsa.Setup(c => c.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                       .ReturnsAsync((byte[])null);
+                       .ReturnsAsync((byte[])null!);
                        
-            _repoFalso.Setup(repo => repo.GetByIdAsync(idQueNoExiste)).ReturnsAsync((Producto)null);
+            _repoFalso.Setup(repo => repo.GetByIdAsync(idQueNoExiste)).ReturnsAsync((Producto)null!);
 
             var resultado = await _service.GetProductoByIdAsync(idQueNoExiste);
 
@@ -94,7 +94,7 @@ namespace Tests.Services
             long idQueNoExiste = 99;
             var datosNuevos = new Producto { Nombre = "Monedero digital", Precio = 10 };
             
-            _repoFalso.Setup(repo => repo.GetByIdAsync(idQueNoExiste)).ReturnsAsync((Producto)null);
+            _repoFalso.Setup(repo => repo.GetByIdAsync(idQueNoExiste)).ReturnsAsync((Producto)null!);
 
             var resultado = await _service.UpdateProductoAsync(idQueNoExiste, datosNuevos);
 

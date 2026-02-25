@@ -1,4 +1,4 @@
-﻿using Moq;
+﻿﻿using Moq;
 using PandaBack.Services;
 using PandaBack.Models;
 using PandaBack.Repositories;
@@ -66,7 +66,7 @@ namespace Tests.Services
         public async Task ObtenerPorId_SiNoExiste_DebeDarErrorNotFound()
         {
             // PREPARAR
-            _repoVentasFalso.Setup(r => r.GetByIdAsync(99)).ReturnsAsync((Venta)null);
+            _repoVentasFalso.Setup(r => r.GetByIdAsync(99)).ReturnsAsync((Venta)null!);
 
             // ACTUAR
             var resultado = await _service.GetVentaByIdAsync(99);
@@ -99,7 +99,7 @@ namespace Tests.Services
         public async Task CrearVenta_SiCarritoNoExiste_DebeDarErrorCarritoVacio()
         {
             // PREPARAR
-            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync((Carrito)null);
+            _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync((Carrito)null!);
 
             // ACTUAR
             var resultado = await _service.CreateVentaFromCarritoAsync(TestUserId);
@@ -143,7 +143,7 @@ namespace Tests.Services
                 }
             };
             _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync(carrito);
-            _repoProductosFalso.Setup(r => r.GetByIdAsync(99)).ReturnsAsync((Producto)null);
+            _repoProductosFalso.Setup(r => r.GetByIdAsync(99)).ReturnsAsync((Producto)null!);
 
             // ACTUAR
             var resultado = await _service.CreateVentaFromCarritoAsync(TestUserId);
@@ -240,7 +240,7 @@ namespace Tests.Services
         public async Task ActualizarEstado_SiVentaNoExiste_DebeDarErrorNotFound()
         {
             // PREPARAR
-            _repoVentasFalso.Setup(r => r.GetByIdAsync(99)).ReturnsAsync((Venta)null);
+            _repoVentasFalso.Setup(r => r.GetByIdAsync(99)).ReturnsAsync((Venta)null!);
 
             // ACTUAR
             var resultado = await _service.UpdateEstadoVentaAsync(99, EstadoPedido.Enviado);
