@@ -3,8 +3,16 @@ using PandaBack.Models;
 
 namespace PandaBack.Mappers;
 
+/// <summary>
+/// Mapper estático para convertir entre Producto y sus DTOs.
+/// </summary>
 public static class ProductoMapper
 {
+    /// <summary>
+    /// Convierte un Producto a ProductoResponseDto.
+    /// </summary>
+    /// <param name="producto">Producto a convertir.</param>
+    /// <returns>DTO de respuesta de producto.</returns>
     public static ProductoResponseDto ToDto(this Producto producto)
     {
         return new ProductoResponseDto
@@ -19,6 +27,11 @@ public static class ProductoMapper
         };
     }
 
+    /// <summary>
+    /// Convierte un ProductoRequestDto a Producto.
+    /// </summary>
+    /// <param name="dto">DTO de solicitud de producto.</param>
+    /// <returns>Producto.</returns>
     public static Producto ToModel(this ProductoRequestDto dto)
     {
         return new Producto

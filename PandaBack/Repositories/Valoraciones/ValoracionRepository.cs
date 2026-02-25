@@ -4,6 +4,9 @@ using PandaBack.Models;
 
 namespace PandaBack.Repositories;
 
+/// <summary>
+/// Implementación del repositorio de valoraciones.
+/// </summary>
 public class ValoracionRepository : IValoracionRepository
 {
     private readonly PandaDbContext _context;
@@ -15,6 +18,7 @@ public class ValoracionRepository : IValoracionRepository
         _logger = logger;
     }
 
+    /// <inheritdoc />
     public async Task<IEnumerable<Valoracion>> GetByProductoIdAsync(long productoId)
     {
         _logger.LogInformation("Obteniendo valoraciones del producto con ID: {ProductoId}", productoId);
@@ -27,6 +31,7 @@ public class ValoracionRepository : IValoracionRepository
             .ToListAsync();
     }
 
+    /// <inheritdoc />
     public async Task<IEnumerable<Valoracion>> GetByUserIdAsync(string userId)
     {
         _logger.LogInformation("Obteniendo valoraciones del usuario con ID: {UserId}", userId);
@@ -54,12 +59,14 @@ public class ValoracionRepository : IValoracionRepository
         return valoracion;
     }
 
+    /// <inheritdoc />
     public async Task<Valoracion?> GetByProductoAndUserAsync(long productoId, string userId)
     {
         return await _context.Valoraciones
             .FirstOrDefaultAsync(v => v.ProductoId == productoId && v.UserId == userId);
     }
 
+    /// <inheritdoc />
     public async Task AddAsync(Valoracion valoracion)
     {
         _logger.LogInformation("Creando valoración para producto {ProductoId} por usuario {UserId}", valoracion.ProductoId, valoracion.UserId);
@@ -67,6 +74,7 @@ public class ValoracionRepository : IValoracionRepository
         await _context.SaveChangesAsync();
     }
 
+    /// <inheritdoc />
     public async Task UpdateAsync(Valoracion valoracion)
     {
         _logger.LogInformation("Actualizando valoración con ID: {Id}", valoracion.Id);
@@ -74,6 +82,7 @@ public class ValoracionRepository : IValoracionRepository
         await _context.SaveChangesAsync();
     }
 
+    /// <inheritdoc />
     public async Task DeleteAsync(long id)
     {
         _logger.LogInformation("Eliminando valoración con ID: {Id}", id);

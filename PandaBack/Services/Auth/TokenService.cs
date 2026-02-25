@@ -6,6 +6,9 @@ using PandaBack.Models;
 
 namespace PandaBack.Services.Auth;
 
+/// <summary>
+/// Servicio para la generación de tokens JWT.
+/// </summary>
 public class TokenService
 {
     private readonly IConfiguration _configuration;
@@ -15,24 +18,25 @@ public class TokenService
         _configuration = configuration;
     }
 
+    /// <summary>
+    /// Genera un token JWT para un usuario.
+    /// </summary>
+    /// <param name="user">Usuario para el cual generar el token.</param>
+    /// <returns>Token JWT generado.</returns>
     public string GenerateToken(User user)
     {
-        // Claims
         var claims = new List<Claim>
         {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id), // ID del usuario
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id),
             new Claim(JwtRegisteredClaimNames.Email, user.Email!),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // ID único del token
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(ClaimTypes.Name, user.Nombre),
-            
             new Claim(ClaimTypes.Role, user.Role.ToString()) 
         };
 
-        // Creo la clave de seguridad y las credenciales de firma
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        // Creo el token JWT
         var token = new JwtSecurityToken(
             issuer: _configuration["Jwt:Issuer"],
             audience: _configuration["Jwt:Audience"],

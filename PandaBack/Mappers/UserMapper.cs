@@ -3,9 +3,16 @@ using PandaBack.Models;
 
 namespace PandaBack.Mappers;
 
+/// <summary>
+/// Mapper estático para convertir entre User y sus DTOs.
+/// </summary>
 public static class UserMapper
 {
-    // De Entidad a DTO de Respuesta
+    /// <summary>
+    /// Convierte un User a UserResponseDto.
+    /// </summary>
+    /// <param name="user">Usuario a convertir.</param>
+    /// <returns>DTO de respuesta del usuario.</returns>
     public static UserResponseDto ToDto(this User user)
     {
         return new UserResponseDto
@@ -15,12 +22,16 @@ public static class UserMapper
             Apellidos = user.Apellidos,
             Email = user.Email ?? string.Empty,
             Avatar = user.Avatar,
-            Role = user.Role.ToString(), // Convertimos el Enum a String
+            Role = user.Role.ToString(),
             FechaAlta = user.FechaAlta
         };
     }
 
-    // De DTO de Registro a Entidad
+    /// <summary>
+    /// Convierte un RegisterDto a User.
+    /// </summary>
+    /// <param name="dto">DTO de registro.</param>
+    /// <returns>Usuario.</returns>
     public static User ToModel(this RegisterDto dto)
     {
         return new User
@@ -29,7 +40,7 @@ public static class UserMapper
             Email = dto.Email,
             Nombre = dto.Nombre,
             Apellidos = dto.Apellidos,
-            Role = Role.User, // Rol por defecto
+            Role = Role.User,
             FechaAlta = DateTime.UtcNow
         };
     }

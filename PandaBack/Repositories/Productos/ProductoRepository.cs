@@ -4,6 +4,9 @@ using PandaBack.Models;
 
 namespace PandaBack.Repositories;
 
+/// <summary>
+/// Implementación del repositorio de productos.
+/// </summary>
 public class ProductoRepository : IProductoRepository
 {
     private readonly PandaDbContext _context;
@@ -15,6 +18,7 @@ public class ProductoRepository : IProductoRepository
         _logger = logger;
     }
 
+    /// <inheritdoc />
     public async Task<IEnumerable<Producto>> GetAllAsync()
     {
         _logger.LogInformation("Obteniendo todos los productos activos.");
@@ -37,6 +41,7 @@ public class ProductoRepository : IProductoRepository
         return producto;
     }
 
+    /// <inheritdoc />
     public async Task<IEnumerable<Producto>> GetByCategoryAsync(Categoria category)
     {
         _logger.LogInformation("Buscando productos en categoría: {Category}", category);
@@ -46,6 +51,7 @@ public class ProductoRepository : IProductoRepository
             .ToListAsync();
     }
 
+    /// <inheritdoc />
     public async Task AddAsync(Producto producto)
     {
         _logger.LogInformation("Creando producto con ID: {producto}", producto.Id);
@@ -53,6 +59,7 @@ public class ProductoRepository : IProductoRepository
         await _context.SaveChangesAsync();
     }
 
+    /// <inheritdoc />
     public async Task UpdateAsync(Producto producto)
     {
         _logger.LogInformation("Modificando producto con ID: {producto}", producto.Id);
@@ -61,6 +68,7 @@ public class ProductoRepository : IProductoRepository
         await _context.SaveChangesAsync();
     }
 
+    /// <inheritdoc />
     public async Task DeleteAsync(long id)
     {
         _logger.LogInformation("Eliminando producto con ID: {producto}", id);

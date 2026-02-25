@@ -4,6 +4,9 @@ using PandaBack.Models;
 
 namespace PandaBack.Repositories;
 
+/// <summary>
+/// Implementación del repositorio de carrito de compras.
+/// </summary>
 public class CarritoRepository : ICarritoRepository
 {
     private readonly PandaDbContext _context;
@@ -15,6 +18,7 @@ public class CarritoRepository : ICarritoRepository
         _logger = logger;
     }
 
+    /// <inheritdoc />
     public async Task<Models.Carrito?> GetByUserIdAsync(string userId)
     {
         _logger.LogInformation("Obteniendo carrito del usuario con ID: {UserId}", userId);
@@ -40,6 +44,7 @@ public class CarritoRepository : ICarritoRepository
         return carrito;
     }
 
+    /// <inheritdoc />
     public async Task AddAsync(Models.Carrito carrito)
     {
         _logger.LogInformation("Creando carrito para usuario con ID: {UserId}", carrito.UserId);
@@ -47,6 +52,7 @@ public class CarritoRepository : ICarritoRepository
         await _context.SaveChangesAsync();
     }
 
+    /// <inheritdoc />
     public async Task UpdateAsync(Models.Carrito carrito)
     {
         _logger.LogInformation("Actualizando carrito con ID: {Id}", carrito.Id);
@@ -54,6 +60,7 @@ public class CarritoRepository : ICarritoRepository
         await _context.SaveChangesAsync();
     }
 
+    /// <inheritdoc />
     public async Task DeleteAsync(long id)
     {
         _logger.LogInformation("Eliminando carrito con ID: {Id}", id);

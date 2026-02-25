@@ -3,15 +3,22 @@ using PandaBack.Models;
 
 namespace PandaBack.Mappers;
 
+/// <summary>
+/// Mapper estático para convertir entre Carrito/LineaCarrito y sus DTOs.
+/// </summary>
 public static class CarritoMapper
 {
+    /// <summary>
+    /// Convierte un Carrito a CarritoDto.
+    /// </summary>
+    /// <param name="carrito">Carrito a convertir.</param>
+    /// <returns>DTO de respuesta del carrito.</returns>
     public static CarritoDto ToDto(this Carrito carrito)
     {
         return new CarritoDto
         {
             Id = carrito.Id,
             UsuarioId = carrito.UserId.ToString() ?? "",
-            // Mapeamos las líneas usando una función lambda
             Lineas = carrito.LineasCarrito.Select(l => new LineaCarritoDto
             {
                 ProductoId = l.ProductoId,
@@ -19,9 +26,9 @@ public static class CarritoMapper
                 ProductoImagen = l.Producto?.Imagen ?? "",
                 Cantidad = l.Cantidad,
                 PrecioUnitario = l.Producto?.Precio ?? 0,
-                Subtotal = l.Subtotal // Propiedad calculada del modelo
+                Subtotal = l.Subtotal
             }).ToList(),
-            Total = carrito.Total, // Propiedad calculada del modelo
+            Total = carrito.Total,
             TotalItems = carrito.TotalItems
         };
     }

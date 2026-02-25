@@ -5,6 +5,9 @@ using PandaBack.Repositories.Auth;
 
 namespace PandaBack.Services.Auth;
 
+/// <summary>
+/// Implementación del servicio de autenticación.
+/// </summary>
 public class AuthService : IAuthService
 {
     private readonly IAuthRepository _authRepository;
@@ -18,6 +21,7 @@ public class AuthService : IAuthService
         _logger = logger;
     }
 
+    /// <inheritdoc />
     public async Task<Result<UserResponseDto>> RegisterAsync(RegisterDto dto)
     {
         var user = dto.ToModel();
@@ -33,6 +37,7 @@ public class AuthService : IAuthService
         return Result.Success(user.ToDto());
     }
 
+    /// <inheritdoc />
     public async Task<Result<LoginResponseDto>> LoginAsync(LoginDto dto)
     {
         var user = await _authRepository.FindByEmailAsync(dto.Email);

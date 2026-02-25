@@ -3,8 +3,16 @@ using PandaBack.Models;
 
 namespace PandaBack.Mappers;
 
+/// <summary>
+/// Mapper estático para convertir entre Venta/LineaVenta y sus DTOs.
+/// </summary>
 public static class VentaMapper
 {
+    /// <summary>
+    /// Convierte una Venta a VentaResponseDto.
+    /// </summary>
+    /// <param name="venta">Venta a convertir.</param>
+    /// <returns>DTO de respuesta de venta.</returns>
     public static VentaResponseDto ToDto(this Venta venta)
     {
         return new VentaResponseDto
@@ -12,32 +20,29 @@ public static class VentaMapper
             Id = venta.Id,
             FechaCompra = venta.FechaCompra,
             Total = venta.Total,
-            
-            // Convertimos el Enum a String para que sea legible en el JSON
             Estado = venta.Estado.ToString(),
-            
-            // Mapeo seguro del Usuario (puede ser nulo si no se incluyó en la consulta)
             UsuarioId = venta.UserId.ToString(),
             UsuarioNombre = venta.User != null ? $"{venta.User.Nombre} {venta.User.Apellidos}" : "Usuario Desconocido",
             UsuarioEmail = venta.User?.Email ?? "",
-
-            // Mapeo de la colección de líneas
             Lineas = venta.Lineas.Select(l => l.ToDto()).ToList()
         };
     }
 
+    /// <summary>
+    /// Convierte una LineaVenta a LineaVentaResponseDto.
+    /// </summary>
+    /// <param name="linea">Línea de venta a convertir.</param>
+    /// <returns>DTO de respuesta de línea de venta.</returns>
     public static LineaVentaResponseDto ToDto(this LineaVenta linea)
     {
         return new LineaVentaResponseDto
         {
             ProductoId = linea.ProductoId,
-            // Accedemos a los datos del Producto si está cargado (Include)
             ProductoNombre = linea.Producto?.Nombre ?? "Producto no disponible",
             ProductoImagen = linea.Producto?.Imagen ?? "https://via.placeholder.com/50",
-            
             Cantidad = linea.Cantidad,
             PrecioUnitario = linea.PrecioUnitario,
-            Subtotal = linea.Subtotal // Propiedad calculada del modelo
+            Subtotal = linea.Subtotal
         };
     }
 }

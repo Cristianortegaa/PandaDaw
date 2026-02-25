@@ -7,6 +7,9 @@ using PandaBack.Repositories;
 
 namespace PandaBack.Services;
 
+/// <summary>
+/// Implementación del servicio de valoraciones.
+/// </summary>
 public class ValoracionService : IValoracionService
 {
     private readonly IValoracionRepository _valoracionRepository;
@@ -18,6 +21,7 @@ public class ValoracionService : IValoracionService
         _productoRepository = productoRepository;
     }
 
+    /// <inheritdoc />
     public async Task<Result<IEnumerable<ValoracionResponseDto>, PandaError>> GetValoracionesByProductoAsync(long productoId)
     {
         var producto = await _productoRepository.GetByIdAsync(productoId);
@@ -32,6 +36,7 @@ public class ValoracionService : IValoracionService
         return Result.Success<IEnumerable<ValoracionResponseDto>, PandaError>(response);
     }
 
+    /// <inheritdoc />
     public async Task<Result<IEnumerable<ValoracionResponseDto>, PandaError>> GetValoracionesByUserAsync(string userId)
     {
         var valoraciones = await _valoracionRepository.GetByUserIdAsync(userId);
@@ -41,6 +46,7 @@ public class ValoracionService : IValoracionService
         return Result.Success<IEnumerable<ValoracionResponseDto>, PandaError>(response);
     }
 
+    /// <inheritdoc />
     public async Task<Result<ValoracionResponseDto, PandaError>> CreateValoracionAsync(string userId, CreateValoracionDto dto)
     {
         var producto = await _productoRepository.GetByIdAsync(dto.ProductoId);
@@ -62,6 +68,7 @@ public class ValoracionService : IValoracionService
         return Result.Success<ValoracionResponseDto, PandaError>(valoracion.ToDto());
     }
 
+    /// <inheritdoc />
     public async Task<Result<ValoracionResponseDto, PandaError>> UpdateValoracionAsync(long id, string userId, CreateValoracionDto dto)
     {
         var valoracion = await _valoracionRepository.GetByIdAsync(id);
@@ -80,6 +87,7 @@ public class ValoracionService : IValoracionService
         return Result.Success<ValoracionResponseDto, PandaError>(valoracion.ToDto());
     }
 
+    /// <inheritdoc />
     public async Task<UnitResult<PandaError>> DeleteValoracionAsync(long id, string userId)
     {
         var valoracion = await _valoracionRepository.GetByIdAsync(id);

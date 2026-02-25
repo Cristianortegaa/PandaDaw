@@ -7,6 +7,9 @@ using PandaBack.Repositories;
 
 namespace PandaBack.Services;
 
+/// <summary>
+/// Implementación del servicio de carrito de compras.
+/// </summary>
 public class CarritoService : ICarritoService
 {
     private readonly ICarritoRepository _carritoRepository;
@@ -18,6 +21,7 @@ public class CarritoService : ICarritoService
         _productoRepository = productoRepository;
     }
 
+    /// <inheritdoc />
     public async Task<Result<CarritoDto, PandaError>> GetCarritoByUserIdAsync(string userId)
     {
         var carrito = await _carritoRepository.GetByUserIdAsync(userId);
@@ -36,6 +40,7 @@ public class CarritoService : ICarritoService
         return Result.Success<CarritoDto, PandaError>(carrito.ToDto());
     }
 
+    /// <inheritdoc />
     public async Task<Result<CarritoDto, PandaError>> AddLineaCarritoAsync(string userId, long productoId, int cantidad)
     {
         if (cantidad <= 0)
@@ -88,6 +93,7 @@ public class CarritoService : ICarritoService
         return Result.Success<CarritoDto, PandaError>(carrito.ToDto());
     }
 
+    /// <inheritdoc />
     public async Task<Result<CarritoDto, PandaError>> UpdateLineaCantidadAsync(string userId, long productoId, int cantidad)
     {
         if (cantidad <= 0)
@@ -119,6 +125,7 @@ public class CarritoService : ICarritoService
         return Result.Success<CarritoDto, PandaError>(carrito.ToDto());
     }
 
+    /// <inheritdoc />
     public async Task<Result<CarritoDto, PandaError>> RemoveLineaCarritoAsync(string userId, long productoId)
     {
         var carrito = await _carritoRepository.GetByUserIdAsync(userId);
@@ -138,6 +145,7 @@ public class CarritoService : ICarritoService
         return Result.Success<CarritoDto, PandaError>(carrito.ToDto());
     }
 
+    /// <inheritdoc />
     public async Task<UnitResult<PandaError>> VaciarCarritoAsync(string userId)
     {
         var carrito = await _carritoRepository.GetByUserIdAsync(userId);

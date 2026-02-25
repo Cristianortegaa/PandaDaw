@@ -7,10 +7,18 @@ using PandaBack.Repositories.Auth;
 using PandaBack.Services;
 using PandaBack.Services.Auth;
 using PandaBack.Repository;
+using PandaDawRazor.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages(options =>
+{
+    options.Conventions.AddFolderApplicationModelConvention("/", model =>
+    {
+        model.Filters.Add(new Microsoft.AspNetCore.Mvc.ServiceFilterAttribute(typeof(NavBadgePageFilter)));
+    });
+});
+builder.Services.AddScoped<NavBadgePageFilter>();
 
 // Session para almacenar UserId
 builder.Services.AddDistributedMemoryCache();

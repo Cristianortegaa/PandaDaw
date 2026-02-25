@@ -8,6 +8,9 @@ using PandaBack.Repository;
 
 namespace PandaBack.Services;
 
+/// <summary>
+/// Implementación del servicio de favoritos.
+/// </summary>
 public class FavoritoService : IFavoritoService
 {
     private readonly IFavoritoRepository _repository;
@@ -19,6 +22,7 @@ public class FavoritoService : IFavoritoService
         _productoRepository = productoRepository;
     }
 
+    /// <inheritdoc />
     public async Task<Result<IEnumerable<FavoritoResponseDto>, PandaError>> GetUserFavoritosAsync(string userId)
     {
         var favoritos = await _repository.GetByUserIdAsync(userId);
@@ -28,6 +32,7 @@ public class FavoritoService : IFavoritoService
         return Result.Success<IEnumerable<FavoritoResponseDto>, PandaError>(response);
     }
 
+    /// <inheritdoc />
     public async Task<Result<FavoritoResponseDto, PandaError>> AddToFavoritosAsync(string userId, CreateFavoritoDto dto)
     {
         var producto = await _productoRepository.GetByIdAsync(dto.ProductoId);
@@ -54,6 +59,7 @@ public class FavoritoService : IFavoritoService
         return Result.Success<FavoritoResponseDto, PandaError>(nuevoFavorito.ToDto());
     }
 
+    /// <inheritdoc />
     public async Task<UnitResult<PandaError>> RemoveFromFavoritosAsync(long id, string userId)
     {
         var favorito = await _repository.GetByIdAsync(id);

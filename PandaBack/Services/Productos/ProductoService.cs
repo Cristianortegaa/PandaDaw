@@ -7,6 +7,9 @@ using PandaBack.Repositories;
 
 namespace PandaBack.Services;
 
+/// <summary>
+/// Implementación del servicio de productos.
+/// </summary>
 public class ProductoService : IProductoService
 {
     private readonly IProductoRepository _repository;
@@ -21,6 +24,7 @@ public class ProductoService : IProductoService
     private const string CacheKeyPrefix = "Producto:";
     private readonly TimeSpan _cacheDuration = TimeSpan.FromMinutes(10);
 
+    /// <inheritdoc />
     public async Task<Result<IEnumerable<Producto>, PandaError>> GetAllProductosAsync()
     {
         var productos = await _repository.GetAllAsync();
@@ -28,6 +32,7 @@ public class ProductoService : IProductoService
         return Result.Success<IEnumerable<Producto>, PandaError>(productos);
     }
 
+    /// <inheritdoc />
     public async Task<Result<Producto, PandaError>> GetProductoByIdAsync(long id)
     {
         var cacheKey = CacheKeyPrefix + id;
@@ -54,6 +59,7 @@ public class ProductoService : IProductoService
         return Result.Success<Producto, PandaError>(producto);
     }
 
+    /// <inheritdoc />
     public async Task<Result<IEnumerable<Producto>, PandaError>> GetProductosByCategoryAsync(Categoria category)
     {
         var productos = await _repository.GetByCategoryAsync(category);
@@ -61,6 +67,7 @@ public class ProductoService : IProductoService
         return Result.Success<IEnumerable<Producto>, PandaError>(productos);
     }
 
+    /// <inheritdoc />
     public async Task<Result<Producto, PandaError>> CreateProductoAsync(Producto producto)
     {
         if (producto.Precio < 0)
@@ -77,6 +84,7 @@ public class ProductoService : IProductoService
         return Result.Success<Producto, PandaError>(producto);
     }
 
+    /// <inheritdoc />
     public async Task<Result<Producto, PandaError>> UpdateProductoAsync(long id, Producto producto)
     {
         var productoExistente = await _repository.GetByIdAsync(id);
@@ -101,6 +109,7 @@ public class ProductoService : IProductoService
         return Result.Success<Producto, PandaError>(productoExistente);
     }
 
+    /// <inheritdoc />
     public async Task<UnitResult<PandaError>> DeleteProductoAsync(long id)
     {
         var producto = await _repository.GetByIdAsync(id);

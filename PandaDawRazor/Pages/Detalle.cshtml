@@ -21,6 +21,11 @@
                     Volver al catálogo
                 </a>
             </div>
+            <h2 class="text-xl font-black tracking-tight mb-2">Producto no encontrado</h2>
+            <p class="text-base-content/30 text-sm mb-6">El producto que buscas no existe o ha sido eliminado.</p>
+            <a asp-page="/Index" class="btn btn-primary btn-sm rounded-xl font-bold gap-2">
+                <i class="fa-solid fa-arrow-left text-xs"></i> Volver al catálogo
+            </a>
         </div>
     }
     else
@@ -33,6 +38,7 @@
                 <li class="text-primary font-bold">@Model.Producto.Nombre</li>
             </ul>
         </div>
+    </div>
 
         <!-- Producto -->
         <div class="card bg-base-100 shadow-xl border border-base-300 overflow-hidden">
@@ -72,6 +78,10 @@
                             </form>
                         }
                     </div>
+                    <span class="text-xs text-base-content/30 font-medium">
+                        @promedio.ToString("0.0") · @Model.Valoraciones.Count @(Model.Valoraciones.Count == 1 ? "opinión" : "opiniones")
+                    </span>
+                </div>
 
                     <!-- Rating -->
                     <div class="flex items-center gap-4 mt-6 pb-6 border-b-2 border-base-200">
@@ -135,6 +145,7 @@
                 </div>
             </div>
         </div>
+    </section>
 
         <!-- Valoraciones -->
         <div class="mt-16">
@@ -158,7 +169,7 @@
                                     <div class="rating rating-lg gap-2">
                                         @for (int i = 1; i <= 5; i++)
                                         {
-                                            <input type="radio" name="Estrellas" value="@i" 
+                                            <input type="radio" name="Estrellas" value="@i"
                                                    class="mask mask-star-2 bg-warning" @(i == 5 ? "checked" : "") />
                                         }
                                     </div>
@@ -191,8 +202,8 @@
                                 Iniciar sesión
                             </a>
                         </div>
-                    </div>
-                }
+                    }
+                </div>
 
                 <!-- Lista de valoraciones -->
                 <div class="lg:col-span-2 flex flex-col gap-5">
@@ -245,5 +256,5 @@
                 </div>
             </div>
         </div>
-    }
-</div>
+    </section>
+}

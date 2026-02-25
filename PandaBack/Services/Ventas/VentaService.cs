@@ -7,6 +7,9 @@ using PandaBack.Repositories;
 
 namespace PandaBack.Services;
 
+/// <summary>
+/// Implementación del servicio de ventas.
+/// </summary>
 public class VentaService : IVentaService
 {
     private readonly IVentaRepository _ventaRepository;
@@ -20,6 +23,7 @@ public class VentaService : IVentaService
         _productoRepository = productoRepository;
     }
 
+    /// <inheritdoc />
     public async Task<Result<IEnumerable<VentaResponseDto>, PandaError>> GetAllVentasAsync()
     {
         var ventas = await _ventaRepository.GetAllAsync();
@@ -29,6 +33,7 @@ public class VentaService : IVentaService
         return Result.Success<IEnumerable<VentaResponseDto>, PandaError>(response);
     }
 
+    /// <inheritdoc />
     public async Task<Result<IEnumerable<VentaResponseDto>, PandaError>> GetVentasByUserAsync(string userId)
     {
         var ventas = await _ventaRepository.GetByUserIdAsync(userId);
@@ -38,6 +43,7 @@ public class VentaService : IVentaService
         return Result.Success<IEnumerable<VentaResponseDto>, PandaError>(response);
     }
 
+    /// <inheritdoc />
     public async Task<Result<VentaResponseDto, PandaError>> GetVentaByIdAsync(long id)
     {
         var venta = await _ventaRepository.GetByIdAsync(id);
@@ -48,6 +54,7 @@ public class VentaService : IVentaService
         return Result.Success<VentaResponseDto, PandaError>(venta.ToDto());
     }
 
+    /// <inheritdoc />
     public async Task<Result<VentaResponseDto, PandaError>> CreateVentaFromCarritoAsync(string userId)
     {
         var carrito = await _carritoRepository.GetByUserIdAsync(userId);
@@ -102,6 +109,7 @@ public class VentaService : IVentaService
         return Result.Success<VentaResponseDto, PandaError>(venta.ToDto());
     }
 
+    /// <inheritdoc />
     public async Task<Result<VentaResponseDto, PandaError>> UpdateEstadoVentaAsync(long id, EstadoPedido nuevoEstado)
     {
         var venta = await _ventaRepository.GetByIdAsync(id);

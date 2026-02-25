@@ -4,6 +4,9 @@ using PandaBack.Models;
 
 namespace PandaBack.Repositories;
 
+/// <summary>
+/// Implementación del repositorio de ventas.
+/// </summary>
 public class VentaRepository : IVentaRepository
 {
     private readonly PandaDbContext _context;
@@ -15,6 +18,7 @@ public class VentaRepository : IVentaRepository
         _logger = logger;
     }
 
+    /// <inheritdoc />
     public async Task<IEnumerable<Venta>> GetAllAsync()
     {
         _logger.LogInformation("Obteniendo todas las ventas.");
@@ -27,6 +31,7 @@ public class VentaRepository : IVentaRepository
             .ToListAsync();
     }
 
+    /// <inheritdoc />
     public async Task<IEnumerable<Venta>> GetByUserIdAsync(string userId)
     {
         _logger.LogInformation("Obteniendo ventas del usuario con ID: {UserId}", userId);
@@ -56,6 +61,7 @@ public class VentaRepository : IVentaRepository
         return venta;
     }
 
+    /// <inheritdoc />
     public async Task AddAsync(Venta venta)
     {
         _logger.LogInformation("Creando venta para usuario con ID: {UserId}", venta.UserId);
@@ -63,6 +69,7 @@ public class VentaRepository : IVentaRepository
         await _context.SaveChangesAsync();
     }
 
+    /// <inheritdoc />
     public async Task UpdateAsync(Venta venta)
     {
         _logger.LogInformation("Actualizando venta con ID: {Id}", venta.Id);
