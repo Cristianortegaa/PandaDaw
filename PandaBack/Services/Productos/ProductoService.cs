@@ -87,7 +87,6 @@ public class ProductoService : IProductoService
         if (producto.Precio < 0)
             return Result.Failure<Producto, PandaError>(new BadRequestError("El precio no puede ser negativo"));
 
-        // Mapeo
         productoExistente.Nombre = producto.Nombre;
         productoExistente.Descripcion = producto.Descripcion;
         productoExistente.Precio = producto.Precio;
