@@ -101,6 +101,12 @@
                                     <span class="text-base font-black text-primary price-display">
                                         @pedido.Total.ToString("C", new System.Globalization.CultureInfo("es-ES"))
                                     </span>
+                                    <a asp-page="/Pedidos" asp-page-handler="DescargarFactura" asp-route-id="@pedido.Id"
+                                       class="btn btn-ghost btn-xs rounded-lg text-primary/60 hover:text-primary hover:bg-primary/10 gap-1 px-2"
+                                       title="Descargar factura PDF">
+                                        <i class="fa-solid fa-file-pdf text-[10px]"></i>
+                                        <span class="hidden sm:inline text-[10px] font-bold">Factura</span>
+                                    </a>
                                 </div>
                             </div>
 

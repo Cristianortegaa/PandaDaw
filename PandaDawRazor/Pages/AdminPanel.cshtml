@@ -270,7 +270,7 @@
             <span class="w-7 h-7 rounded-lg bg-primary/8 flex items-center justify-center"><i class="fa-solid fa-plus text-primary text-[10px]"></i></span>
             Nuevo Producto
         </h3>
-        <form method="post" asp-page-handler="Crear" class="space-y-4">
+        <form method="post" asp-page-handler="Crear" enctype="multipart/form-data" class="space-y-4">
             <div class="form-control gap-1">
                 <label class="text-[10px] font-bold uppercase tracking-widest text-base-content/30">Nombre *</label>
                 <input type="text" name="ProductoInput.Nombre" required class="input input-bordered w-full rounded-xl h-10 text-sm border-base-300/12" placeholder="Nombre del producto" />
@@ -302,9 +302,13 @@
                     </select>
                 </div>
                 <div class="form-control gap-1">
-                    <label class="text-[10px] font-bold uppercase tracking-widest text-base-content/30">URL Imagen</label>
-                    <input type="url" name="ProductoInput.ImagenUrl" class="input input-bordered w-full rounded-xl h-10 text-sm border-base-300/12" placeholder="https://..." />
+                    <label class="text-[10px] font-bold uppercase tracking-widest text-base-content/30">Imagen</label>
+                    <input type="file" name="ProductoInput.ImagenArchivo" accept="image/*" onchange="previsualizarImagen(this, 'preview_crear')"
+                           class="file-input file-input-bordered w-full rounded-xl h-10 text-sm border-base-300/12 file-input-sm" />
                 </div>
+            </div>
+            <div id="preview_crear" class="hidden">
+                <img src="" alt="Preview" class="w-20 h-20 object-cover rounded-lg border border-base-300/10" />
             </div>
             <div class="flex justify-end gap-2 pt-2">
                 <button type="button" onclick="modal_crear.close()" class="btn btn-ghost btn-sm rounded-xl">Cancelar</button>
@@ -325,8 +329,9 @@
             <span class="w-7 h-7 rounded-lg bg-info/8 flex items-center justify-center"><i class="fa-solid fa-edit text-info text-[10px]"></i></span>
             Editar Producto
         </h3>
-        <form method="post" asp-page-handler="Editar" id="form_editar" class="space-y-4">
+        <form method="post" asp-page-handler="Editar" id="form_editar" enctype="multipart/form-data" class="space-y-4">
             <input type="hidden" name="id" id="editar_id" />
+            <input type="hidden" name="ProductoInput.ImagenActual" id="editar_imagen_actual" />
             <div class="form-control gap-1">
                 <label class="text-[10px] font-bold uppercase tracking-widest text-base-content/30">Nombre *</label>
                 <input type="text" name="ProductoInput.Nombre" id="editar_nombre" required class="input input-bordered w-full rounded-xl h-10 text-sm border-base-300/12" />
@@ -357,9 +362,14 @@
                     </select>
                 </div>
                 <div class="form-control gap-1">
-                    <label class="text-[10px] font-bold uppercase tracking-widest text-base-content/30">URL Imagen</label>
-                    <input type="url" name="ProductoInput.ImagenUrl" id="editar_imagen" class="input input-bordered w-full rounded-xl h-10 text-sm border-base-300/12" />
+                    <label class="text-[10px] font-bold uppercase tracking-widest text-base-content/30">Imagen</label>
+                    <input type="file" name="ProductoInput.ImagenArchivo" accept="image/*" onchange="previsualizarImagen(this, 'preview_editar')"
+                           class="file-input file-input-bordered w-full rounded-xl h-10 text-sm border-base-300/12 file-input-sm" />
                 </div>
+            </div>
+            <div id="preview_editar" class="hidden">
+                <p class="text-[10px] font-bold uppercase tracking-widest text-base-content/30 mb-1">Imagen actual</p>
+                <img src="" alt="Preview" class="w-20 h-20 object-cover rounded-lg border border-base-300/10" />
             </div>
             <div class="flex justify-end gap-2 pt-2">
                 <button type="button" onclick="modal_editar.close()" class="btn btn-ghost btn-sm rounded-xl">Cancelar</button>
@@ -381,9 +391,41 @@
             document.getElementById('editar_precio').value = precio;
             document.getElementById('editar_stock').value = stock;
             document.getElementById('editar_categoria').value = categoria;
-            document.getElementById('editar_imagen').value = imagen;
-            document.getElementById('form_editar').action = '?handler=Editar&id=' + id;
+            document.getElementById('editar_imagen_actual').value = imagen;
+
+            // Asegurar action y enctype correctos para subida de archivos
+            var form = document.getElementById('form_editar');
+            form.action = window.location.pathname + '?handler=Editar&id=' + id;
+            form.enctype = 'multipart/form-data';
+
+            // Resetear el file input para que no quede un archivo anterior seleccionado
+            var fileInput = form.querySelector('input[type="file"]');
+            if (fileInput) fileInput.value = '';
+
+            // Mostrar preview de imagen actual si existe
+            var previewDiv = document.getElementById('preview_editar');
+            var previewImg = previewDiv.querySelector('img');
+            if (imagen) {
+                previewImg.src = imagen;
+                previewDiv.classList.remove('hidden');
+            } else {
+                previewDiv.classList.add('hidden');
+            }
+
             modal_editar.showModal();
+        }
+
+        function previsualizarImagen(input, previewId) {
+            var previewDiv = document.getElementById(previewId);
+            var previewImg = previewDiv.querySelector('img');
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    previewImg.src = e.target.result;
+                    previewDiv.classList.remove('hidden');
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
         }
     </script>
 }

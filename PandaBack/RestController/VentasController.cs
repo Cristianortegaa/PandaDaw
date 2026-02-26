@@ -4,6 +4,7 @@ using PandaBack.Dtos.Ventas;
 using PandaBack.Errors;
 using PandaBack.Models;
 using PandaBack.Services;
+using PandaBack.Services.Factura;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,7 +21,7 @@ namespace PandaBack.RestController;
 [Route("api/[controller]")]
 [Produces("application/json")]
 [Authorize]
-public class VentasController(IVentaService service) : ControllerBase
+public class VentasController(IVentaService service, IFacturaService facturaService) : ControllerBase
 {
     /// <summary>
     /// Obtiene todas las ventas del sistema (solo administradores).
@@ -89,6 +90,43 @@ public class VentasController(IVentaService service) : ControllerBase
                 _ => StatusCode(500, new { message = error.Message })
             }
         );
+    }
+
+    /// <summary>
+    /// Descarga la factura en PDF de una venta específica.
+    /// </summary>
+    /// <param name="id">Identificador de la venta.</param>
+    /// <returns>Archivo PDF con la factura.</returns>
+    /// <response code="200">Devuelve el PDF de la factura.</response>
+    /// <response code="403">Si la venta no pertenece al usuario autenticado.</response>
+    /// <response code="404">Si la venta no existe.</response>
+    [HttpGet("{id:long}/factura")]
+    [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DescargarFacturaAsync(long id)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
+        var isAdmin = User.IsInRole("Admin");
+
+        var result = await service.GetVentaByIdAsync(id);
+        if (result.IsFailure)
+        {
+            return result.Error switch
+            {
+                NotFoundError => NotFound(new { message = result.Error.Message }),
+                _ => StatusCode(500, new { message = result.Error.Message })
+            };
+        }
+
+        var venta = result.Value;
+
+        // Solo el dueño o un admin puede descargar la factura
+        if (venta.UsuarioId != userId && !isAdmin)
+            return Forbid();
+
+        var pdfBytes = facturaService.GenerarFacturaPdf(venta);
+        return File(pdfBytes, "application/pdf", $"Factura_PandaDaw_{id:D6}.pdf");
     }
 
     /// <summary>

@@ -5,6 +5,7 @@ using PandaBack.Services;
 using PandaBack.Services.Email;
 using PandaBack.Services.Factura;
 using PandaBack.Services.Stripe;
+using PandaDawRazor.Services;
 
 namespace PandaDawRazor.Pages;
 
@@ -14,6 +15,7 @@ public class PagoExitosoModel : PageModel
     private readonly IVentaService _ventaService;
     private readonly IFacturaService _facturaService;
     private readonly IEmailService _emailService;
+    private readonly NotificacionService _notificacionService;
     private readonly ILogger<PagoExitosoModel> _logger;
 
     public PagoExitosoModel(
@@ -21,12 +23,14 @@ public class PagoExitosoModel : PageModel
         IVentaService ventaService,
         IFacturaService facturaService,
         IEmailService emailService,
+        NotificacionService notificacionService,
         ILogger<PagoExitosoModel> logger)
     {
         _stripeService = stripeService;
         _ventaService = ventaService;
         _facturaService = facturaService;
         _emailService = emailService;
+        _notificacionService = notificacionService;
         _logger = logger;
     }
 
@@ -48,6 +52,25 @@ public class PagoExitosoModel : PageModel
             return RedirectToPage("/Carrito");
         }
 
+        // Protección contra doble ejecución (refresh del navegador)
+        var processedKey = $"stripe_processed_{session_id}";
+        var processedVentaId = HttpContext.Session.GetString(processedKey);
+        if (!string.IsNullOrEmpty(processedVentaId))
+        {
+            // Ya procesamos este session_id, recuperar la venta existente
+            if (long.TryParse(processedVentaId, out var ventaId))
+            {
+                var ventaResult = await _ventaService.GetVentaByIdAsync(ventaId);
+                if (ventaResult.IsSuccess)
+                {
+                    PagoExitoso = true;
+                    VentaCreada = ventaResult.Value;
+                    ViewData["CartCount"] = 0;
+                    return Page();
+                }
+            }
+        }
+
         // Verificar que el pago fue exitoso en Stripe
         var statusResult = await _stripeService.GetSessionPaymentStatusAsync(session_id);
         if (statusResult.IsFailure)
@@ -63,11 +86,25 @@ public class PagoExitosoModel : PageModel
         }
 
         // Crear la venta a partir del carrito
-        var ventaResult = await _ventaService.CreateVentaFromCarritoAsync(UserId);
-        if (ventaResult.IsSuccess)
+        var ventaCreateResult = await _ventaService.CreateVentaFromCarritoAsync(UserId);
+        if (ventaCreateResult.IsSuccess)
         {
             PagoExitoso = true;
-            VentaCreada = ventaResult.Value;
+            VentaCreada = ventaCreateResult.Value;
+
+            // Guardar en sesión que este session_id ya fue procesado
+            HttpContext.Session.SetString(processedKey, VentaCreada.Id.ToString());
+
+            // Actualizar badge del carrito a 0 (la venta ya se creó y el carrito se vació)
+            ViewData["CartCount"] = 0;
+            _notificacionService.NotificarCarritoActualizado(UserId, 0);
+            _notificacionService.Enviar(UserId, new Notificacion
+            {
+                Tipo = "success",
+                Titulo = "¡Pago exitoso!",
+                Mensaje = "Tu pago ha sido procesado correctamente",
+                Icono = "fa-solid fa-check-circle"
+            });
 
             // Generar factura PDF y enviar email de confirmación
             try
@@ -88,7 +125,7 @@ public class PagoExitosoModel : PageModel
         }
         else
         {
-            ErrorMessage = ventaResult.Error.Message;
+            ErrorMessage = ventaCreateResult.Error.Message;
         }
 
         return Page();

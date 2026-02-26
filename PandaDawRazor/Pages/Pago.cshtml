@@ -3,9 +3,9 @@
 @{
     ViewData["Title"] = "Pago";
     Layout = "_Layout";
-    var subtotal = Model.Carrito?.Lineas?.Sum(l => l.PrecioUnitario * l.Cantidad) ?? 0;
-    var iva = subtotal * 0.21m;
-    var total = subtotal + iva;
+    var total = Model.Carrito?.Lineas?.Sum(l => l.PrecioUnitario * l.Cantidad) ?? 0;
+    var baseImponible = Math.Round(total / 1.21m, 2);
+    var ivaIncluido = total - baseImponible;
 }
 
 <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -70,71 +70,75 @@
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
             <!-- Info de envío (3/5) -->
             <div class="lg:col-span-3 flex flex-col gap-6">
-                <!-- Datos personales (solo informativos) -->
-                <div>
-                    <div class="flex items-center gap-2.5 mb-4">
-                        <span class="w-7 h-7 rounded-lg bg-primary/8 flex items-center justify-center">
-                            <i class="fa-solid fa-user text-primary text-[10px]"></i>
+                <!-- Datos personales -->
+                <div class="bg-base-100 rounded-2xl border border-base-300/15 shadow-sm overflow-hidden">
+                    <div class="flex items-center gap-2.5 px-6 py-4 border-b border-base-300/10 bg-base-300/3">
+                        <span class="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
+                            <i class="fa-solid fa-truck-fast text-primary text-xs"></i>
                         </span>
                         <h2 class="font-black text-sm tracking-tight">Datos de envío</h2>
                     </div>
-                    <div class="bg-base-300/3 rounded-2xl p-5 border border-base-300/8 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="form-control gap-1">
-                            <label class="text-[10px] font-bold uppercase tracking-widest text-base-content/30">Nombre</label>
-                            <input type="text" class="input input-bordered rounded-xl h-10 text-sm border-base-300/12" placeholder="Juan" />
+                    <div class="p-6 grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div class="form-control gap-1.5">
+                            <label class="text-[11px] font-semibold uppercase tracking-wider text-base-content/40">Nombre</label>
+                            <input type="text" class="input input-bordered rounded-xl h-11 text-sm bg-base-200/30 border-base-300/20 focus:border-primary focus:bg-base-100 transition-all" placeholder="Juan" />
                         </div>
-                        <div class="form-control gap-1">
-                            <label class="text-[10px] font-bold uppercase tracking-widest text-base-content/30">Apellidos</label>
-                            <input type="text" class="input input-bordered rounded-xl h-10 text-sm border-base-300/12" placeholder="García" />
+                        <div class="form-control gap-1.5">
+                            <label class="text-[11px] font-semibold uppercase tracking-wider text-base-content/40">Apellidos</label>
+                            <input type="text" class="input input-bordered rounded-xl h-11 text-sm bg-base-200/30 border-base-300/20 focus:border-primary focus:bg-base-100 transition-all" placeholder="García López" />
                         </div>
-                        <div class="form-control gap-1 sm:col-span-2">
-                            <label class="text-[10px] font-bold uppercase tracking-widest text-base-content/30">Dirección</label>
-                            <input type="text" class="input input-bordered rounded-xl h-10 text-sm border-base-300/12" placeholder="Calle Mayor 1, 2º A" />
+                        <div class="form-control gap-1.5 sm:col-span-2">
+                            <label class="text-[11px] font-semibold uppercase tracking-wider text-base-content/40">Dirección</label>
+                            <input type="text" class="input input-bordered rounded-xl h-11 text-sm bg-base-200/30 border-base-300/20 focus:border-primary focus:bg-base-100 transition-all" placeholder="Calle Mayor 1, 2º A" />
                         </div>
-                        <div class="form-control gap-1">
-                            <label class="text-[10px] font-bold uppercase tracking-widest text-base-content/30">C. Postal</label>
-                            <input type="text" class="input input-bordered rounded-xl h-10 text-sm border-base-300/12" placeholder="28001" maxlength="5" />
+                        <div class="form-control gap-1.5">
+                            <label class="text-[11px] font-semibold uppercase tracking-wider text-base-content/40">C. Postal</label>
+                            <input type="text" class="input input-bordered rounded-xl h-11 text-sm bg-base-200/30 border-base-300/20 focus:border-primary focus:bg-base-100 transition-all" placeholder="28001" maxlength="5" />
                         </div>
-                        <div class="form-control gap-1">
-                            <label class="text-[10px] font-bold uppercase tracking-widest text-base-content/30">Ciudad</label>
-                            <input type="text" class="input input-bordered rounded-xl h-10 text-sm border-base-300/12" placeholder="Madrid" />
+                        <div class="form-control gap-1.5">
+                            <label class="text-[11px] font-semibold uppercase tracking-wider text-base-content/40">Ciudad</label>
+                            <input type="text" class="input input-bordered rounded-xl h-11 text-sm bg-base-200/30 border-base-300/20 focus:border-primary focus:bg-base-100 transition-all" placeholder="Madrid" />
                         </div>
                     </div>
                 </div>
 
                 <!-- Método de pago: Stripe -->
-                <div>
-                    <div class="flex items-center gap-2.5 mb-4">
-                        <span class="w-7 h-7 rounded-lg bg-primary/8 flex items-center justify-center">
-                            <i class="fa-solid fa-credit-card text-primary text-[10px]"></i>
+                <div class="bg-base-100 rounded-2xl border border-base-300/15 shadow-sm overflow-hidden">
+                    <div class="flex items-center gap-2.5 px-6 py-4 border-b border-base-300/10 bg-base-300/3">
+                        <span class="w-8 h-8 rounded-xl bg-[#635BFF]/10 flex items-center justify-center">
+                            <i class="fa-solid fa-credit-card text-[#635BFF] text-xs"></i>
                         </span>
                         <h2 class="font-black text-sm tracking-tight">Método de pago</h2>
                     </div>
 
-                    <div class="bg-base-300/3 rounded-2xl p-6 border border-base-300/8">
-                        <div class="flex items-center gap-4 mb-4">
-                            <div class="w-12 h-12 rounded-xl bg-[#635BFF]/10 flex items-center justify-center">
+                    <div class="p-6">
+                        <div class="flex items-start gap-4 mb-5">
+                            <div class="w-14 h-14 rounded-2xl bg-[#635BFF]/8 flex items-center justify-center shrink-0">
                                 <svg viewBox="0 0 60 25" class="w-10 h-5" fill="#635BFF">
                                     <path d="M59.64 14.28h-8.06c.19 1.93 1.6 2.55 3.2 2.55 1.64 0 2.96-.37 4.05-.95v3.32a13.09 13.09 0 0 1-4.56.83c-4.14 0-6.6-2.72-6.6-7.05s2.5-7.35 6.24-7.35c3.47 0 5.76 2.72 5.76 6.7 0 .54-.02 1.27-.03 1.95zm-4.06-5.57c0-.95-.43-2.95-2.61-2.95-1.87 0-2.75 1.68-2.9 2.95h5.51zM38.6 0l3.93.83v4.58l1.99-.68v3.41l-1.99.68V14c0 1.42.64 1.91 1.47 1.91.46 0 .78-.05 1.04-.16v3.48c-.48.21-1.32.43-2.48.43-3.3 0-4.02-2.18-4.02-4.91V8.82l-1.5.51V5.92l1.5-.51V2.09L38.6 0zm-6.79 5.63c-1.73 0-3.04.77-3.67 1.91l-.1-1.69h-3.72v13.98l3.93-.83V14.2c.5.72 1.56 1.36 3.14 1.36 2.84 0 5.46-2.28 5.46-7.33s-2.57-7.05-5.04-7.05v4.45zm-.87 8.79c-1.13 0-2.2-.69-2.2-2.79V11.2c0-1.89 1.07-2.81 2.2-2.81 1.62 0 2.45 1.47 2.45 3.02 0 1.55-.83 3.01-2.45 3.01zM15.87 5.63c-3.7 0-5.88 2.09-5.88 5.06 0 2.54 1.17 4.15 3.67 5.06 1.83.67 2.62 1.16 2.62 2.05s-.7 1.36-1.91 1.36c-1.29 0-2.97-.56-4.24-1.36v3.65a12.24 12.24 0 0 0 4.19.77c3.57 0 6.01-1.77 6.01-5.22 0-2.59-1.5-4.06-3.56-4.88-1.8-.7-2.67-1.08-2.67-1.96 0-.67.51-1.22 1.77-1.22 1.08 0 2.45.37 3.56.99V6.35c-.96-.45-2.33-.72-3.56-.72zM3.93 9.12L0 10.32v-3.4l3.93-1.21v-.44C3.93 1.8 5.87 0 9.58 0c1.08 0 2.09.21 2.7.51v3.59c-.51-.21-1.2-.35-2.03-.35-1.45 0-2.4.7-2.4 2.24v.6l3.06-1.04v3.41l-3.06 1.05v9.83H3.93V9.12z"/>
                                 </svg>
                             </div>
-                            <div>
-                                <p class="font-bold text-sm">Pago seguro con Stripe</p>
-                                <p class="text-xs text-base-content/30">Serás redirigido al checkout seguro de Stripe para completar el pago</p>
+                            <div class="flex-1">
+                                <p class="font-bold text-sm mb-0.5">Pago seguro con Stripe</p>
+                                <p class="text-xs text-base-content/35 leading-relaxed">Serás redirigido al checkout seguro de Stripe para completar el pago con tu tarjeta</p>
                             </div>
                         </div>
-                        <div class="flex flex-wrap gap-2">
-                            <div class="flex items-center gap-1.5 bg-base-300/8 rounded-lg px-3 py-1.5">
-                                <i class="fa-brands fa-cc-visa text-[#1A1F71] text-lg"></i>
-                                <span class="text-[10px] font-medium text-base-content/40">Visa</span>
-                            </div>
-                            <div class="flex items-center gap-1.5 bg-base-300/8 rounded-lg px-3 py-1.5">
-                                <i class="fa-brands fa-cc-mastercard text-[#EB001B] text-lg"></i>
-                                <span class="text-[10px] font-medium text-base-content/40">Mastercard</span>
-                            </div>
-                            <div class="flex items-center gap-1.5 bg-base-300/8 rounded-lg px-3 py-1.5">
-                                <i class="fa-brands fa-cc-amex text-[#006FCF] text-lg"></i>
-                                <span class="text-[10px] font-medium text-base-content/40">Amex</span>
+
+                        <div class="bg-base-200/20 rounded-xl p-3.5 border border-base-300/8">
+                            <p class="text-[10px] font-semibold uppercase tracking-wider text-base-content/30 mb-2.5">Aceptamos</p>
+                            <div class="flex flex-wrap gap-2">
+                                <div class="flex items-center gap-1.5 bg-base-100 rounded-lg px-3 py-2 border border-base-300/10 shadow-xs">
+                                    <i class="fa-brands fa-cc-visa text-[#1A1F71] text-xl"></i>
+                                    <span class="text-[10px] font-semibold text-base-content/50">Visa</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 bg-base-100 rounded-lg px-3 py-2 border border-base-300/10 shadow-xs">
+                                    <i class="fa-brands fa-cc-mastercard text-[#EB001B] text-xl"></i>
+                                    <span class="text-[10px] font-semibold text-base-content/50">Mastercard</span>
+                                </div>
+                                <div class="flex items-center gap-1.5 bg-base-100 rounded-lg px-3 py-2 border border-base-300/10 shadow-xs">
+                                    <i class="fa-brands fa-cc-amex text-[#006FCF] text-xl"></i>
+                                    <span class="text-[10px] font-semibold text-base-content/50">Amex</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -142,7 +146,7 @@
 
                 <!-- Botón pagar en móvil -->
                 <form method="post" asp-page-handler="ConfirmarPago">
-                    <button type="submit" class="btn btn-primary w-full lg:hidden rounded-xl font-bold h-12 text-sm gap-2" style="background: #635BFF; border-color: #635BFF;">
+                    <button type="submit" class="btn w-full lg:hidden rounded-xl font-bold h-13 text-sm gap-2 border-0 text-white shadow-lg shadow-[#635BFF]/25 hover:shadow-[#635BFF]/40 transition-all" style="background: linear-gradient(135deg, #635BFF, #7C6FFF);">
                         <i class="fa-solid fa-lock text-xs"></i>
                         Pagar con Stripe — @total.ToString("C", new System.Globalization.CultureInfo("es-ES"))
                     </button>
@@ -151,62 +155,66 @@
 
             <!-- Resumen lateral (2/5) -->
             <div class="lg:col-span-2">
-                <div class="sticky top-24 bg-base-300/5 rounded-2xl border border-base-300/10 p-6">
-                    <h2 class="font-black text-sm mb-4 tracking-tight">Tu pedido</h2>
+                <div class="sticky top-24 bg-base-100 rounded-2xl border border-base-300/15 shadow-sm overflow-hidden">
+                    <div class="px-6 py-4 border-b border-base-300/10 bg-base-300/3">
+                        <h2 class="font-black text-sm tracking-tight">Tu pedido</h2>
+                    </div>
 
-                    <!-- Productos -->
-                    <div class="space-y-3 max-h-56 overflow-y-auto pr-1 mb-4">
-                        @foreach (var linea in Model.Carrito.Lineas)
-                        {
-                            <div class="flex items-center gap-3">
-                                <div class="w-11 h-11 rounded-lg bg-base-300/10 overflow-hidden shrink-0 border border-base-300/6">
-                                    @if (!string.IsNullOrEmpty(linea.ProductoImagen))
-                                    {
-                                        <img src="@linea.ProductoImagen" alt="" class="w-full h-full object-cover" />
-                                    }
-                                    else
-                                    {
-                                        <div class="w-full h-full flex items-center justify-center"><i class="fa-solid fa-box text-base-content/10 text-[10px]"></i></div>
-                                    }
+                    <div class="p-6">
+                        <!-- Productos -->
+                        <div class="space-y-3 max-h-56 overflow-y-auto pr-1 mb-5">
+                            @foreach (var linea in Model.Carrito.Lineas)
+                            {
+                                <div class="flex items-center gap-3 p-2 rounded-xl hover:bg-base-200/20 transition-colors">
+                                    <div class="w-12 h-12 rounded-xl bg-base-200/40 overflow-hidden shrink-0 border border-base-300/10">
+                                        @if (!string.IsNullOrEmpty(linea.ProductoImagen))
+                                        {
+                                            <img src="@linea.ProductoImagen" alt="" class="w-full h-full object-cover" />
+                                        }
+                                        else
+                                        {
+                                            <div class="w-full h-full flex items-center justify-center"><i class="fa-solid fa-box text-base-content/10 text-xs"></i></div>
+                                        }
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-xs font-semibold text-base-content/60 truncate">@linea.ProductoNombre</p>
+                                        <p class="text-[10px] text-base-content/30 font-medium">×@linea.Cantidad</p>
+                                    </div>
+                                    <span class="text-xs font-bold price-display shrink-0">@((linea.PrecioUnitario * linea.Cantidad).ToString("C", new System.Globalization.CultureInfo("es-ES")))</span>
                                 </div>
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-xs font-semibold text-base-content/50 truncate">@linea.ProductoNombre</p>
-                                    <p class="text-[10px] text-base-content/25">×@linea.Cantidad</p>
-                                </div>
-                                <span class="text-xs font-bold price-display shrink-0">@((linea.PrecioUnitario * linea.Cantidad).ToString("C", new System.Globalization.CultureInfo("es-ES")))</span>
+                            }
+                        </div>
+
+                        <div class="h-px bg-base-300/12 my-4"></div>
+                        <div class="space-y-2.5 text-sm">
+                            <div class="flex justify-between text-base-content/35 font-medium text-xs">
+                                <span>Base imponible</span><span>@baseImponible.ToString("C", new System.Globalization.CultureInfo("es-ES"))</span>
                             </div>
-                        }
+                            <div class="flex justify-between text-base-content/35 font-medium text-xs">
+                                <span>IVA (21%) incluido</span><span>@ivaIncluido.ToString("C", new System.Globalization.CultureInfo("es-ES"))</span>
+                            </div>
+                            <div class="flex justify-between text-base-content/35 font-medium text-xs">
+                                <span>Envío</span><span class="text-primary font-bold">Gratis</span>
+                            </div>
+                            <div class="h-px bg-base-300/12 !my-3"></div>
+                            <div class="flex justify-between font-black text-lg">
+                                <span>Total</span>
+                                <span class="text-primary price-display">@total.ToString("C", new System.Globalization.CultureInfo("es-ES"))</span>
+                            </div>
+                        </div>
+
+                        <form method="post" asp-page-handler="ConfirmarPago">
+                            <button type="submit" class="btn w-full hidden lg:flex rounded-xl font-bold h-13 text-sm gap-2 mt-6 border-0 text-white shadow-lg shadow-[#635BFF]/25 hover:shadow-[#635BFF]/40 transition-all" style="background: linear-gradient(135deg, #635BFF, #7C6FFF);">
+                                <i class="fa-solid fa-lock text-xs"></i>
+                                Pagar con Stripe — @total.ToString("C", new System.Globalization.CultureInfo("es-ES"))
+                            </button>
+                        </form>
+
+                        <p class="text-[9px] text-center text-base-content/25 mt-3 flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-shield-halved text-primary/40 text-[8px]"></i>
+                            Pago seguro y cifrado
+                        </p>
                     </div>
-
-                    <div class="h-px bg-base-300/10 my-4"></div>
-                    <div class="space-y-2 text-sm">
-                        <div class="flex justify-between text-base-content/25 font-medium text-xs">
-                            <span>Subtotal</span><span>@subtotal.ToString("C", new System.Globalization.CultureInfo("es-ES"))</span>
-                        </div>
-                        <div class="flex justify-between text-base-content/25 font-medium text-xs">
-                            <span>IVA (21%)</span><span>@iva.ToString("C", new System.Globalization.CultureInfo("es-ES"))</span>
-                        </div>
-                        <div class="flex justify-between text-base-content/25 font-medium text-xs">
-                            <span>Envío</span><span class="text-primary">Gratis</span>
-                        </div>
-                        <div class="h-px bg-base-300/10 !my-3"></div>
-                        <div class="flex justify-between font-black text-base">
-                            <span>Total</span>
-                            <span class="text-primary price-display">@total.ToString("C", new System.Globalization.CultureInfo("es-ES"))</span>
-                        </div>
-                    </div>
-
-                    <form method="post" asp-page-handler="ConfirmarPago">
-                        <button type="submit" class="btn btn-primary w-full hidden lg:flex rounded-xl font-bold h-12 text-sm gap-2 mt-5" style="background: #635BFF; border-color: #635BFF;">
-                            <i class="fa-solid fa-lock text-xs"></i>
-                            Pagar con Stripe — @total.ToString("C", new System.Globalization.CultureInfo("es-ES"))
-                        </button>
-                    </form>
-
-                    <p class="text-[9px] text-center text-base-content/20 mt-3 flex items-center justify-center gap-1.5">
-                        <i class="fa-solid fa-shield-halved text-primary/30 text-[8px]"></i>
-                        Pago seguro y cifrado
-                    </p>
                 </div>
             </div>
         </div>

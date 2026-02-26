@@ -1,5 +1,4 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
-USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
@@ -31,7 +30,13 @@ FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./PandaDawRazor.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-FROM base AS final
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+
+# Crear directorio de subida de imágenes y dar permisos al usuario no-root
+RUN mkdir -p /app/wwwroot/img/productos \
+    && chown -R $APP_UID:$APP_UID /app/wwwroot/img/productos
+
+USER $APP_UID
 ENTRYPOINT ["dotnet", "PandaDawRazor.dll"]

@@ -106,7 +106,10 @@ public class VentaService : IVentaService
         // Vaciar el carrito después de la compra
         await _carritoRepository.DeleteAsync(carrito.Id);
 
-        return Result.Success<VentaResponseDto, PandaError>(venta.ToDto());
+        // Recargar la venta con User y Producto para que el DTO tenga UsuarioEmail/Nombre
+        var ventaCompleta = await _ventaRepository.GetByIdAsync(venta.Id);
+
+        return Result.Success<VentaResponseDto, PandaError>(ventaCompleta!.ToDto());
     }
 
     /// <inheritdoc />

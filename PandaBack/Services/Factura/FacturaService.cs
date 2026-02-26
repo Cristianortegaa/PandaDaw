@@ -9,9 +9,10 @@ public class FacturaService : IFacturaService
 {
     public byte[] GenerarFacturaPdf(VentaResponseDto venta)
     {
-        var subtotal = venta.Lineas.Sum(l => l.Subtotal);
-        var iva = subtotal * 0.21m;
-        var total = subtotal + iva;
+        // Los precios ya incluyen IVA → desglosamos base e IVA desde el total
+        var total = venta.Lineas.Sum(l => l.Subtotal);
+        var baseImponible = Math.Round(total / 1.21m, 2);
+        var iva = total - baseImponible;
 
         var document = Document.Create(container =>
         {
@@ -74,7 +75,7 @@ public class FacturaService : IFacturaService
                             header.Cell().Background(Colors.Green.Darken2).Padding(8)
                                 .AlignCenter().Text("Cant.").Bold().FontSize(9).FontColor(Colors.White);
                             header.Cell().Background(Colors.Green.Darken2).Padding(8)
-                                .AlignRight().Text("Precio Unit.").Bold().FontSize(9).FontColor(Colors.White);
+                                .AlignRight().Text("Precio Unit. (IVA incl.)").Bold().FontSize(9).FontColor(Colors.White);
                             header.Cell().Background(Colors.Green.Darken2).Padding(8)
                                 .AlignRight().Text("Subtotal").Bold().FontSize(9).FontColor(Colors.White);
                         });
@@ -98,17 +99,17 @@ public class FacturaService : IFacturaService
                         }
                     });
 
-                    // Totales
+                    // Totales (precios con IVA incluido)
                     col.Item().PaddingTop(15).AlignRight().Width(200).Column(totales =>
                     {
                         totales.Item().Row(row =>
                         {
-                            row.RelativeItem().Text("Subtotal:").FontSize(10);
-                            row.RelativeItem().AlignRight().Text($"{subtotal:C}").FontSize(10);
+                            row.RelativeItem().Text("Base imponible:").FontSize(10);
+                            row.RelativeItem().AlignRight().Text($"{baseImponible:C}").FontSize(10);
                         });
                         totales.Item().PaddingVertical(3).Row(row =>
                         {
-                            row.RelativeItem().Text("IVA (21%):").FontSize(10);
+                            row.RelativeItem().Text("IVA (21%) incluido:").FontSize(10);
                             row.RelativeItem().AlignRight().Text($"{iva:C}").FontSize(10);
                         });
                         totales.Item().PaddingTop(5).BorderTop(1).BorderColor(Colors.Grey.Lighten2)
