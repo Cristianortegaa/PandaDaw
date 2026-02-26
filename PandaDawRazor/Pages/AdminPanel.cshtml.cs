@@ -7,6 +7,8 @@ using PandaDawRazor.Services;
 
 namespace PandaDawRazor.Pages;
 
+[RequestFormLimits(MultipartBodyLengthLimit = 52428800)]
+[RequestSizeLimit(52428800)]
 public class AdminPanelModel : PageModel
 {
     private readonly IProductoService _productoService;
@@ -119,7 +121,16 @@ public class AdminPanelModel : PageModel
         string? imagenPath = ProductoInput.ImagenActual;
         if (ProductoInput.ImagenArchivo != null && ProductoInput.ImagenArchivo.Length > 0)
         {
-            imagenPath = await GuardarImagenAsync(ProductoInput.ImagenArchivo);
+            try
+            {
+                imagenPath = await GuardarImagenAsync(ProductoInput.ImagenArchivo);
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"Error al subir la imagen: {ex.Message}";
+                await CargarProductos();
+                return Page();
+            }
         }
 
         var producto = new Producto

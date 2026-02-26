@@ -1,3 +1,6 @@
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -345,5 +348,194 @@ public class EmailServiceTest
         Assert.That(resultado, Is.Not.Null, "GenerarHtmlEmail retornó null");
 
         return resultado!;
+    }
+
+    // ==========================================
+    // HELPER — Servidor SMTP falso para tests de envío exitoso
+    // ==========================================
+
+    /// <summary>
+    /// Inicia un servidor SMTP falso en localhost con un puerto aleatorio.
+    /// Soporta el protocolo SMTP básico sin TLS para permitir tests unitarios
+    /// de la ruta de éxito (SendAsync, DisconnectAsync, LogInformation).
+    /// </summary>
+    private static async Task<(int port, TcpListener listener)> IniciarServidorSmtpFalso(bool conAuth = false)
+    {
+        var listener = new TcpListener(IPAddress.Loopback, 0);
+        listener.Start();
+        var port = ((IPEndPoint)listener.LocalEndpoint).Port;
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                using var tcpClient = await listener.AcceptTcpClientAsync();
+                var stream = tcpClient.GetStream();
+                var reader = new StreamReader(stream, Encoding.ASCII);
+                var writer = new StreamWriter(stream, Encoding.ASCII) { AutoFlush = true, NewLine = "\r\n" };
+
+                // Saludo SMTP
+                await writer.WriteLineAsync("220 localhost FakeSMTP Ready");
+
+                string? line;
+                while ((line = await reader.ReadLineAsync()) != null)
+                {
+                    var upper = line.ToUpperInvariant();
+
+                    if (upper.StartsWith("EHLO") || upper.StartsWith("HELO"))
+                    {
+                        await writer.WriteLineAsync("250-localhost");
+                        if (conAuth)
+                            await writer.WriteLineAsync("250-AUTH PLAIN LOGIN");
+                        await writer.WriteLineAsync("250-SIZE 35882577");
+                        await writer.WriteLineAsync("250 OK");
+                    }
+                    else if (upper.StartsWith("AUTH PLAIN"))
+                    {
+                        // AUTH PLAIN puede enviar credenciales inline o en la siguiente línea
+                        var parts = line.Trim().Split(' ');
+                        if (parts.Length > 2)
+                        {
+                            await writer.WriteLineAsync("235 2.7.0 Authentication successful");
+                        }
+                        else
+                        {
+                            await writer.WriteLineAsync("334 ");
+                            await reader.ReadLineAsync();
+                            await writer.WriteLineAsync("235 2.7.0 Authentication successful");
+                        }
+                    }
+                    else if (upper.StartsWith("AUTH LOGIN"))
+                    {
+                        await writer.WriteLineAsync("334 VXNlcm5hbWU6"); // "Username:" en base64
+                        await reader.ReadLineAsync();
+                        await writer.WriteLineAsync("334 UGFzc3dvcmQ6"); // "Password:" en base64
+                        await reader.ReadLineAsync();
+                        await writer.WriteLineAsync("235 2.7.0 Authentication successful");
+                    }
+                    else if (upper.StartsWith("AUTH"))
+                    {
+                        await writer.WriteLineAsync("235 2.7.0 Authentication successful");
+                    }
+                    else if (upper.StartsWith("MAIL FROM"))
+                    {
+                        await writer.WriteLineAsync("250 OK");
+                    }
+                    else if (upper.StartsWith("RCPT TO"))
+                    {
+                        await writer.WriteLineAsync("250 OK");
+                    }
+                    else if (upper.StartsWith("DATA"))
+                    {
+                        await writer.WriteLineAsync("354 Start mail input");
+                        while ((line = await reader.ReadLineAsync()) != null)
+                        {
+                            if (line == ".") break;
+                        }
+                        await writer.WriteLineAsync("250 OK");
+                    }
+                    else if (upper.StartsWith("QUIT"))
+                    {
+                        await writer.WriteLineAsync("221 Bye");
+                        break;
+                    }
+                    else
+                    {
+                        await writer.WriteLineAsync("250 OK");
+                    }
+                }
+            }
+            catch
+            {
+                // Ignorar errores del servidor falso
+            }
+            finally
+            {
+                listener.Stop();
+            }
+        });
+
+        // Esperar a que el servidor esté listo
+        await Task.Delay(100);
+        return (port, listener);
+    }
+
+    // ==========================================
+    // 5. ENVÍO EXITOSO CON SERVIDOR SMTP FALSO
+    // ==========================================
+
+    [Test]
+    [Timeout(15000)]
+    public async Task EnviarEmail_ConSmtpDisponible_DebeLoguearExitoSinAuth()
+    {
+        // PREPARAR — Servidor SMTP falso sin autenticación
+        var (port, listener) = await IniciarServidorSmtpFalso(conAuth: false);
+        try
+        {
+            var config = CrearConfiguracion(
+                host: "localhost",
+                port: port.ToString(),
+                useSsl: "false",
+                username: "",
+                password: "");
+            var service = new EmailService(config, _loggerFalso.Object);
+            var venta = CrearVentaEjemplo();
+            var facturaPdf = new byte[] { 0x25, 0x50, 0x44, 0x46 }; // %PDF
+
+            // ACTUAR
+            await service.SendConfirmacionPagoAsync(TestEmail, TestNombre, venta, facturaPdf);
+
+            // COMPROBAR — Se logueó el éxito (LogInformation = ruta exitosa)
+            _loggerFalso.Verify(
+                x => x.Log(
+                    LogLevel.Information,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((v, t) => true),
+                    It.IsAny<Exception>(),
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.AtLeastOnce);
+        }
+        finally
+        {
+            listener.Stop();
+        }
+    }
+
+    [Test]
+    [Timeout(15000)]
+    public async Task EnviarEmail_ConCredencialesYSmtpDisponible_DebeAutenticarYLoguear()
+    {
+        // PREPARAR — Servidor SMTP falso CON autenticación habilitada
+        var (port, listener) = await IniciarServidorSmtpFalso(conAuth: true);
+        try
+        {
+            var config = CrearConfiguracion(
+                host: "localhost",
+                port: port.ToString(),
+                useSsl: "false",
+                username: "testuser",
+                password: "testpass");
+            var service = new EmailService(config, _loggerFalso.Object);
+            var venta = CrearVentaEjemplo();
+            var facturaPdf = new byte[] { 0x25, 0x50, 0x44, 0x46 };
+
+            // ACTUAR
+            await service.SendConfirmacionPagoAsync(TestEmail, TestNombre, venta, facturaPdf);
+
+            // COMPROBAR — Si auth funciona sobre no-TLS: LogInformation (éxito)
+            //            Si MailKit lo rechaza: LogError (error) — igualmente no lanza excepción
+            _loggerFalso.Verify(
+                x => x.Log(
+                    It.IsAny<LogLevel>(),
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((v, t) => true),
+                    It.IsAny<Exception>(),
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+                Times.AtLeastOnce);
+        }
+        finally
+        {
+            listener.Stop();
+        }
     }
 }

@@ -5,6 +5,8 @@ using PandaBack.Errors;
 using PandaBack.Models;
 using PandaBack.Repositories;
 using PandaBack.Services.Stripe;
+using Stripe;
+using Stripe.Checkout;
 
 namespace Tests.Services;
 
@@ -191,6 +193,33 @@ public class StripeServiceTest
     // ==========================================
 
     [Test]
+    public async Task CrearSesion_ConSuccessUrlConQueryParams_DebeCubrirRamaAmpersand()
+    {
+        // PREPARAR — successUrl ya contiene "?" → se usa "&session_id=" en vez de "?session_id="
+        var producto = new Producto { Id = 1, Nombre = "Test", Precio = 10, Stock = 5, Imagen = "https://ejemplo.com/img.jpg" };
+        var carrito = new Carrito
+        {
+            Id = 1,
+            UserId = TestUserId,
+            LineasCarrito = new List<LineaCarrito>
+            {
+                new LineaCarrito { ProductoId = 1, Cantidad = 1, Producto = producto }
+            }
+        };
+        _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync(carrito);
+
+        // ACTUAR — successUrl con "?" → ejercita la rama true del ternario (línea 57)
+        var resultado = await _service.CreateCheckoutSessionAsync(
+            TestUserId,
+            "https://localhost/pago?orden=123",
+            CancelUrl);
+
+        // COMPROBAR — Falla por key falsa, pero la rama del "?" se ejercitó
+        Assert.That(resultado.IsFailure, Is.True);
+        Assert.That(resultado.Error, Is.InstanceOf<BadRequestError>());
+    }
+
+    [Test]
     public async Task CrearSesion_ConDatosValidos_PeroKeyFake_DebeFallarConBadRequest()
     {
         // PREPARAR — datos válidos pero la key de Stripe es falsa
@@ -252,5 +281,84 @@ public class StripeServiceTest
         // COMPROBAR
         Assert.That(resultado.IsFailure, Is.True);
         Assert.That(resultado.Error, Is.InstanceOf<BadRequestError>());
+    }
+
+    // ==========================================
+    // 6. TESTS CON STRIPE MOCKEADO (ruta de éxito)
+    // ==========================================
+
+    [Test]
+    public async Task CrearSesion_ConApiMockeada_DebeRetornarUrlExitosa()
+    {
+        // PREPARAR — Carrito válido
+        var producto = new Producto { Id = 1, Nombre = "Auriculares", Precio = 49.99m, Stock = 10, Imagen = "https://ejemplo.com/img.jpg" };
+        var carrito = new Carrito
+        {
+            Id = 1,
+            UserId = TestUserId,
+            LineasCarrito = new List<LineaCarrito>
+            {
+                new LineaCarrito { ProductoId = 1, Cantidad = 1, Producto = producto }
+            }
+        };
+        _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync(carrito);
+
+        // Mockear el cliente de Stripe para devolver una sesión de éxito
+        var mockClient = new Mock<IStripeClient>();
+        mockClient
+            .Setup(c => c.RequestAsync<Session>(
+                It.IsAny<HttpMethod>(),
+                It.IsAny<string>(),
+                It.IsAny<BaseOptions>(),
+                It.IsAny<RequestOptions>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Session { Url = "https://checkout.stripe.com/test-session" });
+
+        var savedClient = StripeConfiguration.StripeClient;
+        StripeConfiguration.StripeClient = mockClient.Object;
+        try
+        {
+            // ACTUAR
+            var resultado = await _service.CreateCheckoutSessionAsync(TestUserId, SuccessUrl, CancelUrl);
+
+            // COMPROBAR
+            Assert.That(resultado.IsSuccess, Is.True);
+            Assert.That(resultado.Value, Is.EqualTo("https://checkout.stripe.com/test-session"));
+        }
+        finally
+        {
+            StripeConfiguration.StripeClient = savedClient;
+        }
+    }
+
+    [Test]
+    public async Task ObtenerEstadoPago_ConApiMockeada_DebeRetornarEstado()
+    {
+        // PREPARAR — Mockear el cliente de Stripe
+        var mockClient = new Mock<IStripeClient>();
+        mockClient
+            .Setup(c => c.RequestAsync<Session>(
+                It.IsAny<HttpMethod>(),
+                It.IsAny<string>(),
+                It.IsAny<BaseOptions>(),
+                It.IsAny<RequestOptions>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Session { PaymentStatus = "paid" });
+
+        var savedClient = StripeConfiguration.StripeClient;
+        StripeConfiguration.StripeClient = mockClient.Object;
+        try
+        {
+            // ACTUAR
+            var resultado = await _service.GetSessionPaymentStatusAsync("cs_test_456");
+
+            // COMPROBAR
+            Assert.That(resultado.IsSuccess, Is.True);
+            Assert.That(resultado.Value, Is.EqualTo("paid"));
+        }
+        finally
+        {
+            StripeConfiguration.StripeClient = savedClient;
+        }
     }
 }

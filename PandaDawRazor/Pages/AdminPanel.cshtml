@@ -392,7 +392,15 @@
             document.getElementById('editar_stock').value = stock;
             document.getElementById('editar_categoria').value = categoria;
             document.getElementById('editar_imagen_actual').value = imagen;
-            document.getElementById('form_editar').action = '?handler=Editar&id=' + id;
+
+            // Asegurar action y enctype correctos para subida de archivos
+            var form = document.getElementById('form_editar');
+            form.action = window.location.pathname + '?handler=Editar&id=' + id;
+            form.enctype = 'multipart/form-data';
+
+            // Resetear el file input para que no quede un archivo anterior seleccionado
+            var fileInput = form.querySelector('input[type="file"]');
+            if (fileInput) fileInput.value = '';
 
             // Mostrar preview de imagen actual si existe
             var previewDiv = document.getElementById('preview_editar');

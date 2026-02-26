@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text.Json;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -267,6 +268,27 @@ namespace Tests.Middleware
                     It.IsAny<Exception>(),
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.Once);
+        }
+
+        // ==========================================
+        // 12. EXTENSION METHOD UseGlobalExceptionHandler
+        // ==========================================
+
+        [Test]
+        public void UseGlobalExceptionHandler_DebeRegistrarMiddleware()
+        {
+            // PREPARAR
+            var appBuilderFalso = new Mock<IApplicationBuilder>();
+            appBuilderFalso
+                .Setup(a => a.Use(It.IsAny<Func<RequestDelegate, RequestDelegate>>()))
+                .Returns(appBuilderFalso.Object);
+
+            // ACTUAR
+            var resultado = appBuilderFalso.Object.UseGlobalExceptionHandler();
+
+            // COMPROBAR
+            Assert.That(resultado, Is.Not.Null);
+            appBuilderFalso.Verify(a => a.Use(It.IsAny<Func<RequestDelegate, RequestDelegate>>()), Times.Once);
         }
     }
 }

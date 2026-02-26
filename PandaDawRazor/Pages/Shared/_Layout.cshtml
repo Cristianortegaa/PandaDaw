@@ -40,15 +40,6 @@
                         <span class="absolute -top-1 -right-1 w-4.5 h-4.5 rounded-full bg-error text-[9px] font-black text-white flex items-center justify-center shadow-md" id="fav-badge-desktop">@favCount</span>
                     }
                 </a>
-                <a asp-page="/Pedidos" class="btn btn-ghost btn-sm rounded-xl text-xs font-semibold text-base-content/50 hover:text-primary gap-1.5 px-4">
-                    <i class="fa-solid fa-box text-[10px]"></i> Pedidos
-                </a>
-                @if (Context.Session.GetString("UserRole") == "Admin")
-                {
-                    <a asp-page="/AdminPanel" class="btn btn-ghost btn-sm rounded-xl text-xs font-semibold text-base-content/50 hover:text-accent gap-1.5 px-4">
-                        <i class="fa-solid fa-shield text-[10px]"></i> Admin
-                    </a>
-                }
             </div>
 
             <!-- Acciones derecha -->
@@ -127,6 +118,12 @@
                                 </div>
                             </li>
                             <div class="h-px bg-base-300/20 mx-2 mb-1"></div>
+                            <li><a asp-page="/Pedidos" class="rounded-xl text-sm py-2"><i class="fa-solid fa-box mr-2 text-xs w-4 text-primary/50"></i>Mis Pedidos</a></li>
+                            @if (Context.Session.GetString("UserRole") == "Admin")
+                            {
+                                <li><a asp-page="/AdminPanel" class="rounded-xl text-sm py-2"><i class="fa-solid fa-shield mr-2 text-xs w-4 text-accent/50"></i>Admin Panel</a></li>
+                            }
+                            <div class="h-px bg-base-300/20 mx-2 my-1"></div>
                             <li>
                                 <button onclick="openLogoutModal()" class="text-error/70 hover:text-error hover:bg-error/10 rounded-xl text-sm py-2 w-full text-left">
                                     <i class="fa-solid fa-right-from-bracket mr-2 text-xs w-4"></i>Cerrar sesión
