@@ -12,6 +12,8 @@ using PandaBack.Services.Stripe;
 using PandaBack.Repository;
 using PandaDawRazor.Filters;
 using PandaDawRazor.Services;
+using QuestPDF.Infrastructure;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
