@@ -23,11 +23,14 @@ public class FlujosCompletosTests : BaseTest
 
         // 1. Registro
         await GoToPage(TestConstants.RegisterPath);
-        await Page.Locator("#regNombre").FillAsync("Flujo");
-        await Page.Locator("#regApellidos").FillAsync("Completo");
-        await Page.Locator("#regEmail").FillAsync(uniqueEmail);
-        await Page.Locator("#regPassword").FillAsync("Flujo123!");
-        await Page.Locator("#regConfirm").FillAsync("Flujo123!");
+        
+        // Selectores robustos ignorando elementos ocultos
+        await Page.Locator("input[name*='ombre'], #regNombre >> visible=true").First.FillAsync("Flujo");
+        await Page.Locator("input[name*='pellidos'], #regApellidos >> visible=true").First.FillAsync("Completo");
+        await Page.Locator("input[type='email'], #regEmail >> visible=true").First.FillAsync(uniqueEmail);
+        await Page.Locator("input[type='password'] >> visible=true").First.FillAsync("Flujo123!");
+        await Page.Locator("input[type='password'] >> visible=true").Nth(1).FillAsync("Flujo123!");
+        
         await Page.GetByRole(AriaRole.Button, new() { Name = "Crear cuenta" }).ClickAsync();
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
@@ -42,13 +45,13 @@ public class FlujosCompletosTests : BaseTest
         // 4. Añadir al carrito
         var addBtn = Page.Locator("form[action*='AddToCart'] button, button:has-text('Añadir')").First;
         await addBtn.ClickAsync();
-        await Task.Delay(1000);
+        await Task.Delay(1000); // Espera a la animación CSS del carrito
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
         // 5. Ir al carrito
         await GoToPage(TestConstants.CarritoPath);
         var pageText = await Page.Locator("body").TextContentAsync();
-        Assert.That(pageText, Does.Not.Contain("vacío"), "El carrito no debe estar vacío");
+        Assert.That(pageText, Does.Not.Contain("vacío"), "El carrito no debe estar vacío tras añadir un producto");
 
         // 6. Ir a pagar
         await GoToPage(TestConstants.PagoPath);
@@ -62,7 +65,7 @@ public class FlujosCompletosTests : BaseTest
         // 8. Verificar en Pedidos
         await GoToPage(TestConstants.PedidosPath);
         var pageTextPedidos = await Page.Locator("body").TextContentAsync();
-        Assert.That(pageTextPedidos, Does.Not.Contain("Sin pedidos"), "Debe haber pedidos");
+        Assert.That(pageTextPedidos, Does.Not.Contain("Sin pedidos"), "Debe haber pedidos tras el flujo de compra");
     }
 
     // ══════════════════════════════════════════════════════════════
@@ -74,9 +77,9 @@ public class FlujosCompletosTests : BaseTest
     {
         await LoginAsUser();
 
-        // 1. Buscar un producto
+        // 1. Buscar un producto (asegurando coger el buscador visible)
         await GoToPage(TestConstants.IndexPath);
-        var searchInput = Page.Locator("input[name='buscar']").Last;
+        var searchInput = Page.Locator("input[name='buscar'] >> visible=true").First;
         await searchInput.FillAsync("a");
         await searchInput.PressAsync("Enter");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
@@ -99,7 +102,7 @@ public class FlujosCompletosTests : BaseTest
             // 4. Añadir al carrito
             var addBtn = Page.Locator("form[action*='AddToCart'] button, button:has-text('Añadir')").First;
             await addBtn.ClickAsync();
-            await Task.Delay(1000);
+            await Task.Delay(1000); // Espera a la animación CSS
             await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
             // 5. Verificar que está en favoritos
@@ -123,18 +126,31 @@ public class FlujosCompletosTests : BaseTest
     {
         await LoginAsUser();
 
-        // 1. Filtrar por categoría Gaming
+        // 1. Filtrar por categoría
         await GoToPage(TestConstants.IndexPath + "?categoria=Gaming");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
-        // 2. Click en primer producto de la categoría
+        // 2. Click en primer producto
         var primerProducto = Page.Locator("a[href*='Detalle']").First;
         if (await primerProducto.IsVisibleAsync())
         {
             await primerProducto.ClickAsync();
             await Expect(Page).ToHaveURLAsync(new System.Text.RegularExpressions.Regex(@"Detalle/\d+"));
 
-            // 3. Verificar que la página de detalle carga correctamente
+            // 3. Valorar (Si el usuario no lo ha valorado ya en pruebas anteriores)
+            var estrella = Page.Locator("input[name='Estrellas']").Last;
+            if (await estrella.IsVisibleAsync() && await estrella.IsEnabledAsync())
+            {
+                await estrella.ClickAsync(new LocatorClickOptions { Force = true });
+                var textarea = Page.Locator("textarea[name='Resena'], textarea").First;
+                if (await textarea.IsVisibleAsync())
+                {
+                    await textarea.FillAsync("¡Excelente producto probado en flujo E2E!");
+                    await Page.Locator("button:has-text('Enviar'), button[type='submit']").First.ClickAsync();
+                    await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+                }
+            }
+
             var pageText = await Page.Locator("body").TextContentAsync();
             Assert.That(pageText, Is.Not.Null.And.Not.Empty, "La página de detalle debe cargar contenido");
         }
@@ -159,46 +175,25 @@ public class FlujosCompletosTests : BaseTest
         var modal = Page.Locator("#modal_crear, dialog[open]").First;
         await Expect(modal).ToBeVisibleAsync();
 
-        // Usar GetByLabel para evitar el token CSRF
-        var nombreInput = modal.GetByLabel(new Regex("ombre", RegexOptions.IgnoreCase));
-        if (await nombreInput.CountAsync() == 0)
-            nombreInput = modal.Locator("input[type='text']").First;
-        await nombreInput.FillAsync(productoNombre);
-
-        var descInput = modal.GetByLabel(new Regex("descripci", RegexOptions.IgnoreCase));
-        if (await descInput.CountAsync() == 0)
-            descInput = modal.Locator("textarea").First;
-        if (await descInput.IsVisibleAsync())
-            await descInput.FillAsync("Producto creado por Playwright E2E test");
-
-        var precioInput = modal.GetByLabel(new Regex("recio", RegexOptions.IgnoreCase));
-        if (await precioInput.CountAsync() == 0)
-            precioInput = modal.Locator("input[type='number']").First;
-        if (await precioInput.IsVisibleAsync())
-            await precioInput.FillAsync("49.99");
-
-        var stockInput = modal.GetByLabel(new Regex("tock", RegexOptions.IgnoreCase));
-        if (await stockInput.CountAsync() == 0)
-            stockInput = modal.Locator("input[type='number']").Nth(1);
-        if (await stockInput.IsVisibleAsync())
-            await stockInput.FillAsync("5");
-
-        var categoriaSelect = modal.Locator("select").First;
+        // Evitar inputs invisibles de CSRF
+        await modal.Locator("input[name*='ombre'] >> visible=true").First.FillAsync(productoNombre);
+        await modal.Locator("textarea >> visible=true").First.FillAsync("Producto creado por Playwright");
+        await modal.Locator("input[type='number'] >> visible=true").First.FillAsync("49.99");
+        await modal.Locator("input[type='number'] >> visible=true").Nth(1).FillAsync("5");
+        
+        var categoriaSelect = modal.Locator("select >> visible=true").First;
         if (await categoriaSelect.IsVisibleAsync())
             await categoriaSelect.SelectOptionAsync(new SelectOptionValue { Index = 1 });
 
-        var imagenInput = modal.Locator("input[name*='magen'], input[name*='url']").First;
-        if (await imagenInput.IsVisibleAsync())
-            await imagenInput.FillAsync("https://via.placeholder.com/300");
+        await modal.Locator("input[name*='magen'], input[name*='url'] >> visible=true").First.FillAsync("https://via.placeholder.com/300");
 
-        var submitBtn = modal.Locator("button[type='submit'], button:has-text('Crear')").First;
+        var submitBtn = modal.Locator("button[type='submit'], button:has-text('Crear') >> visible=true").First;
         await submitBtn.ClickAsync();
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
-        // 2. Verificar que aparece en el catálogo
+        // 2. Verificar que el catálogo carga
         await GoToPage(TestConstants.IndexPath);
         var pageText = await Page.Locator("body").TextContentAsync();
-        // El producto puede tardar en aparecer; simplemente verificamos que el catálogo se cargó
         Assert.That(pageText, Does.Contain("€"), "El catálogo debe mostrar productos");
     }
 
@@ -234,7 +229,7 @@ public class FlujosCompletosTests : BaseTest
         await Expect(Page).ToHaveURLAsync(new System.Text.RegularExpressions.Regex("Login"));
 
         // 6. Login page carga bien
-        await Expect(Page.Locator("#loginEmail")).ToBeVisibleAsync();
+        await Expect(Page.Locator("input[type='email'] >> visible=true").First).ToBeVisibleAsync();
 
         // 7. Ir a Register
         var regLink = Page.Locator("a[href*='Register']").First;
