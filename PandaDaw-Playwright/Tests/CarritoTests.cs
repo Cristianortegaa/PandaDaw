@@ -63,6 +63,7 @@ public class CarritoTests : BaseTest
         await GoToPage("/Detalle/1");
         var addBtn = Page.Locator("form[action*='AddToCart'] button, button:has-text('carrito'), button:has-text('Añadir')").First;
         await addBtn.ClickAsync();
+        await Task.Delay(1000); // Esperar a que termine la animación de fly-to-cart
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
         // 2. Ir al carrito y verificar que hay al menos una línea
@@ -84,6 +85,7 @@ public class CarritoTests : BaseTest
         await GoToPage("/Detalle/1");
         var addBtn = Page.Locator("form[action*='AddToCart'] button, button:has-text('carrito'), button:has-text('Añadir')").First;
         await addBtn.ClickAsync();
+        await Task.Delay(1000);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
         await GoToPage(TestConstants.CarritoPath);
@@ -110,6 +112,7 @@ public class CarritoTests : BaseTest
         await GoToPage("/Detalle/2");
         var addBtn = Page.Locator("form[action*='AddToCart'] button, button:has-text('carrito'), button:has-text('Añadir')").First;
         await addBtn.ClickAsync();
+        await Task.Delay(1000);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
         await GoToPage(TestConstants.CarritoPath);
@@ -130,6 +133,7 @@ public class CarritoTests : BaseTest
         await GoToPage("/Detalle/1");
         var addBtn = Page.Locator("form[action*='AddToCart'] button, button:has-text('carrito'), button:has-text('Añadir')").First;
         await addBtn.ClickAsync();
+        await Task.Delay(1000);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
         await GoToPage(TestConstants.CarritoPath);
@@ -160,6 +164,7 @@ public class CarritoTests : BaseTest
         await GoToPage("/Detalle/1");
         var addBtn = Page.Locator("form[action*='AddToCart'] button, button:has-text('carrito'), button:has-text('Añadir')").First;
         await addBtn.ClickAsync();
+        await Task.Delay(1000);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
         await GoToPage(TestConstants.CarritoPath);
@@ -183,6 +188,7 @@ public class CarritoTests : BaseTest
         await GoToPage("/Detalle/1");
         var addBtn = Page.Locator("form[action*='AddToCart'] button, button:has-text('carrito'), button:has-text('Añadir')").First;
         await addBtn.ClickAsync();
+        await Task.Delay(1000);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
         await GoToPage(TestConstants.CarritoPath);
