@@ -54,7 +54,7 @@ flowchart TB
         API[API REST Controllers]
         ServicesC[Service Layer]
         Repositories[Repository Layer]
-        DB[(SQLite Database)]
+        DB[(postgres Database)]
     end
 
     UI --> Pages
@@ -576,8 +576,8 @@ sequenceDiagram
 | Frontend      | ASP.NET Core Razor Pages | 10.0    |
 | Componentes   | Blazor Server            | 10.0    |
 | CSS           | Tailwind CSS             | 3.x     |PP
-| UI Framework  | DaisyUI                  | 4.x     |
-| Base de Datos | SQLite                   | -       |
+| UI Framework  | DaisyUI                  |  4.x     |
+| Base de Datos | postgres                 | -       |
 | ORM           | Entity Framework Core    | 10.0    |
 | Testing       | xUnit                    | -       |
 | E2E Testing   | Playwright               | -       |
@@ -591,7 +591,7 @@ graph LR
 
     subgraph Data["Datos"]
         EF["Entity Framework Core"]
-        EFSQL["EF Core SQLite"]
+        EFSQL["EF Core postgres"]
         EFProxies["EF Proxies"]
     end
 
@@ -637,7 +637,7 @@ graph LR
 | Dominio (anual)          | 15€                     |
 | Hosting (VPS/Cloud)      | 50€/mes × 12 = 600€/año |
 | SSL (Let's Encrypt)      | Gratis                  |
-| Base de datos gestionada | 0€ (SQLite local)       |
+| Base de datos gestionada | 0€ (postgres local)       |
 | **Total Year 1**         | **615€**                |
 
 ### 9.3 Resumen Budget
