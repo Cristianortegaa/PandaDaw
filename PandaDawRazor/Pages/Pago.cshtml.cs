@@ -61,27 +61,17 @@ public class PagoModel : PageModel
             return RedirectToPage("/Login");
         }
 
-        var baseUrl = $"{Request.Scheme}://{Request.Host}";
-        var successUrl = $"{baseUrl}/PagoExitoso";
-        var cancelUrl = $"{baseUrl}/Pago";
+        // Url.Page genera URLs absolutas bien formadas, evitando errores de Stripe "Not a valid URL"
+        var successUrl = Url.Page("/PagoExitoso", pageHandler: null, values: null, protocol: Request.Scheme)!;
+        var cancelUrl = Url.Page("/Pago", pageHandler: null, values: null, protocol: Request.Scheme)!;
 
         var stripeResult = await _stripeService.CreateCheckoutSessionAsync(UserId, successUrl, cancelUrl);
 
         if (stripeResult.IsSuccess)
         {
-            PagoExitoso = true;
-            Carrito = new CarritoDto();
-
-            _notificacionService.Enviar(UserId, new Notificacion
-            {
-                Tipo = "success",
-                Titulo = "¡Pago exitoso!",
-                Mensaje = "Tu pago ha sido procesado correctamente",
-                Icono = "fa-solid fa-check-circle"
-            });
-
-            _notificacionService.NotificarCarritoActualizado(UserId, 0);
-            return RedirectToPage("/PagoExitoso");
+            // Redirigir al checkout de Stripe (la URL devuelta por la API)
+            // El carrito se vaciará en PagoExitoso tras verificar el pago
+            return Redirect(stripeResult.Value);
         }
         else
         {

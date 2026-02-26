@@ -10,11 +10,10 @@ using PandaBack.Services.Email;
 using PandaBack.Services.Factura;
 using PandaBack.Services.Stripe;
 using PandaBack.Repository;
-using PandaBack.config;
 using PandaDawRazor.Filters;
 using PandaDawRazor.Services;
-using Stripe;
 using QuestPDF.Infrastructure;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 

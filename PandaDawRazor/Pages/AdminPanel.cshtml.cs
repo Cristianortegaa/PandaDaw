@@ -4,17 +4,20 @@ using PandaBack.Models;
 using PandaBack.Services;
 using PandaDawRazor.Services;
 
+
 namespace PandaDawRazor.Pages;
 
 public class AdminPanelModel : PageModel
 {
     private readonly IProductoService _productoService;
     private readonly NotificacionService _notificacionService;
+    private readonly IWebHostEnvironment _env;
 
-    public AdminPanelModel(IProductoService productoService, NotificacionService notificacionService)
+    public AdminPanelModel(IProductoService productoService, NotificacionService notificacionService, IWebHostEnvironment env)
     {
         _productoService = productoService;
         _notificacionService = notificacionService;
+        _env = env;
     }
 
     public List<Producto> Productos { get; set; } = new();
@@ -58,6 +61,13 @@ public class AdminPanelModel : PageModel
             return Page();
         }
 
+        // Procesar imagen subida
+        string? imagenPath = null;
+        if (ProductoInput.ImagenArchivo != null && ProductoInput.ImagenArchivo.Length > 0)
+        {
+            imagenPath = await GuardarImagenAsync(ProductoInput.ImagenArchivo);
+        }
+
         var producto = new Producto
         {
             Nombre = ProductoInput.Nombre,
@@ -65,10 +75,10 @@ public class AdminPanelModel : PageModel
             Precio = ProductoInput.Precio,
             Stock = ProductoInput.Stock,
             Category = categoria,
-            Imagen = ProductoInput.ImagenUrl
+            Imagen = imagenPath
         };
 
-var result = await _productoService.CreateProductoAsync(producto);
+        var result = await _productoService.CreateProductoAsync(producto);
         
         if (result.IsSuccess)
         {
@@ -105,6 +115,13 @@ var result = await _productoService.CreateProductoAsync(producto);
             return Page();
         }
 
+        // Procesar imagen subida (si hay nueva)
+        string? imagenPath = ProductoInput.ImagenActual;
+        if (ProductoInput.ImagenArchivo != null && ProductoInput.ImagenArchivo.Length > 0)
+        {
+            imagenPath = await GuardarImagenAsync(ProductoInput.ImagenArchivo);
+        }
+
         var producto = new Producto
         {
             Nombre = ProductoInput.Nombre,
@@ -112,10 +129,10 @@ var result = await _productoService.CreateProductoAsync(producto);
             Precio = ProductoInput.Precio,
             Stock = ProductoInput.Stock,
             Category = categoria,
-            Imagen = ProductoInput.ImagenUrl
+            Imagen = imagenPath
         };
 
-var result = await _productoService.UpdateProductoAsync(id, producto);
+        var result = await _productoService.UpdateProductoAsync(id, producto);
         
         if (result.IsSuccess)
         {
@@ -234,6 +251,24 @@ var result = await _productoService.UpdateProductoAsync(id, producto);
         }
     }
 
+    /// <summary>
+    /// Guarda el archivo de imagen en wwwroot/img/productos/ y devuelve la ruta relativa.
+    /// </summary>
+    private async Task<string> GuardarImagenAsync(IFormFile archivo)
+    {
+        var uploadsDir = Path.Combine(_env.WebRootPath, "img", "productos");
+        Directory.CreateDirectory(uploadsDir);
+
+        var extension = Path.GetExtension(archivo.FileName).ToLowerInvariant();
+        var nombreArchivo = $"{Guid.NewGuid()}{extension}";
+        var rutaCompleta = Path.Combine(uploadsDir, nombreArchivo);
+
+        await using var stream = new FileStream(rutaCompleta, FileMode.Create);
+        await archivo.CopyToAsync(stream);
+
+        return $"/img/productos/{nombreArchivo}";
+    }
+
     public class ProductoInputModel
     {
         public string Nombre { get; set; } = string.Empty;
@@ -241,6 +276,7 @@ var result = await _productoService.UpdateProductoAsync(id, producto);
         public decimal Precio { get; set; }
         public int Stock { get; set; }
         public string Categoria { get; set; } = string.Empty;
-        public string? ImagenUrl { get; set; }
+        public IFormFile? ImagenArchivo { get; set; }
+        public string? ImagenActual { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using PandaBack.Errors;
 using PandaBack.Repositories;
+using Stripe; // Asegúrate de tener este using
 using Stripe.Checkout;
 
 namespace PandaBack.Services.Stripe;
@@ -9,11 +10,15 @@ public class StripeService : IStripeService
 {
     private readonly ICarritoRepository _carritoRepository;
     private readonly ILogger<StripeService> _logger;
+    private readonly IConfiguration _configuration;
 
-    public StripeService(ICarritoRepository carritoRepository, ILogger<StripeService> logger)
+    public StripeService(ICarritoRepository carritoRepository, ILogger<StripeService> logger, IConfiguration configuration)
     {
         _carritoRepository = carritoRepository;
         _logger = logger;
+        _configuration = configuration;
+        
+        StripeConfiguration.ApiKey = _configuration["Stripe:SecretKey"];
     }
 
     public async Task<Result<string, PandaError>> CreateCheckoutSessionAsync(string userId, string successUrl, string cancelUrl)
@@ -22,69 +27,73 @@ public class StripeService : IStripeService
         if (carrito == null || !carrito.LineasCarrito.Any())
             return Result.Failure<string, PandaError>(new CarritoVacioError("El carrito está vacío"));
 
+        // 1. Validar y formatear URLs de retorno
+        if (!Uri.IsWellFormedUriString(successUrl, UriKind.Absolute) || !Uri.IsWellFormedUriString(cancelUrl, UriKind.Absolute))
+        {
+            return Result.Failure<string, PandaError>(new BadRequestError("Las URLs de redirección deben ser absolutas (incluir http/https)"));
+        }
+
         var lineItems = carrito.LineasCarrito.Select(linea => new SessionLineItemOptions
         {
             PriceData = new SessionLineItemPriceDataOptions
             {
-                UnitAmountDecimal = linea.Producto!.Precio * 100, // Stripe usa centimos
+                // Convertir a long/int para evitar problemas de precisión decimal con Stripe
+                UnitAmountDecimal = Math.Round(linea.Producto!.Precio * 100, 0), 
                 Currency = "eur",
                 ProductData = new SessionLineItemPriceDataProductDataOptions
                 {
                     Name = linea.Producto.Nombre,
                     Description = linea.Producto.Descripcion ?? "",
-                    Images = !string.IsNullOrEmpty(linea.Producto.Imagen) 
-                        ? new List<string> { linea.Producto.Imagen } 
-                        : null
+                    // 2. SOLO añadir imagen si es una URL absoluta válida
+                    Images = ValidarUrlImagen(linea.Producto.Imagen) 
                 }
             },
             Quantity = linea.Cantidad
         }).ToList();
 
-        // Añadir línea de IVA (21%)
-        var subtotal = carrito.LineasCarrito.Sum(l => (l.Producto?.Precio ?? 0) * l.Cantidad);
-        var iva = subtotal * 0.21m;
+        // Los precios de los productos ya incluyen IVA, no se añade línea extra
 
-        lineItems.Add(new SessionLineItemOptions
-        {
-            PriceData = new SessionLineItemPriceDataOptions
-            {
-                UnitAmountDecimal = iva * 100,
-                Currency = "eur",
-                ProductData = new SessionLineItemPriceDataProductDataOptions
-                {
-                    Name = "IVA (21%)",
-                    Description = "Impuesto sobre el Valor Añadido"
-                }
-            },
-            Quantity = 1
-        });
+        // 3. Construir URL de éxito manejando parámetros existentes
+        string finalSuccessUrl = successUrl.Contains("?") 
+            ? $"{successUrl}&session_id={{CHECKOUT_SESSION_ID}}" 
+            : $"{successUrl}?session_id={{CHECKOUT_SESSION_ID}}";
 
         var options = new SessionCreateOptions
         {
             PaymentMethodTypes = new List<string> { "card" },
             LineItems = lineItems,
             Mode = "payment",
-            SuccessUrl = successUrl + "?session_id={CHECKOUT_SESSION_ID}",
+            SuccessUrl = finalSuccessUrl,
             CancelUrl = cancelUrl,
-            Metadata = new Dictionary<string, string>
-            {
-                { "userId", userId }
-            },
-            CustomerEmail = null // Se pedirá en Stripe Checkout
+            Metadata = new Dictionary<string, string> { { "userId", userId } }
         };
 
         try
         {
             var service = new SessionService();
             var session = await service.CreateAsync(options);
-            _logger.LogInformation("Stripe Checkout Session creada: {SessionId} para usuario {UserId}", session.Id, userId);
             return Result.Success<string, PandaError>(session.Url);
         }
-        catch (global::Stripe.StripeException ex)
+        catch (StripeException ex)
         {
-            _logger.LogError(ex, "Error al crear sesión de Stripe Checkout");
-            return Result.Failure<string, PandaError>(new BadRequestError($"Error de pago: {ex.Message}"));
+            _logger.LogError(ex, "Error de Stripe: {Message}", ex.Message);
+            return Result.Failure<string, PandaError>(new BadRequestError($"Error de Stripe: {ex.Message}"));
         }
+    }
+
+    // Método auxiliar para evitar el error de "Not a valid URL" en imágenes
+    private List<string>? ValidarUrlImagen(string? url)
+    {
+        if (string.IsNullOrEmpty(url)) return null;
+        
+        // Si la URL no empieza por http, Stripe la rechazará
+        if (!url.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+        {
+            _logger.LogWarning("La URL de imagen '{Url}' no es absoluta y será omitida.", url);
+            return null;
+        }
+        
+        return new List<string> { url };
     }
 
     public async Task<Result<string, PandaError>> GetSessionPaymentStatusAsync(string sessionId)
@@ -95,10 +104,9 @@ public class StripeService : IStripeService
             var session = await service.GetAsync(sessionId);
             return Result.Success<string, PandaError>(session.PaymentStatus);
         }
-        catch (global::Stripe.StripeException ex)
+        catch (StripeException ex)
         {
-            _logger.LogError(ex, "Error al obtener estado de sesión Stripe: {SessionId}", sessionId);
-            return Result.Failure<string, PandaError>(new BadRequestError($"Error al verificar pago: {ex.Message}"));
+            return Result.Failure<string, PandaError>(new BadRequestError(ex.Message));
         }
     }
 }

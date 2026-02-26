@@ -197,6 +197,20 @@ namespace Tests.Services
             _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync(carrito);
             _repoProductosFalso.Setup(r => r.GetByIdAsync(5)).ReturnsAsync(producto);
 
+            // Simular que GetByIdAsync devuelve la venta guardada (con User incluido)
+            _repoVentasFalso.Setup(r => r.GetByIdAsync(It.IsAny<long>()))
+                .ReturnsAsync((long id) => new Venta
+                {
+                    Id = id,
+                    UserId = TestUserId,
+                    Total = 100, // 2 * 50
+                    User = new User { Nombre = "Test", Apellidos = "User", Email = "test@test.com" },
+                    Lineas = new List<LineaVenta>
+                    {
+                        new LineaVenta { ProductoId = 5, Cantidad = 2, PrecioUnitario = 50, Producto = producto }
+                    }
+                });
+
             // ACTUAR
             var resultado = await _service.CreateVentaFromCarritoAsync(TestUserId);
 
@@ -224,6 +238,19 @@ namespace Tests.Services
 
             _repoCarritoFalso.Setup(r => r.GetByUserIdAsync(TestUserId)).ReturnsAsync(carrito);
             _repoProductosFalso.Setup(r => r.GetByIdAsync(5)).ReturnsAsync(producto);
+
+            // Simular recarga de la venta desde el repositorio
+            _repoVentasFalso.Setup(r => r.GetByIdAsync(It.IsAny<long>()))
+                .ReturnsAsync((long id) => new Venta
+                {
+                    Id = id,
+                    UserId = TestUserId,
+                    User = new User { Nombre = "Test", Apellidos = "User", Email = "test@test.com" },
+                    Lineas = new List<LineaVenta>
+                    {
+                        new LineaVenta { ProductoId = 5, Cantidad = 3, PrecioUnitario = 50, Producto = producto }
+                    }
+                });
 
             // ACTUAR
             await _service.CreateVentaFromCarritoAsync(TestUserId);
