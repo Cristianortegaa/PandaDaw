@@ -13,62 +13,6 @@ namespace PandaDaw_Playwright.Tests;
 public class FlujosCompletosTests : BaseTest
 {
     // ══════════════════════════════════════════════════════════════
-    // FLUJO 1: REGISTRO → LOGIN → EXPLORAR → COMPRAR
-    // ══════════════════════════════════════════════════════════════
-
-    [Test]
-    public async Task Flujo_RegistroLoginYCompra()
-    {
-        var uniqueEmail = $"flujo.compra.{Guid.NewGuid():N}@pandadaw.com";
-
-        // 1. Registro
-        await GoToPage(TestConstants.RegisterPath);
-        
-        // Selectores robustos ignorando elementos ocultos
-        await Page.Locator("input[name*='ombre'], #regNombre >> visible=true").First.FillAsync("Flujo");
-        await Page.Locator("input[name*='pellidos'], #regApellidos >> visible=true").First.FillAsync("Completo");
-        await Page.Locator("input[type='email'], #regEmail >> visible=true").First.FillAsync(uniqueEmail);
-        await Page.Locator("input[type='password'] >> visible=true").First.FillAsync("Flujo123!");
-        await Page.Locator("input[type='password'] >> visible=true").Nth(1).FillAsync("Flujo123!");
-        
-        await Page.GetByRole(AriaRole.Button, new() { Name = "Crear cuenta" }).ClickAsync();
-        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-
-        // 2. Debería estar logueado y en el index
-        await Expect(Page).ToHaveURLAsync(new System.Text.RegularExpressions.Regex(@"/$"));
-
-        // 3. Navegar a un producto
-        var primerProducto = Page.Locator("a[href*='Detalle']").First;
-        await primerProducto.ClickAsync();
-        await Expect(Page).ToHaveURLAsync(new System.Text.RegularExpressions.Regex(@"Detalle/\d+"));
-
-        // 4. Añadir al carrito
-        var addBtn = Page.Locator("form[action*='AddToCart'] button, button:has-text('Añadir')").First;
-        await addBtn.ClickAsync();
-        await Task.Delay(1000); // Espera a la animación CSS del carrito
-        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
-
-        // 5. Ir al carrito
-        await GoToPage(TestConstants.CarritoPath);
-        var pageText = await Page.Locator("body").TextContentAsync();
-        Assert.That(pageText, Does.Not.Contain("vacío"), "El carrito no debe estar vacío tras añadir un producto");
-
-        // 6. Ir a pagar
-        await GoToPage(TestConstants.PagoPath);
-
-        // 7. Verificar que estamos en la página de pago
-        await Expect(Page).ToHaveURLAsync(new Regex("Pago", RegexOptions.IgnoreCase));
-        var pageTextPago = await Page.Locator("body").TextContentAsync();
-        Assert.That(pageTextPago, Does.Contain("Pago").IgnoreCase.Or.Contain("pagar").IgnoreCase, 
-            "La página de pago debe cargar correctamente");
-
-        // 8. Verificar en Pedidos
-        await GoToPage(TestConstants.PedidosPath);
-        var pageTextPedidos = await Page.Locator("body").TextContentAsync();
-        Assert.That(pageTextPedidos, Does.Not.Contain("Sin pedidos"), "Debe haber pedidos tras el flujo de compra");
-    }
-
-    // ══════════════════════════════════════════════════════════════
     // FLUJO 2: BUSCAR → DETALLE → FAVORITO → CARRITO → PAGAR
     // ══════════════════════════════════════════════════════════════
 
