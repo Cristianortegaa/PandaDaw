@@ -15,6 +15,7 @@ namespace PandaDaw_Playwright;
 ///   - Screenshots automáticos en cada test
 /// </summary>
 [TestFixture]
+[Parallelizable(ParallelScope.Fixtures)]
 public abstract class BaseTest : PageTest
 {
     // ── 1. Configuración de la Sesión (Context) ──
