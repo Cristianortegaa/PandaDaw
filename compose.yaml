@@ -54,6 +54,13 @@
       Jwt__Issuer: "PandaBack"
       Jwt__Audience: "PandaFront"
       Jwt__ExpireInMinutes: "120"
+      SmtpSettings__Host: "${SMTPSETTINGS__HOST:-smtp.gmail.com}"
+      SmtpSettings__Port: "${SMTPSETTINGS__PORT:-587}"
+      SmtpSettings__UseSsl: "${SMTPSETTINGS__USESSL:-true}"
+      SmtpSettings__Username: "${SMTPSETTINGS__USERNAME:-}"
+      SmtpSettings__Password: "${SMTPSETTINGS__PASSWORD:-}"
+      SmtpSettings__FromName: "${SMTPSETTINGS__FROMNAME:-PandaDaw}"
+      SmtpSettings__FromEmail: "${SMTPSETTINGS__FROMEMAIL:-}"
     depends_on:
       postgres:
         condition: service_healthy
@@ -78,6 +85,13 @@
       Jwt__Issuer: "PandaBack"
       Jwt__Audience: "PandaFront"
       Jwt__ExpireInMinutes: "120"
+      SmtpSettings__Host: "${SMTPSETTINGS__HOST:-smtp.gmail.com}"
+      SmtpSettings__Port: "${SMTPSETTINGS__PORT:-587}"
+      SmtpSettings__UseSsl: "${SMTPSETTINGS__USESSL:-true}"
+      SmtpSettings__Username: "${SMTPSETTINGS__USERNAME:-}"
+      SmtpSettings__Password: "${SMTPSETTINGS__PASSWORD:-}"
+      SmtpSettings__FromName: "${SMTPSETTINGS__FROMNAME:-PandaDaw}"
+      SmtpSettings__FromEmail: "${SMTPSETTINGS__FROMEMAIL:-}"
     depends_on:
       pandaback:
         condition: service_started

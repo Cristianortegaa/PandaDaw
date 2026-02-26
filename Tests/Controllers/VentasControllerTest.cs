@@ -6,6 +6,7 @@ using PandaBack.Errors;
 using PandaBack.Models;
 using PandaBack.RestController;
 using PandaBack.Services;
+using PandaBack.Services.Factura;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,13 +16,15 @@ namespace Tests.Controllers
     {
         private VentasController _controller;
         private Mock<IVentaService> _serviceFalso;
+        private Mock<IFacturaService> _facturaServiceFalso;
         private const string TestUserId = "test-user-id";
 
         [SetUp]
         public void PrepararTodo()
         {
             _serviceFalso = new Mock<IVentaService>();
-            _controller = new VentasController(_serviceFalso.Object);
+            _facturaServiceFalso = new Mock<IFacturaService>();
+            _controller = new VentasController(_serviceFalso.Object, _facturaServiceFalso.Object);
 
             // Simular usuario autenticado
             var claims = new List<Claim> { new Claim(ClaimTypes.NameIdentifier, TestUserId) };
