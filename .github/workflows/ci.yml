@@ -17,24 +17,37 @@ jobs:
           dotnet-version: '10.0'
       - run: dotnet build PandaDaw.sln
       - run: dotnet publish PandaBack/PandaBack.csproj -c Release -o ./publish
-
-  docs:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
-        with: { dotnet-version: '10.0' }
-      - name: Generar HTML
-        run: |
-          dotnet tool install -g docfx
-          echo '{"metadata":[{"src":[{"files":["*/.csproj"],"exclude":["Tests/*","PandaDaw-Playwright/"]}],"dest":"api"}],"build":{"content":[{"files":["api/*"]}],"dest":"_site"}}' > docfx.json
-          docfx metadata && docfx build
-      - uses: actions/upload-artifact@v4
-        with:
-          name: Web-Docs
-          path: '_site/**'
-
+  
+docs:
+  runs-on: ubuntu-latest
+  needs: build
+  steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-dotnet@v4
+      with: { dotnet-version: '10.0' }
+    - name: Generar HTML Bonito
+      run: |
+        dotnet tool install -g docfx
+        cat << 'EOF' > docfx.json
+        {
+          "metadata": [{
+            "src": [
+              { "files": ["PandaBack/PandaBack.csproj", "PandaDawRazor/PandaDawRazor.csproj"] }
+            ],
+            "dest": "api"
+          }],
+          "build": {
+            "content": [{ "files": ["api/**"] }],
+            "dest": "_site",
+            "template": ["default", "modern"]
+          }
+        }
+        EOF
+        docfx metadata
+        docfx build
+    - uses: actions/upload-artifact@v4
+      with:
+        name: Web-Docs
 
   test:
     name: Test
