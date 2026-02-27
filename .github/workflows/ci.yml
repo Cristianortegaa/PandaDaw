@@ -19,21 +19,22 @@ jobs:
       - run: dotnet publish PandaBack/PandaBack.csproj -c Release -o ./publish
 
   docs:
-    name: Documentation
     runs-on: ubuntu-latest
     needs: build
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
+        with: { dotnet-version: '10.0' }
+      - name: Generar HTML
+        run: |
+          dotnet tool install -g docfx
+          echo '{"metadata":[{"src":[{"files":["*/.csproj"],"exclude":["Tests/*","PandaDaw-Playwright/"]}],"dest":"api"}],"build":{"content":[{"files":["api/*"]}],"dest":"_site"}}' > docfx.json
+          docfx metadata && docfx build
+      - uses: actions/upload-artifact@v4
         with:
-          dotnet-version: '10.0'
-      - name: Generate XML Docs
-        run: dotnet build PandaDaw.sln -c Release /p:GenerateDocumentationFile=true
-      - name: Upload Documentation
-        uses: actions/upload-artifact@v4
-        with:
-          name: Codigo-Documentacion
-          path: '**/*.xml'
+          name: Web-Docs
+          path: '_site/**'
+
 
   test:
     name: Test
