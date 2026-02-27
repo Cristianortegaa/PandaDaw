@@ -19,13 +19,17 @@ jobs:
       - run: dotnet publish PandaBack/PandaBack.csproj -c Release -o ./publish
   
   docs:
+    name: Documentacion
     runs-on: ubuntu-latest
     needs: build
+    permissions:
+      pages: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with: { dotnet-version: '10.0' }
-      - name: Generar HTML Bonito
+      - name: Generar Web y Publicar
         run: |
           dotnet tool install -g docfx
           cat << 'EOF' > docfx.json
@@ -37,18 +41,16 @@ jobs:
               "dest": "api"
             }],
             "build": {
-              "content": [{ "files": ["api/**"] }],
+              "content": [{"files": ["api/**"]}],
               "dest": "_site",
               "template": ["default", "modern"]
             }
           }
           EOF
-          docfx metadata
-          docfx build
-      - uses: actions/upload-artifact@v4
-        with:
-          name: Web-Docs
-          path: _site
+          docfx metadata && docfx build
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: '_site' }
+      - uses: actions/deploy-pages@v4
 
   test:
     name: Test
