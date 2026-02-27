@@ -3,8 +3,6 @@ name: Build
 on:
   push:
     branches: [main, dev, features]
-  pull_request:
-    branches: [main, dev, features]
 
 jobs:
   build:
@@ -13,21 +11,33 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '10.0'
+        with: { dotnet-version: '10.0' }
       - run: dotnet build PandaDaw.sln
       - run: dotnet publish PandaBack/PandaBack.csproj -c Release -o ./publish
-  
+
   docs:
+    name: Documentacion
     runs-on: ubuntu-latest
     needs: build
+    permissions:
+      pages: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with: { dotnet-version: '10.0' }
-      - name: Generar HTML Bonito
+      - name: Generar Web y Publicar
         run: |
           dotnet tool install -g docfx
+          
+          echo '# Documentacion de PandaDaw' > index.md
+          echo 'Bienvenido a la documentacion oficial del codigo fuente de nuestra app de ahorro.' >> index.md
+          
+          echo '- name: Inicio' > toc.yml
+          echo '  href: index.md' >> toc.yml
+          echo '- name: Codigo Fuente' >> toc.yml
+          echo '  href: api/' >> toc.yml
+          
           cat << 'EOF' > docfx.json
           {
             "metadata": [{
@@ -37,28 +47,30 @@ jobs:
               "dest": "api"
             }],
             "build": {
-              "content": [{ "files": ["api/**"] }],
+              "content": [
+                {"files": ["api/**"]},
+                {"files": ["index.md", "toc.yml"]} 
+              ],
               "dest": "_site",
               "template": ["default", "modern"]
             }
           }
           EOF
+          
           docfx metadata
           docfx build
-      - uses: actions/upload-artifact@v4
-        with:
-          name: Web-Docs
-          path: _site
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: '_site' }
+      - uses: actions/deploy-pages@v4
 
   test:
-    name: Test
+    name: Tests
     runs-on: ubuntu-latest
     needs: docs
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '10.0'
+        with: { dotnet-version: '10.0' }
       - run: dotnet test Tests/Tests.csproj --verbosity normal
 
   bruno:
@@ -68,23 +80,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '10.0'
+        with: { dotnet-version: '10.0' }
       - run: docker compose up -d
       - run: dotnet run --project PandaBack/PandaBack.csproj --launch-profile "http" &
       - run: sleep 10
-      - name: Run Bruno Tests
-        run: cd PandaDaw-BrunoTest && npx @usebruno/cli run --env local
+      - run: cd PandaDaw-BrunoTest && npx @usebruno/cli run --env local
 
   playwright:
-    name: Playwright
+    name: Playwright 
     runs-on: ubuntu-latest
     needs: bruno
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '10.0'
+        with: { dotnet-version: '10.0' }
       - run: docker compose up -d
       - run: dotnet run --project PandaBack/PandaBack.csproj --launch-profile "http" &
       - run: dotnet run --project PandaDawRazor/PandaDawRazor.csproj &
